@@ -1,3 +1,66 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import '~@fontsource/ibm-plex-sans/index.css';
+
+$accent: #ec3783;
+$primary: #5745de;
+$bg-main: linear-gradient(-45deg, #fe3876 0%, #7c30dd 71%, #3a30dd 100%);
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+
+@mixin main-border {
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(to right, $primary, $accent) border-box;
+}
+
+.dream-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 10px 1em;
+  cursor: pointer;
+  @include main-border();
+}
+
+.dream-btn:hover,
+.dream-btn:focus {
+  color: $primary;
+  box-shadow: 0 0 2px 0 $primary;
+  outline: none;
+}
+
+.radio-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 10px;
+  margin-bottom: 1rem;
+  border-radius: 12px !important;
+  border-width: 1px;
+
+  &.ant-radio-button-wrapper-checked {
+    @include main-border();
+  }
+
+  .ant-radio-button + span {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &::before {
+    visibility: hidden !important;
+  }
+}
+
+.large-footer-btn .ant-modal-footer {
+  display: flex;
+  gap: 1em;
+}

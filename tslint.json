@@ -1,6 +1,5 @@
 {
   "extends": ["tslint:recommended", "tslint-config-prettier"],
-  "rulesDirectory": ["codelyzer"],
   "rules": {
     "array-type": false,
     "arrow-parens": false,
@@ -8,7 +7,9 @@
     "component-selector": [true, "element", "app", "kebab-case"],
     "contextual-lifecycle": true,
     "cyclomatic-complexity": [true, 5],
-    "deprecation": { "severity": "warning" },
+    "deprecation": {
+      "severity": "warning"
+    },
     "directive-class-suffix": true,
     "directive-selector": [true, "attribute", "app", "camelCase"],
     "eofline": true,
@@ -37,12 +38,13 @@
     "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,
     "no-unnecessary-callback-wrapper": true,
+    "no-unused-variable": true,
     "no-var-keyword": true,
     "no-var-requires": false,
     "object-literal-key-quotes": [true, "as-needed"],
     "object-literal-sort-keys": false,
     "one-variable-per-declaration": true,
-    "only-arrow-functions": true,
+    "only-arrow-functions": false,
     "ordered-imports": true,
     "prefer-conditional-expression": [true, "check-else-if"],
     "prefer-const": true,
@@ -54,9 +56,9 @@
       true,
       {
         "multiline": {
-          "objects": "always",
           "arrays": "always",
           "functions": "never",
+          "objects": "always",
           "typeLiterals": "ignore"
         },
         "singleline": "never"
@@ -64,5 +66,6 @@
     ],
     "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true
-  }
+  },
+  "rulesDirectory": ["codelyzer"]
 }

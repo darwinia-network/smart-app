@@ -1,0 +1,19 @@
+{
+  "Amount": "数量",
+  "Assets": "资产",
+  "Connect Wallet": "连接钱包",
+  "Please input amount": "请输入数量",
+  "Please input receiving address!": "请输入收款地址",
+  "Receiving Address": "收款地址",
+  "account_detail": "账户详情",
+  "change_wallet": "更换钱包",
+  "disconnect": "断开连接",
+  "link_wallet": "连接钱包",
+  "smart_addr_linked": "已连接到达尔文智能地址：",
+  "switch_to_another_main_address": "更改为其它的达尔文主网地址",
+  "switch_to_smart_address": "更改为达尔文智能地址",
+  "From": "从",
+  "Darwinia main account": "达尔文主网账户",
+  "To": "到",
+  "Darwinia smart account": "达尔文智能账户"
+}

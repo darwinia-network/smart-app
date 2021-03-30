@@ -1,13 +1,21 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
+import './config/i18n';
+import './index.less';
 import './index.scss';
+import { AccountProvider } from './providers/account';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Suspense fallback='loading'>
+    <Router>
+      <AccountProvider>
+        <App />
+      </AccountProvider>
+    </Router>
+  </Suspense>,
   document.getElementById('root')
 );
 

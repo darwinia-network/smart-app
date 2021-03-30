@@ -1,13 +1,14 @@
 {
-  "name": "interchange",
+  "name": "dvm",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "craco start",
+    "start": "PORT=3009 craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "stylelint": "stylelint \"src/**/*.scss\" --config stylelint.config.js",
+    "i18next:scanner": "i18next-scanner --config i18next-scanner.config.js",
     "format": "prettier ./src/**/*.tsx  --write"
   },
   "eslintConfig": {
@@ -35,7 +36,9 @@
     ]
   },
   "dependencies": {
+    "@ant-design/icons": "^4.6.2",
     "@craco/craco": "^6.1.1",
+    "@fontsource/ibm-plex-sans": "^4.2.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -43,9 +46,14 @@
     "@types/node": "^12.0.0",
     "@types/react-dom": "^17.0.0",
     "antd": "^4.14.1",
+    "i18next": "^20.1.0",
+    "i18next-browser-languagedetector": "^6.1.0",
+    "i18next-http-backend": "^1.2.1",
     "node-sass": "^5.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-i18next": "^11.8.11",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.3.0",
@@ -58,9 +66,13 @@
     "@commitlint/config-conventional": "^12.0.1",
     "@tailwindcss/postcss7-compat": "^2.0.4",
     "@types/react": "^17.0.3",
+    "@types/react-router-dom": "^5.1.7",
     "autoprefixer": "^9.8.6",
     "codelyzer": "^6.0.1",
+    "craco-less": "^1.17.1",
     "husky": "^4.2.3",
+    "i18next-scanner": "^3.0.0",
+    "i18next-scanner-typescript": "^1.0.6",
     "postcss": "^7.0.35",
     "prettier": "^2.2.1",
     "prettier-quick": "0.0.5",
@@ -70,6 +82,7 @@
     "stylelint-config-recommended": "^4.0.0",
     "stylelint-config-standard": "^21.0.0",
     "stylelint-prettier": "^1.2.0",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.4"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.4",
+    "tailwindcss-aspect-ratio": "^3.0.0"
   }
 }
