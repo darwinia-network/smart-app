@@ -1,26 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { createContext, Dispatch, useCallback, useContext, useReducer } from 'react';
-
-export type FromType = 'main' | 'smart';
-
-export interface StoreState {
-  account: string | null;
-  from: FromType;
+import { AccountType, NetworkType } from '../model';
+interface StoreState {
+  account: string;
+  from: AccountType;
+  network: NetworkType;
 }
 
-export type ActionType = 'setAccount' | 'switchFrom';
+type ActionType = 'setAccount' | 'switchFrom' | 'switchNetwork';
 
-export interface Action<T = string> {
+interface Action<T = string> {
   type: ActionType;
   payload: T;
 }
 
 const store: StoreState = {
-  account: null,
+  account: '',
   from: 'main',
+  network: 'pangolin',
 };
 
-export function accountReducer(state: StoreState, action: Action<string | null>): StoreState {
+export function accountReducer(state: StoreState, action: Action<string>): StoreState {
   switch (action.type) {
     case 'setAccount': {
       return {
@@ -31,21 +31,26 @@ export function accountReducer(state: StoreState, action: Action<string | null>)
     }
 
     case 'switchFrom': {
-      return { ...state, account: null, from: action.payload as FromType };
+      return { ...state, account: '', from: action.payload as AccountType };
+    }
+
+    case 'switchNetwork': {
+      return { ...state, network: action.payload as NetworkType };
     }
 
     default:
       return state;
   }
 }
-type ActionHelper<T = string> = (type: ActionType) => (payload: T) => void;
+type ActionHelper = <T = string>(type: ActionType) => (payload: T) => void;
 
 export type AccountCtx =
   | (StoreState & {
       dispatch: Dispatch<Action>;
       createAction: ActionHelper;
-      setAccount: (account: string | null) => void;
-      switchFrom: (from: FromType) => void;
+      setAccount: (account: string) => void;
+      switchFrom: (from: AccountType) => void;
+      switchNetwork: (type: NetworkType) => void;
     })
   | null;
 
@@ -53,13 +58,16 @@ export const AccountContext = createContext<AccountCtx>(null);
 
 export const AccountProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const [state, dispatch] = useReducer(accountReducer, store);
-  const createAction: ActionHelper<string | FromType | null> = (type) => (payload) =>
-    dispatch({ type, payload });
+  const createAction: ActionHelper = (type) => (payload) =>
+    dispatch({ type, payload: payload as never });
   const setAccount = useCallback(createAction('setAccount'), []);
-  const switchFrom = useCallback(createAction('switchFrom'), []);
+  const switchFrom = useCallback(createAction<AccountType>('switchFrom'), []);
+  const switchNetwork = useCallback(createAction<NetworkType>('switchNetwork'), []);
 
   return (
-    <AccountContext.Provider value={{ ...state, dispatch, createAction, setAccount, switchFrom }}>
+    <AccountContext.Provider
+      value={{ ...state, dispatch, createAction, setAccount, switchFrom, switchNetwork }}
+    >
       {children}
     </AccountContext.Provider>
   );
