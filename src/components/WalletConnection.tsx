@@ -1,10 +1,9 @@
-import { Button, Modal } from 'antd';
-import React, { useState } from 'react';
+import { message, Modal } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useConnect } from '../hooks/connect';
+import { connectEth, connectNodeProvider, connectSubstrate } from '../hooks/connect';
 import { AccountType } from '../model';
 import { useAccount } from '../providers/account';
-import { AccountSelect } from './AccountSelect';
 
 const CONFIG: {
   [key in AccountType]: { type: string; logo: string; wallet: string; doc: string };
@@ -26,29 +25,39 @@ const CONFIG: {
 export function WalletConnection() {
   const { t } = useTranslation();
   const [isHelperModalVisible, setIsHelpModalVisible] = useState(false);
-  const [isAccountSwitcherVisible, setIsAccountSwitcherVisible] = useState(false);
-  const { setAccount, from, network, account } = useAccount();
-  const { api, accounts, status, setNetwork } = useConnect();
+  const { setAccounts, setNetworkStatus, from, network, accounts, account } = useAccount();
+  const connect = from === 'main' ? connectSubstrate : connectEth;
 
   return (
     <>
       <button
         className='dream-btn'
         onClick={() => {
-          setIsHelpModalVisible(!account && status !== 'success');
-          setIsAccountSwitcherVisible(!account && !!accounts);
-          setNetwork(network);
+          if (!accounts && !account) {
+            setIsHelpModalVisible(true);
+          }
+
+          setNetworkStatus('connecting');
+
+          connect()
+            .then(({ accounts }) => {
+              setAccounts(accounts);
+              setNetworkStatus('success');
+            })
+            .catch((error) => {
+              console.log(
+                '%c [ error ]-50',
+                'font-size:13px; background:pink; color:#bf2c9f;',
+                error
+              );
+              message.error(
+                t('Error occurs during connect to {{type}} network.', { type: network })
+              );
+            });
         }}
       >
         {t('link_wallet')}
       </button>
-
-      <AccountSelect
-        account={account}
-        isVisible={isAccountSwitcherVisible}
-        cancel={() => setIsAccountSwitcherVisible(false)}
-        confirm={setAccount}
-      />
 
       <Modal
         title={t('Connect to Darwinia {{type}} account', {

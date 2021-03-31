@@ -2,7 +2,6 @@ import { DownOutlined, SwapOutlined } from '@ant-design/icons';
 import { Dropdown, Menu } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useConnect } from '../hooks/connect';
 import { NetworkType } from '../model';
 import { useAccount } from '../providers/account';
 
@@ -24,7 +23,7 @@ interface AccountProps {
 function AccountGrid({ text, direction }: AccountProps) {
   const [account, setAccount] = useState('');
   const panelRef = useRef<HTMLDivElement>(null);
-  const { setNetwork } = useConnect();
+  const { switchNetwork } = useAccount();
   const { t } = useTranslation();
   const whirl = 'animate-whirl';
   const whirlReverse = 'animate-whirl-reverse';
@@ -58,7 +57,7 @@ function AccountGrid({ text, direction }: AccountProps) {
         overlay={
           <Menu
             onClick={({ key }) => {
-              setNetwork(key as NetworkType);
+              switchNetwork(key as NetworkType);
             }}
           >
             <Menu.Item key='darwinia'>{t('Darwinia')}</Menu.Item>

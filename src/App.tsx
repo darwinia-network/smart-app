@@ -1,10 +1,11 @@
-import { Button, Layout } from 'antd';
+import { Button, Layout, Spin } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Route, Switch } from 'react-router-dom';
 import { Connection } from './components/Connection';
 import { Language } from './components/Language';
 import { Path, routes } from './config/routes';
+import { useAccount } from './providers/account';
 
 const { Header, Content } = Layout;
 
@@ -18,6 +19,7 @@ const links: { name: string; href?: string; path?: string }[] = [
 
 function App() {
   const { t } = useTranslation();
+  const { networkStatus } = useAccount();
 
   return (
     <Layout style={{ height: '100vh' }}>
@@ -44,13 +46,14 @@ function App() {
         </div>
       </Header>
       <Content className='px-16 py-8'>
-        <Switch>
-          {routes.map((item, index) => (
-            <Route key={index} {...item}></Route>
-          ))}
-        </Switch>
-
-        <Language className='text-2xl cursor-pointer ml-16 fixed bottom-8 right-8 text-purple-700' />
+        <Spin spinning={networkStatus === 'connecting'}>
+          <Switch>
+            {routes.map((item, index) => (
+              <Route key={index} {...item}></Route>
+            ))}
+          </Switch>
+          <Language className='text-2xl cursor-pointer ml-16 fixed bottom-8 right-8 text-purple-700' />
+        </Spin>
       </Content>
     </Layout>
   );

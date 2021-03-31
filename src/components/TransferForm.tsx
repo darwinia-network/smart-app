@@ -1,13 +1,49 @@
-import { Button, Form, Input } from 'antd';
-import React from 'react';
+import { Button, Form, Input, Select } from 'antd';
+import { useForm } from 'antd/lib/form/Form';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import web3 from 'web3';
+import { getTokenBalanceDarwinia } from '../hooks/connect';
+import { useAccount } from '../providers/account';
 import { TransferSelect } from './TransferControl';
 
+type Assets = 'ring' | 'kton';
+
+interface TransferFormValues {
+  receiveAddress: string;
+  assets: Assets;
+  amount: string;
+}
+
 export function TransferForm() {
+  const [form] = useForm<TransferFormValues>();
   const { t } = useTranslation();
+  const { account, network } = useAccount();
+  const [balance, setBalance] = useState({ ring: null, kton: null });
+
+  useEffect(() => {
+    if (account) {
+      getTokenBalanceDarwinia(account).then(([ringBalance, ktonBalance]) => {
+        const ring = web3.utils.toBN(ringBalance);
+        const kton = web3.utils.toBN(ktonBalance);
+
+        console.log('%c [ ring ]-30', 'font-size:13px; background:pink; color:#bf2c9f;', ring);
+        setBalance({ ring, kton });
+      });
+    }
+  }, [account, network]);
 
   return (
-    <Form name='transfer' layout='vertical'>
+    <Form
+      name='transfer'
+      layout='vertical'
+      form={form}
+      initialValues={{
+        receiveAddress: '',
+        assets: 'ring',
+        amount: '',
+      }}
+    >
       <Form.Item>
         <TransferSelect />
       </Form.Item>
@@ -21,7 +57,14 @@ export function TransferForm() {
       </Form.Item>
 
       <Form.Item label={t('Assets')} name='assets' rules={[{ required: true }]}>
-        <Input />
+        <Select
+          onChange={() => {
+            form.setFieldsValue({ amount: '' });
+          }}
+        >
+          <Select.Option value='ring'>ring</Select.Option>
+          <Select.Option value='kton'>kton</Select.Option>
+        </Select>
       </Form.Item>
 
       <Form.Item
@@ -29,7 +72,11 @@ export function TransferForm() {
         name='amount'
         rules={[{ required: true, message: t('Please input amount') }]}
       >
-        <Input />
+        <Input
+          placeholder={t('Available balance {{balance}}', {
+            balance: balance[form.getFieldValue('assets') as Assets],
+          })}
+        />
       </Form.Item>
 
       <Form.Item>
