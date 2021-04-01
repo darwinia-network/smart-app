@@ -1,11 +1,11 @@
 // tslint:disable:no-magic-numbers
 import BN from 'bn.js';
-import { chunk, isNumber, isString } from 'lodash';
+import { chunk, isNull, isNumber, isString, isUndefined } from 'lodash';
 
 const DEFAULT_DECIMALS = 9;
 const PRECISION = Math.pow(10, 9);
-const MAX = Math.pow(2, 53) - 1;
 
+// tslint:disable-next-line: cyclomatic-complexity
 const toString = (value: string | BN | number): string => {
   if (BN.isBN(value)) {
     return value.toString();
@@ -13,6 +13,8 @@ const toString = (value: string | BN | number): string => {
     return value;
   } else if (isNumber(value)) {
     return String(value);
+  } else if (isUndefined(value) || isNaN(value) || isNull(value)) {
+    return '';
   } else {
     throw new TypeError(
       `Can not convert the value ${value} to String type. Value type if ${typeof value}`

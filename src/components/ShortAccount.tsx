@@ -1,6 +1,5 @@
 import { CopyOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
-import React from 'react';
 
 export interface ShortAccountProps {
   account: string;

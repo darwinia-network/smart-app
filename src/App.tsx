@@ -1,5 +1,4 @@
 import { Button, Layout, Spin } from 'antd';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Route, Switch } from 'react-router-dom';
 import { Connection } from './components/Connection';

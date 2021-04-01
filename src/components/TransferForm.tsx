@@ -1,7 +1,7 @@
 import { Button, Form, Input, Select } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import BN from 'bn.js';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import web3 from 'web3';
 import { useAccount } from '../hooks/account';
@@ -20,20 +20,23 @@ interface TransferFormValues {
 export function TransferForm() {
   const [form] = useForm<TransferFormValues>();
   const { t } = useTranslation();
-  const { account, network } = useAccount();
+  const { account, network, from } = useAccount();
   const [balance, setBalance] = useState<{ ring: BN; kton: BN }>({ ring: null, kton: null });
 
   useEffect(() => {
-    if (account) {
+    if (account && from === 'main') {
       getTokenBalanceDarwinia(account).then(([ringBalance, ktonBalance]) => {
         const ring = web3.utils.toBN(ringBalance);
         const kton = web3.utils.toBN(ktonBalance);
 
-        console.log('%c [ ring ]-30', 'font-size:13px; background:pink; color:#bf2c9f;', ring);
         setBalance({ ring, kton });
       });
+    } else if (account && from === 'smart') {
+      setBalance({ ring: new BN(0), kton: new BN(0) });
+    } else {
+      setBalance({ ring: new BN(0), kton: new BN(0) });
     }
-  }, [account, network]);
+  }, [account, network, from]);
 
   return (
     <Form

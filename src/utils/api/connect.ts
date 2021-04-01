@@ -35,9 +35,11 @@ export async function connectNodeProvider(type: NetworkType = 'darwinia'): Promi
         provider,
         typesBundle: {
           spec: {
+            /* tslint:disable */
             Crab: typesBundleForPolkadot.spec.crab as any,
             Pangolin: typesBundleForPolkadot.spec.pangolin as any,
             Darwinia: typesBundleForPolkadot.spec.darwinia as any,
+            /* tslint:enable */
           },
         },
       });
@@ -74,6 +76,7 @@ export async function getTokenBalanceDarwinia(account = ''): Promise<[string, st
   try {
     // await window.darwiniaApi?.isReady;
     // type = 0 query ring balance.  type = 1 query kton balance.
+    /* tslint:disable */
     const ringUsableBalance = await (window.darwiniaApi?.rpc as any).balances.usableBalance(
       0,
       account
@@ -82,6 +85,7 @@ export async function getTokenBalanceDarwinia(account = ''): Promise<[string, st
       1,
       account
     );
+    /* tslint:enable */
 
     return [ringUsableBalance.usableBalance.toString(), ktonUsableBalance.usableBalance.toString()];
   } catch (error) {

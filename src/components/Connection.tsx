@@ -1,16 +1,17 @@
-import { Button, Dropdown, Menu, Modal } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Dropdown, Menu } from 'antd';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from '../hooks';
-import { AccountSelect } from './AccountSelect';
+import { AccountSelectModal } from './modal/AccountSelect';
+import { SwitchWalletModal } from './modal/SwitchWallet';
 import { ShortAccount } from './ShortAccount';
 import { WalletConnection } from './WalletConnection';
 
 export function Connection() {
   const { t } = useTranslation();
-  const [isSmartSwitcherVisible, setIsSmartSwitcherVisible] = useState(false);
+  const [isWalletSwitcherVisible, setIsWalletSwitcherVisible] = useState(false);
   const [isAccountSwitcherVisible, setIsAccountSwitcherVisible] = useState(false);
-  const { from, account, accounts, setAccount, switchFrom, setAccounts } = useAccount();
+  const { account, accounts, setAccount, setAccounts } = useAccount();
 
   useEffect(() => {
     if (!!accounts && !account) {
@@ -44,7 +45,7 @@ export function Connection() {
                 <Menu.Item onClick={() => setIsAccountSwitcherVisible(true)}>
                   {t('Use another mainnet address')}
                 </Menu.Item>
-                <Menu.Item onClick={() => setIsSmartSwitcherVisible(true)}>
+                <Menu.Item onClick={() => setIsWalletSwitcherVisible(true)}>
                   {t('Switch to smart address')}
                 </Menu.Item>
                 <Menu.Item
@@ -65,51 +66,17 @@ export function Connection() {
         <WalletConnection />
       )}
 
-      <AccountSelect
+      <AccountSelectModal
         account={account}
         isVisible={isAccountSwitcherVisible}
         confirm={setAccount}
         cancel={() => setIsAccountSwitcherVisible(false)}
       />
 
-      <Modal
-        title={t('Switch Wallet')}
-        visible={isSmartSwitcherVisible}
-        onOk={() => {
-          setIsSmartSwitcherVisible(false);
-          switchFrom(from === 'main' ? 'smart' : 'main');
-        }}
-        onCancel={() => {
-          setIsSmartSwitcherVisible(false);
-        }}
-        footer={[
-          <button
-            className='dream-btn w-1/2'
-            onClick={() => {
-              setIsSmartSwitcherVisible(false);
-            }}
-          >
-            {t('Cancel')}
-          </button>,
-          <Button
-            type='primary'
-            onClick={() => {
-              setIsSmartSwitcherVisible(false);
-              switchFrom(from === 'main' ? 'smart' : 'main');
-            }}
-            className='w-1/2 bg-main border-none rounded-xl'
-          >
-            {t('Confirm')}
-          </Button>,
-        ]}
-        wrapClassName='large-footer-btn'
-      >
-        <p>
-          {t(
-            'Do you want to login with darwinia smart account? Current account will be disconnect after switch to darwinia smart account.'
-          )}
-        </p>
-      </Modal>
+      <SwitchWalletModal
+        cancel={() => setIsWalletSwitcherVisible(false)}
+        isVisible={isWalletSwitcherVisible}
+      />
     </>
   );
 }

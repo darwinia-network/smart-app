@@ -1,5 +1,5 @@
 import { message, Modal } from 'antd';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from '../hooks';
 import { AccountType } from '../model';
@@ -40,8 +40,8 @@ export function WalletConnection() {
           setNetworkStatus('connecting');
 
           connect()
-            .then(({ accounts }) => {
-              setAccounts(accounts);
+            .then(({ accounts: newAccounts }) => {
+              setAccounts(newAccounts);
               setNetworkStatus('success');
             })
             .catch((error) => {

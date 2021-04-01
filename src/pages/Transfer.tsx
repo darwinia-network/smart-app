@@ -1,5 +1,4 @@
 import { Card } from 'antd';
-import React from 'react';
 import { Trans } from 'react-i18next';
 import { TransferForm } from '../components/TransferForm';
 

@@ -1,9 +1,13 @@
-import { DownOutlined, SwapOutlined } from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Menu } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Network } from '../config/config';
 import { useAccount } from '../hooks';
-import { NetworkType } from '../model';
+import { AccountType, NetworkType } from '../model';
+import { toOppositeAccountType } from '../utils';
+import { SwapCrabIcon, SwapMainIcon, SwapPangolinIcon } from './icons';
+import { SwitchWalletModal } from './modal/SwitchWallet';
 
 export interface TransferValue {
   from?: string;
@@ -11,19 +15,22 @@ export interface TransferValue {
 }
 
 export interface TransferSelectProps {
+  // tslint:disable-next-line: no-any
   value?: any;
   onChange?: () => void;
 }
 
 interface AccountProps {
-  text: string;
-  direction: string;
+  accountType: AccountType;
+  title: string;
 }
 
-function AccountGrid({ text, direction }: AccountProps) {
+const networks: NetworkType[] = [Network.main, Network.crab, Network.pangolin];
+
+function AccountGrid({ accountType, title }: AccountProps) {
   const [account, setAccount] = useState('');
   const panelRef = useRef<HTMLDivElement>(null);
-  const { switchNetwork } = useAccount();
+  const { switchNetwork, network } = useAccount();
   const { t } = useTranslation();
   const whirl = 'animate-whirl';
   const whirlReverse = 'animate-whirl-reverse';
@@ -41,17 +48,17 @@ function AccountGrid({ text, direction }: AccountProps) {
       });
     });
 
-    const listener = () => setAccount(text);
+    const listener = () => setAccount(accountType);
 
     panelRef.current?.addEventListener('animationend', listener);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => panelRef.current?.removeEventListener('animationend', listener);
-  }, [text]);
+  }, [accountType]);
 
   return (
     <div>
-      <p className='mb-2'>{direction}</p>
+      <p className='mb-2'>{title}</p>
       <Dropdown
         trigger={['click']}
         overlay={
@@ -60,9 +67,19 @@ function AccountGrid({ text, direction }: AccountProps) {
               switchNetwork(key as NetworkType);
             }}
           >
-            <Menu.Item key='darwinia'>{t('Darwinia')}</Menu.Item>
-            <Menu.Item key='crab'>{t('Crab')}</Menu.Item>
-            <Menu.Item key='pangolin'>{t('Pangolin')}</Menu.Item>
+            {networks.map((item) => (
+              <Menu.Item
+                key={item}
+                className={(item === network ? 'bg-gray-100' : '') + ' flex justify-between'}
+              >
+                <span className='capitalize'>{t(item)}</span>
+                {accountType === 'smart' && (
+                  <span className='bg-main rounded-xl text-xs text-white px-2 py-0.5'>
+                    {t('smart')}
+                  </span>
+                )}
+              </Menu.Item>
+            ))}
           </Menu>
         }
       >
@@ -77,7 +94,7 @@ function AccountGrid({ text, direction }: AccountProps) {
             style={{ width: 120, height: 100 }}
           >
             <img src='/image/darwinia.7ff17f8e.svg' style={{ height: 60 }} alt='' />
-            <span className='dream-btn'>{account}</span>
+            <span className='dream-btn capitalize'>{account}</span>
           </div>
 
           <DownOutlined className='mx-2' />
@@ -87,24 +104,44 @@ function AccountGrid({ text, direction }: AccountProps) {
   );
 }
 
+const ICON_CONFIG = {
+  main: { icon: SwapMainIcon },
+  crab: { icon: SwapCrabIcon },
+  pangolin: { icon: SwapPangolinIcon },
+  darwinia: { icon: SwapMainIcon },
+};
+
 export function TransferSelect({ value, onChange }: TransferSelectProps) {
   const { t } = useTranslation();
-  const { from, switchFrom } = useAccount();
+  const { from, switchFrom, network } = useAccount();
+  const [isWalletSwitcherVisible, setIsWalletSwitcherVisible] = useState(false);
 
   return (
-    <div className='grid grid-cols-3 items-stretch'>
-      <AccountGrid text={t(from)} direction={t('From')} />
+    <>
+      <div className='grid grid-cols-3 items-stretch'>
+        <AccountGrid accountType={from} title={t('From')} />
 
-      <div className='flex items-center justify-center self-stretch'>
-        <SwapOutlined
-          onClick={() => {
-            switchFrom(from === 'main' ? 'smart' : 'main');
-          }}
-          className='cursor-pointer text-4xl mt-6 text-gray-400 hover:text-gray-800 transition-all duration-300'
-        />
+        <div className='flex items-center justify-center self-stretch'>
+          {React.createElement(ICON_CONFIG[network].icon, {
+            onClick: () => {
+              setIsWalletSwitcherVisible(true);
+            },
+            className:
+              'cursor-pointer text-4xl mt-6 transform origin-center transition-all duration-300',
+            style: { transform: `rotateY(${from === 'main' ? '0' : '180deg'})` },
+          })}
+        </div>
+
+        <AccountGrid accountType={toOppositeAccountType(from)} title={t('To')} />
       </div>
 
-      <AccountGrid text={t(from === 'main' ? 'smart' : 'main')} direction={t('To')} />
-    </div>
+      <SwitchWalletModal
+        cancel={() => setIsWalletSwitcherVisible(false)}
+        confirm={() => {
+          switchFrom(toOppositeAccountType(from));
+        }}
+        isVisible={isWalletSwitcherVisible}
+      />
+    </>
   );
 }

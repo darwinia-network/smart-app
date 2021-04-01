@@ -1,6 +1,6 @@
 import { TranslationOutlined } from '@ant-design/icons';
 import { Dropdown, Menu } from 'antd';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export interface LanguageProps {

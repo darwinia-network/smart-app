@@ -1,20 +1,13 @@
 import BaseIdentityIcon from '@polkadot/react-identicon';
 import { Button, Empty, Form, Modal, Radio } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAccount } from '../hooks/account';
-
-interface AccountSelectProps {
-  account?: string;
-  isVisible: boolean;
-  confirm: (account: string) => void;
-  cancel: () => void;
-}
+import { useAccount } from '../../hooks/account';
+import { IModalProps } from './interface';
 
 const iconSize = 36;
 
-export function AccountSelect({ account, isVisible, confirm, cancel }: AccountSelectProps) {
+export function AccountSelectModal({ account, isVisible, confirm, cancel }: IModalProps<string>) {
   const { from, accounts } = useAccount();
   const { t } = useTranslation();
   const [form] = useForm();

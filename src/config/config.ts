@@ -3,7 +3,7 @@ export enum AccountTypeEnum {
   smart = 'smart',
 }
 
-export enum NetWork {
+export enum Network {
   pangolin = 'pangolin',
   crab = 'crab',
   darwinia = 'darwinia',
