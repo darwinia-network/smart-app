@@ -2,7 +2,7 @@ import { typesBundleForPolkadot } from '@darwinia/types/mix';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import type ExtType from '@polkadot/extension-inject/types';
-import { NetworkConfig, NetworkType } from '../model';
+import { NetworkConfig, NetworkType } from '../../model';
 
 declare global {
   interface Window {

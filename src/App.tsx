@@ -5,7 +5,7 @@ import { Link, Route, Switch } from 'react-router-dom';
 import { Connection } from './components/Connection';
 import { Language } from './components/Language';
 import { Path, routes } from './config/routes';
-import { useAccount } from './providers/account';
+import { useAccount } from './hooks';
 
 const { Header, Content } = Layout;
 

@@ -1,10 +1,12 @@
 import { Button, Form, Input, Select } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
+import BN from 'bn.js';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import web3 from 'web3';
-import { getTokenBalanceDarwinia } from '../hooks/connect';
-import { useAccount } from '../providers/account';
+import { useAccount } from '../hooks/account';
+import { getTokenBalanceDarwinia } from '../utils/api/connect';
+import { formatBalance } from '../utils/format/formatBalance';
 import { TransferSelect } from './TransferControl';
 
 type Assets = 'ring' | 'kton';
@@ -19,7 +21,7 @@ export function TransferForm() {
   const [form] = useForm<TransferFormValues>();
   const { t } = useTranslation();
   const { account, network } = useAccount();
-  const [balance, setBalance] = useState({ ring: null, kton: null });
+  const [balance, setBalance] = useState<{ ring: BN; kton: BN }>({ ring: null, kton: null });
 
   useEffect(() => {
     if (account) {
@@ -74,7 +76,7 @@ export function TransferForm() {
       >
         <Input
           placeholder={t('Available balance {{balance}}', {
-            balance: balance[form.getFieldValue('assets') as Assets],
+            balance: formatBalance(balance[form.getFieldValue('assets') as Assets]),
           })}
         />
       </Form.Item>

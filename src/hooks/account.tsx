@@ -8,8 +8,8 @@ import React, {
   useEffect,
   useReducer,
 } from 'react';
-import { connectNodeProvider, ConnectStatus } from '../hooks/connect';
 import { AccountType, NetworkType } from '../model';
+import { connectNodeProvider, ConnectStatus } from '../utils/api/connect';
 
 interface StoreState {
   account: string;
@@ -39,7 +39,7 @@ const store: StoreState = {
   networkStatus: 'pending',
 };
 
-// tslint:disable-next-line: cyclomatic-complexity
+// tslint:disable-next-line: cyclomatic-complexity no-any
 export function accountReducer(state: StoreState, action: Action<any>): StoreState {
   switch (action.type) {
     case 'setAccount': {

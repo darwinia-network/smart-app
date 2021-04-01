@@ -1,9 +1,9 @@
 import { message, Modal } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { connectEth, connectNodeProvider, connectSubstrate } from '../hooks/connect';
+import { useAccount } from '../hooks';
 import { AccountType } from '../model';
-import { useAccount } from '../providers/account';
+import { connectEth, connectSubstrate } from '../utils';
 
 const CONFIG: {
   [key in AccountType]: { type: string; logo: string; wallet: string; doc: string };

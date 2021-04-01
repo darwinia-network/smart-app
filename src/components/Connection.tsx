@@ -1,7 +1,7 @@
 import { Button, Dropdown, Menu, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAccount } from '../providers/account';
+import { useAccount } from '../hooks';
 import { AccountSelect } from './AccountSelect';
 import { ShortAccount } from './ShortAccount';
 import { WalletConnection } from './WalletConnection';

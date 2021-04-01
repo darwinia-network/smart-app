@@ -2,8 +2,8 @@ import { DownOutlined, SwapOutlined } from '@ant-design/icons';
 import { Dropdown, Menu } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAccount } from '../hooks';
 import { NetworkType } from '../model';
-import { useAccount } from '../providers/account';
 
 export interface TransferValue {
   from?: string;

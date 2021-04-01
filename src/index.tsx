@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
 import './config/i18n';
+import { AccountProvider } from './hooks';
 import './index.less';
 import './index.scss';
-import { AccountProvider } from './providers/account';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
