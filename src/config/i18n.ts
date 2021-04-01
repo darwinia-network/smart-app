@@ -14,6 +14,9 @@ i18n
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
+    backend: {
+      addPath: '/locales/commit/{{lng}}', // TODO: update path;
+    },
   });
 
 export default i18n;

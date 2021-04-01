@@ -56,7 +56,7 @@ export function WalletConnection() {
             });
         }}
       >
-        {t('link_wallet')}
+        {t('Link Wallet')}
       </button>
 
       <Modal

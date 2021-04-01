@@ -10,11 +10,10 @@ import { useAccount } from './providers/account';
 const { Header, Content } = Layout;
 
 const links: { name: string; href?: string; path?: string }[] = [
-  { name: 'dvm_transfer', path: Path.root },
-  { name: 'understanding_darwinia', path: Path.intro },
-  { name: 'wallet', href: '' },
-  { name: 'wormhole', href: '' },
-  { name: 'browser', href: '' },
+  { name: 'DVM Guard', path: Path.intro },
+  { name: 'Wallet', href: '' },
+  { name: 'Wormhole', href: '' },
+  { name: 'Browser', href: '' },
 ];
 
 function App() {
@@ -32,7 +31,7 @@ function App() {
         <div className='flex justify-between items-center flex-1 px-8'>
           <div className='flex-1'>
             {links.map((item, index) => (
-              <Button type='link' className={index === 0 ? 'mr-16' : ''} key={index}>
+              <Button type='link' key={index}>
                 {item.path ? (
                   <Link to={item.path}>{t(item.name)}</Link>
                 ) : (

@@ -42,10 +42,10 @@ export function Connection() {
             overlay={
               <Menu>
                 <Menu.Item onClick={() => setIsAccountSwitcherVisible(true)}>
-                  {t('switch_to_another_main_address')}
+                  {t('Use another mainnet address')}
                 </Menu.Item>
                 <Menu.Item onClick={() => setIsSmartSwitcherVisible(true)}>
-                  {t('switch_to_smart_address')}
+                  {t('Switch to smart address')}
                 </Menu.Item>
                 <Menu.Item
                   onClick={() => {
@@ -58,7 +58,7 @@ export function Connection() {
               </Menu>
             }
           >
-            <button className='dream-btn'>{t('change_wallet')}</button>
+            <button className='dream-btn'>{t('Switch Wallet')}</button>
           </Dropdown>
         </section>
       ) : (
