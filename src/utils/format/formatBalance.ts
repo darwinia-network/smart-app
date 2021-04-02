@@ -1,6 +1,6 @@
 // tslint:disable:no-magic-numbers
 import BN from 'bn.js';
-import { chunk, isNull, isNumber, isString, isUndefined } from 'lodash';
+import { isNull, isNumber, isString, isUndefined } from 'lodash';
 
 const DEFAULT_DECIMALS = 9;
 const PRECISION = Math.pow(10, 9);
@@ -46,15 +46,34 @@ export function formatBalance(balance: string | BN | number): string {
   }
 }
 
-export function prettyNumber(value: string): string {
+export interface PrettyNumberOptions {
+  noDecimal?: boolean;
+  decimal?: number;
+}
+
+export function prettyNumber(
+  value: string,
+  { decimal, noDecimal }: PrettyNumberOptions = { decimal: 3, noDecimal: false }
+): string {
   const isDecimalNumber = isDecimal(value);
   let prefix = isDecimalNumber ? value.split('.')[0] : value;
-  const suffix = isDecimalNumber ? value.split('.')[1] : '000';
+  const suffix = isDecimalNumber
+    ? completeDecimal(value.split('.')[1], decimal)
+    : new Array(decimal).fill(0).join('');
 
-  prefix = chunk(prefix.split('').reverse(), 3)
-    .reduce((acc: string[], cur: string[]) => [...acc, cur.reverse().join('')], [])
-    .reverse()
-    .join(',');
+  prefix = prefix.replace(/\d{1,3}(?=(\d{3})+(\.\d*)?$)/g, '$&,');
 
-  return `${prefix}.${suffix}`;
+  return !noDecimal ? `${prefix}.${suffix}` : prefix;
 }
+
+const completeDecimal = (value: string, bits: number): string => {
+  const length = value.length;
+
+  if (length > bits) {
+    return value.substr(0, bits);
+  } else if (length < bits) {
+    return value + new Array(bits - length).fill('0').join('');
+  } else {
+    return value;
+  }
+};

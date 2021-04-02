@@ -9,7 +9,7 @@ import { useAccount } from './hooks';
 const { Header, Content } = Layout;
 
 const links: { name: string; href?: string; path?: string }[] = [
-  { name: 'DVM Guard', path: Path.intro },
+  { name: 'DVM Guide', path: Path.intro },
   { name: 'Wallet', href: '' },
   { name: 'Wormhole', href: '' },
   { name: 'Browser', href: '' },

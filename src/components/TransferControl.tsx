@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Network } from '../config/config';
 import { useAccount } from '../hooks';
-import { AccountType, NetworkType } from '../model';
+import { AccountType, CustomFormControlProps, NetworkType } from '../model';
 import { toOppositeAccountType } from '../utils';
 import { SwapCrabIcon, SwapMainIcon, SwapPangolinIcon } from './icons';
 import { SwitchWalletModal } from './modal/SwitchWallet';
@@ -14,20 +14,15 @@ export interface TransferValue {
   to?: string;
 }
 
-export interface TransferSelectProps {
-  // tslint:disable-next-line: no-any
-  value?: any;
-  onChange?: () => void;
-}
-
 interface AccountProps {
   accountType: AccountType;
   title: string;
+  isFrom?: boolean;
 }
 
 const networks: NetworkType[] = [Network.main, Network.crab, Network.pangolin];
 
-function AccountGrid({ accountType, title }: AccountProps) {
+function AccountGrid({ accountType, title, isFrom = false }: AccountProps) {
   const [account, setAccount] = useState('');
   const panelRef = useRef<HTMLDivElement>(null);
   const { switchNetwork, network } = useAccount();
@@ -61,32 +56,37 @@ function AccountGrid({ accountType, title }: AccountProps) {
       <p className='mb-2'>{title}</p>
       <Dropdown
         trigger={['click']}
+        className={isFrom ? 'cursor-pointer' : 'cursor-default'}
         overlay={
-          <Menu
-            onClick={({ key }) => {
-              switchNetwork(key as NetworkType);
-            }}
-          >
-            {networks.map((item) => (
-              <Menu.Item
-                key={item}
-                className={(item === network ? 'bg-gray-100' : '') + ' flex justify-between'}
-              >
-                <span className='capitalize'>{t(item)}</span>
-                {accountType === 'smart' && (
-                  <span className='bg-main rounded-xl text-xs text-white px-2 py-0.5'>
-                    {t('smart')}
-                  </span>
-                )}
-              </Menu.Item>
-            ))}
-          </Menu>
+          isFrom ? (
+            <Menu
+              onClick={({ key }) => {
+                switchNetwork(key as NetworkType);
+              }}
+            >
+              {networks.map((item) => (
+                <Menu.Item
+                  key={item}
+                  className={(item === network ? 'bg-gray-100' : '') + ' flex justify-between'}
+                >
+                  <span className='capitalize'>{t(item)}</span>
+                  {accountType === 'smart' && (
+                    <span className='bg-main rounded-xl text-xs text-white px-2 py-0.5'>
+                      {t('smart')}
+                    </span>
+                  )}
+                </Menu.Item>
+              ))}
+            </Menu>
+          ) : (
+            <span></span>
+          )
         }
       >
         <div
           ref={panelRef}
           className={
-            'border border-gray-200 border-solid flex items-center justify-between text-lg p-1 rounded-xl bg-gray-100 cursor-pointer'
+            'border border-gray-200 border-solid flex items-center justify-between text-lg p-1 rounded-xl bg-gray-100'
           }
         >
           <div
@@ -97,7 +97,7 @@ function AccountGrid({ accountType, title }: AccountProps) {
             <span className='dream-btn capitalize'>{account}</span>
           </div>
 
-          <DownOutlined className='mx-2' />
+          {isFrom && <DownOutlined className='mx-2' />}
         </div>
       </Dropdown>
     </div>
@@ -111,7 +111,7 @@ const ICON_CONFIG = {
   darwinia: { icon: SwapMainIcon },
 };
 
-export function TransferSelect({ value, onChange }: TransferSelectProps) {
+export function TransferSelect({ value, onChange }: CustomFormControlProps) {
   const { t } = useTranslation();
   const { from, switchFrom, network } = useAccount();
   const [isWalletSwitcherVisible, setIsWalletSwitcherVisible] = useState(false);
@@ -119,7 +119,7 @@ export function TransferSelect({ value, onChange }: TransferSelectProps) {
   return (
     <>
       <div className='grid grid-cols-3 items-stretch'>
-        <AccountGrid accountType={from} title={t('From')} />
+        <AccountGrid accountType={from} isFrom={true} title={t('From')} />
 
         <div className='flex items-center justify-center self-stretch'>
           {React.createElement(ICON_CONFIG[network].icon, {

@@ -31,7 +31,7 @@ export function Connection() {
                 style={{ height: 32 }}
                 alt=''
               />
-              <span className='text-purple-500 px-2 py-0.5 rounded-xl bg-white'>{t('Main')}</span>
+              <span className='text-purple-500 px-2 py-0.5 rounded-xl bg-white'>{t('main')}</span>
               <ShortAccount
                 account={account}
                 className='self-stretch px-4 bg-white my-px mx-px rounded-xl'

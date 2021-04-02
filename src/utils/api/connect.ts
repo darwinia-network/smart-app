@@ -2,7 +2,9 @@ import { typesBundleForPolkadot } from '@darwinia/types/mix';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import type ExtType from '@polkadot/extension-inject/types';
-import { NetworkConfig, NetworkType } from '../../model';
+import { message } from 'antd';
+import { TFunction } from 'i18next';
+import { AccountType, NetworkConfig, NetworkType } from '../../model';
 
 declare global {
   interface Window {
@@ -19,7 +21,6 @@ export type ConnectStatus = 'pending' | 'connecting' | 'success' | 'fail';
 
 const RPC_CONFIG: NetworkConfig<string> = {
   crab: 'wss://crab.darwinia.network',
-  main: 'wss://rpc.darwinia.network',
   darwinia: 'wss://rpc.darwinia.network',
   pangolin: 'wss://pangolin-rpc.darwinia.network/',
 };
@@ -54,14 +55,20 @@ export async function connectNodeProvider(type: NetworkType = 'darwinia'): Promi
   return window.darwiniaApi;
 }
 
-export async function connectSubstrate(enable = 'polkadot-js/apps') {
+export async function connectSubstrate(
+  network: NetworkType,
+  enable = 'polkadot-js/apps'
+): Promise<{
+  accounts: ExtType.InjectedAccountWithMeta[];
+  extensions: ExtType.InjectedExtension[];
+  api: ApiPromise;
+}> {
   try {
-    const allInjected = await web3Enable(enable); // TODO: ?
+    const extensions = await web3Enable(enable); // TODO: ?
     const accounts = await web3Accounts();
+    const api = await connectNodeProvider(network);
 
-    await connectNodeProvider('pangolin');
-
-    return { accounts, allInjected };
+    return { accounts, extensions, api };
   } catch (err) {
     console.log('%c [ err ]-52', 'font-size:13px; background:pink; color:#bf2c9f;', err);
   }
@@ -72,19 +79,16 @@ export async function connectEth() {
   return Promise.resolve({ accounts: [] });
 }
 
-export async function getTokenBalanceDarwinia(account = ''): Promise<[string, string]> {
+export async function getTokenBalanceDarwinia(
+  api: ApiPromise,
+  account = ''
+): Promise<[string, string]> {
   try {
-    // await window.darwiniaApi?.isReady;
+    await api.isReady;
     // type = 0 query ring balance.  type = 1 query kton balance.
     /* tslint:disable */
-    const ringUsableBalance = await (window.darwiniaApi?.rpc as any).balances.usableBalance(
-      0,
-      account
-    );
-    const ktonUsableBalance = await (window.darwiniaApi?.rpc as any).balances.usableBalance(
-      1,
-      account
-    );
+    const ringUsableBalance = await (api?.rpc as any).balances.usableBalance(0, account);
+    const ktonUsableBalance = await (api?.rpc as any).balances.usableBalance(1, account);
     /* tslint:enable */
 
     return [ringUsableBalance.usableBalance.toString(), ktonUsableBalance.usableBalance.toString()];
@@ -93,4 +97,25 @@ export async function getTokenBalanceDarwinia(account = ''): Promise<[string, st
 
     return ['0', '0'];
   }
+}
+
+export function connectFactory(
+  successFn: (accounts: ExtType.InjectedAccountWithMeta[]) => void,
+  t: TFunction,
+  indicator?: (status: ConnectStatus) => void
+): (network: NetworkType, accountType: AccountType) => Promise<void> {
+  return async (network: NetworkType, accountType: AccountType) => {
+    const connect = accountType === 'main' ? connectSubstrate : connectEth;
+    indicator('connecting');
+
+    connect(network)
+      .then(({ accounts }) => {
+        successFn(accounts);
+        indicator('success');
+      })
+      .catch((error) => {
+        console.log('%c [ error ]-50', 'font-size:13px; background:pink; color:#bf2c9f;', error);
+        message.error(t('Error occurs during connect to {{type}} network.', { type: network }));
+      });
+  };
 }

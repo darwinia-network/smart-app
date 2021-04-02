@@ -6,9 +6,10 @@
   "Cancel": "取消",
   "Confirm": "确定",
   "Connect Wallet": "连接钱包",
+  "Confirm to transfer": "确认转账",
   "Connect to Darwinia {{type}} account": "连接到达尔文{{type}}账号",
   "DVM": "DVM",
-  "DVM Guard": "了解 DVM",
+  "DVM Guide": "了解 DVM",
   "DVM smart contract": "DVM 智能合约",
   "Do you want to login with darwinia smart account? Current account will be disconnect after switch to darwinia smart account.": "确定要使用智能账号登陆吗？切换成功后当前账号将会断开连接",
   "Error occurs during connect to {{type}} network.": "连接到{{type}}网络时发生错误",
@@ -31,6 +32,9 @@
   "crab": "Crab",
   "darwinia": "Darwinia",
   "disconnect": "断开连接",
-  "main": "Main",
-  "pangolin": "Pangolin"
+  "main": "主网",
+  "pangolin": "Pangolin",
+  "smart": "智能",
+  "You may have entered a wrong account": "你可能输入了一个错误的地址",
+  "Please make sure to enter a correct darwinia {{type}} account, the asset loss caused by incorrect account input will not be recovered!": "请确保您输入了正确的达尔文{{type}}账号，因输入错误账号导致的损失将无法找回！"
 }

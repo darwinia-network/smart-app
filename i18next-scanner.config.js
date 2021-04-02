@@ -1,5 +1,3 @@
-// const fs = require('fs');
-// const chalk = require('chalk');
 const typescriptTransform = require('i18next-scanner-typescript');
 
 module.exports = {
@@ -13,7 +11,7 @@ module.exports = {
   output: './public/',
   options: {
     debug: false,
-    removeUnusedKeys: true,
+    removeUnusedKeys: false,
     browserLanguageDetection: true,
     func: {
       list: ['i18next.t', 'i18n.t', 't'],
@@ -29,7 +27,14 @@ module.exports = {
     ns: ['translation'],
     defaultLng: 'en',
     defaultNs: 'translation',
-    defaultValue: '__STRING_NOT_TRANSLATED__',
+    defaultValue: function (lng, ns, key) {
+      if (lng === 'en') {
+        // Return key as the default value for English language
+        return key;
+      }
+      // Return the string '__NOT_TRANSLATED__' for other languages
+      return '__NOT_TRANSLATED__';
+    },
     resource: {
       loadPath: './public/locales/{{lng}}/{{ns}}.json',
       savePath: 'locales/{{lng}}/{{ns}}.json',
@@ -43,5 +48,5 @@ module.exports = {
       suffix: '}}',
     },
   },
-  transform: typescriptTransform({ extensions: ['.tsx'] }),
+  transform: typescriptTransform({ extensions: ['.tsx', 'ts'] }),
 };

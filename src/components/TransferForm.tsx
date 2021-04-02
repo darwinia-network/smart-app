@@ -4,9 +4,12 @@ import BN from 'bn.js';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import web3 from 'web3';
+import { validateMessages } from '../config/validate-msg';
 import { useAccount } from '../hooks/account';
-import { getTokenBalanceDarwinia } from '../utils/api/connect';
+import { toOppositeAccountType } from '../utils';
+import { connectFactory, getTokenBalanceDarwinia } from '../utils/api/connect';
 import { formatBalance } from '../utils/format/formatBalance';
+import { Balance } from './Balance';
 import { TransferSelect } from './TransferControl';
 
 type Assets = 'ring' | 'kton';
@@ -20,23 +23,28 @@ interface TransferFormValues {
 export function TransferForm() {
   const [form] = useForm<TransferFormValues>();
   const { t } = useTranslation();
-  const { account, network, from } = useAccount();
+  const { account, accounts, network, from, api, setNetworkStatus, setAccounts } = useAccount();
   const [balance, setBalance] = useState<{ ring: BN; kton: BN }>({ ring: null, kton: null });
+  const [formattedBalance, setFormattedBalance] = useState<string>('');
+  const connect = connectFactory(setAccounts, t, setNetworkStatus);
 
   useEffect(() => {
     if (account && from === 'main') {
-      getTokenBalanceDarwinia(account).then(([ringBalance, ktonBalance]) => {
+      getTokenBalanceDarwinia(api, account).then(([ringBalance, ktonBalance]) => {
         const ring = web3.utils.toBN(ringBalance);
         const kton = web3.utils.toBN(ktonBalance);
+        const newBalance = { ring, kton };
+        const available = formatBalance(newBalance[form.getFieldValue('assets') as Assets]);
 
-        setBalance({ ring, kton });
+        setBalance(newBalance);
+        setFormattedBalance(available);
       });
     } else if (account && from === 'smart') {
       setBalance({ ring: new BN(0), kton: new BN(0) });
     } else {
       setBalance({ ring: new BN(0), kton: new BN(0) });
     }
-  }, [account, network, from]);
+  }, [account, from, form, api]);
 
   return (
     <Form
@@ -48,6 +56,10 @@ export function TransferForm() {
         assets: 'ring',
         amount: '',
       }}
+      onFinish={(value) => {
+        console.log('%c [ value ]-53', 'font-size:13px; background:pink; color:#bf2c9f;', value);
+      }}
+      validateMessages={validateMessages}
     >
       <Form.Item>
         <TransferSelect />
@@ -56,14 +68,30 @@ export function TransferForm() {
       <Form.Item
         label={t('Receiving Address')}
         name='receiveAddress'
-        rules={[{ required: true, message: t('Please input receiving address!') }]}
+        rules={[
+          { required: true },
+          from === 'main'
+            ? { pattern: /^0x[\w\d]+/, message: t('You may have entered a wrong account') }
+            : {},
+        ]}
+        extra={
+          <span className='text-xs'>
+            {t(
+              'Please make sure to enter a correct darwinia {{type}} account, the asset loss caused by incorrect account input will not be recovered!',
+              { type: t(toOppositeAccountType(from)) }
+            )}
+          </span>
+        }
       >
         <Input />
       </Form.Item>
 
       <Form.Item label={t('Assets')} name='assets' rules={[{ required: true }]}>
         <Select
-          onChange={() => {
+          onChange={(value: Assets) => {
+            const available = formatBalance(balance[value]);
+
+            setFormattedBalance(available);
             form.setFieldsValue({ amount: '' });
           }}
         >
@@ -75,23 +103,48 @@ export function TransferForm() {
       <Form.Item
         label={t('Amount')}
         name='amount'
-        rules={[{ required: true, message: t('Please input amount') }]}
+        rules={[
+          { required: true },
+          { pattern: /^[\d,]+$/ },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || (!!value && new BN(value).lt(new BN(formattedBalance.split('.')[0])))) {
+                return Promise.resolve();
+              } else {
+                return Promise.reject();
+              }
+            },
+            message: t('Greater than max available amount!'),
+          }),
+        ]}
       >
-        <Input
+        <Balance
           placeholder={t('Available balance {{balance}}', {
-            balance: formatBalance(balance[form.getFieldValue('assets') as Assets]),
+            balance: formattedBalance,
           })}
         />
       </Form.Item>
 
       <Form.Item>
-        <Button
-          type='primary'
-          htmlType='submit'
-          className='block mx-auto w-1/3 bg-main rounded-xl text-white border-none'
-        >
-          {t('Connect Wallet')}
-        </Button>
+        {!accounts || !account ? (
+          <Button
+            type='primary'
+            className='block mx-auto w-1/3 bg-main rounded-xl text-white border-none'
+            onClick={() => {
+              connect(network, from);
+            }}
+          >
+            {t('Connect Wallet')}
+          </Button>
+        ) : (
+          <Button
+            type='primary'
+            htmlType='submit'
+            className='block mx-auto w-1/3 bg-main rounded-xl text-white border-none'
+          >
+            {t('Confirm to transfer')}
+          </Button>
+        )}
       </Form.Item>
     </Form>
   );

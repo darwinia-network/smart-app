@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { ApiPromise } from '@polkadot/api';
 import type ExtType from '@polkadot/extension-inject/types';
+import { connect } from 'node:http2';
 import React, {
   createContext,
   Dispatch,
@@ -7,9 +9,16 @@ import React, {
   useContext,
   useEffect,
   useReducer,
+  useState,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AccountType, NetworkType } from '../model';
-import { connectNodeProvider, ConnectStatus } from '../utils/api/connect';
+import {
+  connectFactory,
+  connectNodeProvider,
+  ConnectStatus,
+  connectSubstrate,
+} from '../utils/api/connect';
 
 interface StoreState {
   account: string;
@@ -80,6 +89,7 @@ export type AccountCtx = StoreState & {
   switchNetwork: (type: NetworkType) => void;
   setAccounts: (accounts: ExtType.InjectedAccountWithMeta[]) => void;
   setNetworkStatus: (status: ConnectStatus) => void;
+  api: ApiPromise;
 };
 
 export const AccountContext = createContext<AccountCtx>(null);
@@ -96,17 +106,41 @@ export const AccountProvider = ({ children }: React.PropsWithChildren<{}>) => {
     []
   );
   const setNetworkStatus = useCallback(createAction<ConnectStatus>('updateNetworkStatus'), []);
+  const [api, setApi] = useState<ApiPromise>(null);
 
   useEffect(() => {
-    console.log(
-      '%c [ state.network ]-101',
-      'font-size:13px; background:pink; color:#bf2c9f;',
-      state.network
-    );
+    (async () => {
+      setNetworkStatus('connecting');
+      try {
+        if (state.from === 'main') {
+          const { accounts, api: newApi } = await connectSubstrate(state.network);
+          setApi(newApi);
+          setAccounts(accounts);
+        }
+        setNetworkStatus('success');
+      } catch (error) {
+        setNetworkStatus('fail');
+      }
+    })();
+  }, [state.from]);
 
-    connectNodeProvider(state.network).then(() => {
-      console.log('%c [api is ready] ', 'color:blue');
-    });
+  useEffect(() => {
+    (async () => {
+      setNetworkStatus('connecting');
+      try {
+        if (window.darwiniaApi) {
+          await window.darwiniaApi.disconnect();
+          window.darwiniaApi = null;
+        }
+        if (state.from === 'main') {
+          const newApi = await connectNodeProvider(state.network);
+          setApi(newApi);
+        }
+        setNetworkStatus('success');
+      } catch (error) {
+        setNetworkStatus('fail');
+      }
+    })();
   }, [state.network]);
 
   return (
@@ -120,6 +154,7 @@ export const AccountProvider = ({ children }: React.PropsWithChildren<{}>) => {
         switchNetwork,
         setAccounts,
         setNetworkStatus,
+        api,
       }}
     >
       {children}

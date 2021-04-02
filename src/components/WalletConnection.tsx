@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from '../hooks';
 import { AccountType } from '../model';
-import { connectEth, connectSubstrate } from '../utils';
+import { connectEth, connectFactory, connectSubstrate } from '../utils';
 
 const CONFIG: {
   [key in AccountType]: { type: string; logo: string; wallet: string; doc: string };
@@ -26,7 +26,7 @@ export function WalletConnection() {
   const { t } = useTranslation();
   const [isHelperModalVisible, setIsHelpModalVisible] = useState(false);
   const { setAccounts, setNetworkStatus, from, network, accounts, account } = useAccount();
-  const connect = from === 'main' ? connectSubstrate : connectEth;
+  const connect = connectFactory(setAccounts, t, setNetworkStatus);
 
   return (
     <>
@@ -36,24 +36,7 @@ export function WalletConnection() {
           if (!accounts && !account) {
             setIsHelpModalVisible(true);
           }
-
-          setNetworkStatus('connecting');
-
-          connect()
-            .then(({ accounts: newAccounts }) => {
-              setAccounts(newAccounts);
-              setNetworkStatus('success');
-            })
-            .catch((error) => {
-              console.log(
-                '%c [ error ]-50',
-                'font-size:13px; background:pink; color:#bf2c9f;',
-                error
-              );
-              message.error(
-                t('Error occurs during connect to {{type}} network.', { type: network })
-              );
-            });
+          connect(network, from);
         }}
       >
         {t('Link Wallet')}
