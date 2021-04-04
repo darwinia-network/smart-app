@@ -4,7 +4,7 @@ import { Link, Route, Switch } from 'react-router-dom';
 import { Connection } from './components/Connection';
 import { Language } from './components/Language';
 import { Path, routes } from './config/routes';
-import { useAccount } from './hooks';
+import { useApi } from './hooks';
 
 const { Header, Content } = Layout;
 
@@ -17,7 +17,7 @@ const links: { name: string; href?: string; path?: string }[] = [
 
 function App() {
   const { t } = useTranslation();
-  const { networkStatus } = useAccount();
+  const { networkStatus } = useApi();
 
   return (
     <Layout style={{ height: '100vh' }}>

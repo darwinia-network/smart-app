@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import web3 from 'web3';
 import { validateMessages } from '../config/validate-msg';
+import { useApi } from '../hooks';
 import { useAccount } from '../hooks/account';
 import { toOppositeAccountType } from '../utils';
 import { connectFactory, getTokenBalanceDarwinia } from '../utils/api/connect';
@@ -23,13 +24,14 @@ interface TransferFormValues {
 export function TransferForm() {
   const [form] = useForm<TransferFormValues>();
   const { t } = useTranslation();
-  const { account, accounts, network, from, api, setNetworkStatus, setAccounts } = useAccount();
+  const { account } = useAccount();
+  const { accounts, network, accountType, api, setNetworkStatus, setAccounts } = useApi();
   const [balance, setBalance] = useState<{ ring: BN; kton: BN }>({ ring: null, kton: null });
   const [formattedBalance, setFormattedBalance] = useState<string>('');
   const connect = connectFactory(setAccounts, t, setNetworkStatus);
 
   useEffect(() => {
-    if (account && from === 'main') {
+    if (account && accountType === 'main') {
       getTokenBalanceDarwinia(api, account).then(([ringBalance, ktonBalance]) => {
         const ring = web3.utils.toBN(ringBalance);
         const kton = web3.utils.toBN(ktonBalance);
@@ -39,12 +41,12 @@ export function TransferForm() {
         setBalance(newBalance);
         setFormattedBalance(available);
       });
-    } else if (account && from === 'smart') {
+    } else if (account && accountType === 'smart') {
       setBalance({ ring: new BN(0), kton: new BN(0) });
     } else {
       setBalance({ ring: new BN(0), kton: new BN(0) });
     }
-  }, [account, from, form, api]);
+  }, [account, accountType, form, api]);
 
   return (
     <Form
@@ -70,7 +72,7 @@ export function TransferForm() {
         name='receiveAddress'
         rules={[
           { required: true },
-          from === 'main'
+          accountType === 'main'
             ? { pattern: /^0x[\w\d]+/, message: t('You may have entered a wrong account') }
             : {},
         ]}
@@ -78,7 +80,7 @@ export function TransferForm() {
           <span className='text-xs'>
             {t(
               'Please make sure to enter a correct darwinia {{type}} account, the asset loss caused by incorrect account input will not be recovered!',
-              { type: t(toOppositeAccountType(from)) }
+              { type: t(toOppositeAccountType(accountType)) }
             )}
           </span>
         }
@@ -131,7 +133,7 @@ export function TransferForm() {
             type='primary'
             className='block mx-auto w-1/3 bg-main rounded-xl text-white border-none'
             onClick={() => {
-              connect(network, from);
+              connect(network, accountType);
             }}
           >
             {t('Connect Wallet')}

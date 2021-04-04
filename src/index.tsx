@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
 import './config/i18n';
-import { AccountProvider } from './hooks';
+import { AccountProvider, ApiProvider } from './hooks';
 import './index.less';
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
@@ -11,9 +11,11 @@ import reportWebVitals from './reportWebVitals';
 ReactDOM.render(
   <Suspense fallback='loading'>
     <Router>
-      <AccountProvider>
-        <App />
-      </AccountProvider>
+      <ApiProvider>
+        <AccountProvider>
+          <App />
+        </AccountProvider>
+      </ApiProvider>
     </Router>
   </Suspense>,
   document.getElementById('root')

@@ -3,7 +3,7 @@ import { Dropdown, Menu } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Network } from '../config/config';
-import { useAccount } from '../hooks';
+import { useAccount, useApi } from '../hooks';
 import { AccountType, CustomFormControlProps, NetworkType } from '../model';
 import { toOppositeAccountType } from '../utils';
 import { SwapCrabIcon, SwapMainIcon, SwapPangolinIcon } from './icons';
@@ -25,7 +25,7 @@ const networks: NetworkType[] = [Network.main, Network.crab, Network.pangolin];
 function AccountGrid({ accountType, title, isFrom = false }: AccountProps) {
   const [account, setAccount] = useState('');
   const panelRef = useRef<HTMLDivElement>(null);
-  const { switchNetwork, network } = useAccount();
+  const { switchNetwork, network } = useApi();
   const { t } = useTranslation();
   const whirl = 'animate-whirl';
   const whirlReverse = 'animate-whirl-reverse';
@@ -113,13 +113,14 @@ const ICON_CONFIG = {
 
 export function TransferSelect({ value, onChange }: CustomFormControlProps) {
   const { t } = useTranslation();
-  const { from, switchFrom, network } = useAccount();
+  const { accountType, switchAccountType, network } = useApi();
+  const { setAccount } = useAccount();
   const [isWalletSwitcherVisible, setIsWalletSwitcherVisible] = useState(false);
 
   return (
     <>
       <div className='grid grid-cols-3 items-stretch'>
-        <AccountGrid accountType={from} isFrom={true} title={t('From')} />
+        <AccountGrid accountType={accountType} isFrom={true} title={t('From')} />
 
         <div className='flex items-center justify-center self-stretch'>
           {React.createElement(ICON_CONFIG[network].icon, {
@@ -128,17 +129,18 @@ export function TransferSelect({ value, onChange }: CustomFormControlProps) {
             },
             className:
               'cursor-pointer text-4xl mt-6 transform origin-center transition-all duration-300',
-            style: { transform: `rotateY(${from === 'main' ? '0' : '180deg'})` },
+            style: { transform: `rotateY(${accountType === 'main' ? '0' : '180deg'})` },
           })}
         </div>
 
-        <AccountGrid accountType={toOppositeAccountType(from)} title={t('To')} />
+        <AccountGrid accountType={toOppositeAccountType(accountType)} title={t('To')} />
       </div>
 
       <SwitchWalletModal
         cancel={() => setIsWalletSwitcherVisible(false)}
         confirm={() => {
-          switchFrom(toOppositeAccountType(from));
+          switchAccountType(toOppositeAccountType(accountType));
+          setAccount(null);
         }}
         isVisible={isWalletSwitcherVisible}
       />

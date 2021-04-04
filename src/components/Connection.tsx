@@ -1,7 +1,7 @@
 import { Dropdown, Menu } from 'antd';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAccount } from '../hooks';
+import { useAccount, useApi } from '../hooks';
 import { AccountSelectModal } from './modal/AccountSelect';
 import { SwitchWalletModal } from './modal/SwitchWallet';
 import { ShortAccount } from './ShortAccount';
@@ -11,7 +11,8 @@ export function Connection() {
   const { t } = useTranslation();
   const [isWalletSwitcherVisible, setIsWalletSwitcherVisible] = useState(false);
   const [isAccountSwitcherVisible, setIsAccountSwitcherVisible] = useState(false);
-  const { account, accounts, setAccount, setAccounts } = useAccount();
+  const { account, setAccount } = useAccount();
+  const { accounts, setAccounts } = useApi();
 
   useEffect(() => {
     if (!!accounts && !account) {

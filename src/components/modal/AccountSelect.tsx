@@ -2,13 +2,13 @@ import BaseIdentityIcon from '@polkadot/react-identicon';
 import { Button, Empty, Form, Modal, Radio } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import { useTranslation } from 'react-i18next';
-import { useAccount } from '../../hooks/account';
+import { useApi } from '../../hooks';
 import { IModalProps } from './interface';
 
 const iconSize = 36;
 
 export function AccountSelectModal({ account, isVisible, confirm, cancel }: IModalProps<string>) {
-  const { from, accounts } = useAccount();
+  const { accountType, accounts } = useApi();
   const { t } = useTranslation();
   const [form] = useForm();
 
@@ -72,7 +72,8 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
         >
           <button
             onClick={() => {
-              const url = from === 'main' ? 'https://polkadot.js.org' : 'https://metamask.io';
+              const url =
+                accountType === 'main' ? 'https://polkadot.js.org' : 'https://metamask.io';
 
               window.open(url, 'blank');
             }}

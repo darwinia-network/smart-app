@@ -28,31 +28,23 @@ const RPC_CONFIG: NetworkConfig<string> = {
 // const darwiniaApi: ApiPromise | null = null;
 
 export async function connectNodeProvider(type: NetworkType = 'darwinia'): Promise<ApiPromise> {
-  try {
-    if (!window.darwiniaApi) {
-      const provider = new WsProvider(RPC_CONFIG[type]);
+  const provider = new WsProvider(RPC_CONFIG[type]);
+  const darwiniaApi = await ApiPromise.create({
+    provider,
+    typesBundle: {
+      spec: {
+        /* tslint:disable */
+        Crab: typesBundleForPolkadot.spec.crab as any,
+        Pangolin: typesBundleForPolkadot.spec.pangolin as any,
+        Darwinia: typesBundleForPolkadot.spec.darwinia as any,
+        /* tslint:enable */
+      },
+    },
+  });
 
-      window.darwiniaApi = await ApiPromise.create({
-        provider,
-        typesBundle: {
-          spec: {
-            /* tslint:disable */
-            Crab: typesBundleForPolkadot.spec.crab as any,
-            Pangolin: typesBundleForPolkadot.spec.pangolin as any,
-            Darwinia: typesBundleForPolkadot.spec.darwinia as any,
-            /* tslint:enable */
-          },
-        },
-      });
-      await window.darwiniaApi.isReady;
+  await darwiniaApi.isReady;
 
-      return window.darwiniaApi;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
-  return window.darwiniaApi;
+  return darwiniaApi;
 }
 
 export async function connectSubstrate(
