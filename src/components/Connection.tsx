@@ -1,5 +1,5 @@
-import { Dropdown, Menu } from 'antd';
-import { useEffect, useState } from 'react';
+import { Button, Dropdown, Menu } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useApi } from '../hooks';
 import { AccountSelectModal } from './modal/AccountSelect';
@@ -60,7 +60,7 @@ export function Connection() {
               </Menu>
             }
           >
-            <button className='dream-btn'>{t('Switch Wallet')}</button>
+            <Button>{t('Switch Wallet')}</Button>
           </Dropdown>
         </section>
       ) : (

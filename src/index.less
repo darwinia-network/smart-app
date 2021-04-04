@@ -1,7 +1,21 @@
 @import '~antd/dist/antd.less';
+@import './theme';
+
+/* btn rest */
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  background: @dvm-main-bg;
+  filter: hue-rotate(45deg);
+}
+
+.ant-btn:hover,
+.ant-btn:focus,
+.ant-btn:active {
+  border-color: transparent;
+  filter: hue-rotate(45deg);
+}
 
 /* Modal reset */
-
 .ant-modal-content {
   border-radius: 0.75rem;
 }
@@ -13,4 +27,10 @@
 .ant-modal-close-x {
   color: #595959;
   font-weight: bold;
+}
+
+/* checkbox */
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: transparent;
+  background: @dvm-main-bg;
 }

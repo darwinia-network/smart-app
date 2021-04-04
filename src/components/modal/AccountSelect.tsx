@@ -34,7 +34,7 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
                     // message.info(t(''));
                   }
                 }}
-                className='block mx-auto w-full bg-main border-none rounded-lg'
+                className='block mx-auto w-full border-none rounded-lg'
               >
                 {t('Confirm')}
               </Button>,
@@ -70,17 +70,16 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
           description={t('You haven’t created an account yet, go ahead and create one.')}
           className='flex justify-center flex-col items-center'
         >
-          <button
+          <Button
             onClick={() => {
               const url =
                 accountType === 'main' ? 'https://polkadot.js.org' : 'https://metamask.io';
 
               window.open(url, 'blank');
             }}
-            className='dream-btn'
           >
             {t('How to create?')}
-          </button>
+          </Button>
         </Empty>
       )}
     </Modal>

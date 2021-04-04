@@ -1,5 +1,5 @@
-import { Modal } from 'antd';
-import { useState } from 'react';
+import { Button, Modal } from 'antd';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useApi } from '../hooks';
 import { AccountType } from '../model';
@@ -31,8 +31,7 @@ export function WalletConnection() {
 
   return (
     <>
-      <button
-        className='dream-btn'
+      <Button
         onClick={() => {
           if (!accounts && !account) {
             setIsHelpModalVisible(true);
@@ -41,7 +40,7 @@ export function WalletConnection() {
         }}
       >
         {t('Link Wallet')}
-      </button>
+      </Button>
 
       <Modal
         title={t('Connect to Darwinia {{type}} account', {
@@ -64,14 +63,14 @@ export function WalletConnection() {
             <img src={CONFIG[accountType].logo} style={{ height: 32 }} alt='' />
           </div>
 
-          <button
-            className='dream-btn mt-4 self-end'
+          <Button
+            className='mt-4 self-end'
             onClick={() => {
               window.open(CONFIG[accountType].doc, 'blank');
             }}
           >
             {t('How to use?')}
-          </button>
+          </Button>
         </div>
       </Modal>
     </>

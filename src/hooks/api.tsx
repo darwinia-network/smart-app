@@ -105,6 +105,9 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
     })();
   }, [state.accountType]);
 
+  /**
+   * disconnect api connections;
+   */
   useEffect(() => {
     (async () => {
       if (api) {
@@ -124,7 +127,7 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
       }
       setNetworkStatus('success');
     })();
-  }, [api]);
+  }, [state.network]);
 
   return (
     <ApiContext.Provider
