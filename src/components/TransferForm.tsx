@@ -1,8 +1,10 @@
+import { FrownOutlined, LoadingOutlined, SyncOutlined } from '@ant-design/icons';
+import { SubmittableResult } from '@polkadot/api';
 import { web3FromAddress } from '@polkadot/extension-dapp';
-import { Button, Form, Input, Select } from 'antd';
+import { Alert, AlertProps, Button, Form, Input, notification, Select } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import BN from 'bn.js';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import web3 from 'web3';
 import { validateMessages } from '../config/validate-msg';
@@ -11,7 +13,7 @@ import { useAccount } from '../hooks/account';
 import { useAssets } from '../hooks/assets';
 import { Assets } from '../model';
 import { TransferFormValues } from '../model/transfer';
-import { dvmAddressToAccountId, toOppositeAccountType } from '../utils';
+import { dvmAddressToAccountId, toBn, toOppositeAccountType } from '../utils';
 import { connectFactory } from '../utils/api/connect';
 import { formatBalance } from '../utils/format/formatBalance';
 import { Balance } from './Balance';
@@ -20,17 +22,44 @@ import { TransferAlertModal } from './modal/TransferAlert';
 import { TransferConfirmModal } from './modal/TransferConfirm';
 import { TransferControl } from './TransferControl';
 
+interface Indicator {
+  status: 'pending' | 'success' | 'fail' | 'sending' | null;
+  message: string | ReactNode;
+  type: AlertProps['type'];
+}
+
+const INDICATOR_STATUS_ICON: { [key in Indicator['status']]?: ReactNode } = {
+  pending: <LoadingOutlined />,
+  sending: <SyncOutlined spin />,
+};
+
+function IndicatorMessage({ msg, index }: { msg: string; index: string }) {
+  return (
+    <p className='flex justify-between'>
+      <span>{msg}</span>
+      <span>{index}</span>
+    </p>
+  );
+}
+
 export function TransferForm() {
   const [form] = useForm<TransferFormValues>();
   const { t } = useTranslation();
   const { account } = useAccount();
   const { accounts, network, accountType, api, setNetworkStatus, setAccounts } = useApi();
-  const { assets, formattedBalance, setFormattedBalance } = useAssets('ring');
+  const { assets, formattedBalance, setFormattedBalance, setRefresh } = useAssets('ring');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [isAccountVisible, setIsAccountVisible] = useState(false);
-  const [hash, setHash] = useState<string>('');
+  const [isIndicatorVisible, setIsIndictorVisible] = useState(false);
+  const [indicator, setIndicator] = useState<Indicator>({
+    status: 'pending',
+    message: t('Waiting for confirm'),
+    type: 'info',
+  });
   const connect = connectFactory(setAccounts, t, setNetworkStatus);
+  // tslint:disable-next-line: no-magic-numbers
+  const delayCloseIndicator = () => setTimeout(() => setIsIndictorVisible(false), 5000);
 
   return (
     <>
@@ -162,21 +191,81 @@ export function TransferForm() {
         cancel={() => setIsConfirmVisible(false)}
         value={form.getFieldsValue()}
         confirm={async () => {
+          setIndicator({ message: t('Waiting for sign'), type: 'info', status: 'pending' });
+          setIsIndictorVisible(true);
+
           // tslint:disable-next-line: no-shadowed-variable
           const { recipient, amount, assets } = form.getFieldsValue();
           const toAccount = dvmAddressToAccountId(recipient).toHuman();
           const injector = await web3FromAddress(account);
+          const count = toBn(amount);
 
           api.setSigner(injector.signer);
 
-          // tslint:disable-next-line: no-shadowed-variable
-          const hash =
-            assets === 'ring'
-              ? api.tx.balances.transfer(toAccount, web3.utils.toBN(amount))
-              : api.tx.kton.transfer(toAccount, web3.utils.toBN(amount));
+          console.log(new BN(amount), count);
 
-          setHash(hash.toHex()); // TODO: add history
-          setIsAccountVisible(true);
+          // tslint:disable-next-line: no-shadowed-variable
+          const extrinsic =
+            assets === 'ring'
+              ? api.tx.balances.transfer(toAccount, count)
+              : api.tx.kton.transfer(toAccount, count);
+
+          const unsubscribe = await extrinsic.signAndSend(
+            account,
+            // tslint:disable-next-line: cyclomatic-complexity
+            async (result: SubmittableResult) => {
+              if (!result || !result.status) {
+                return;
+              }
+
+              setIndicator({ message: t('Sending'), type: 'info', status: 'sending' });
+
+              if (result.status.isFinalized || result.status.isInBlock) {
+                unsubscribe();
+
+                result.events
+                  .filter(({ event: { section } }) => section === 'system')
+                  .forEach(({ event: { method, index } }) => {
+                    if (method === 'ExtrinsicFailed') {
+                      setIndicator({
+                        type: 'warning',
+                        message: (
+                          <IndicatorMessage
+                            msg={t('Extrinsic failed!')}
+                            index={index.toRawType()}
+                          />
+                        ),
+                        status: 'fail',
+                      });
+                      delayCloseIndicator();
+                    } else if (method === 'ExtrinsicSuccess') {
+                      setIndicator({
+                        type: 'success',
+                        message: (
+                          <IndicatorMessage
+                            msg={t('Extrinsic success')}
+                            index={index.toRawType()}
+                          />
+                        ),
+                        status: 'success',
+                      });
+                      setRefresh(Math.random());
+                      delayCloseIndicator();
+                      setIsAccountVisible(true);
+                    }
+                  });
+              }
+
+              if (result.isError) {
+                notification.error({
+                  message: t('Extrinsic Error'),
+                  icon: <FrownOutlined color='red' />,
+                });
+                setIsIndictorVisible(false);
+              }
+            }
+          );
+
           setIsConfirmVisible(false);
         }}
       />
@@ -184,8 +273,18 @@ export function TransferForm() {
       <AccountModal
         isVisible={isAccountVisible}
         defaultActiveTabKey='history'
+        assets={assets}
         cancel={() => setIsAccountVisible(false)}
         confirm={() => {}}
+      />
+
+      <Alert
+        className='fixed top-24 right-8'
+        message={indicator.message}
+        type={indicator.type}
+        icon={INDICATOR_STATUS_ICON[indicator.status] || null}
+        showIcon
+        style={{ display: isIndicatorVisible ? 'flex' : 'none' }}
       />
     </>
   );

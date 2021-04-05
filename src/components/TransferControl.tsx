@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Network } from '../config/config';
 import { STYLE_CONFIG } from '../config/network';
 import { useAccount, useApi } from '../hooks';
-import { AccountType, CustomFormControlProps, NetworkType } from '../model';
+import { AccountType, NetworkType } from '../model';
 import { toOppositeAccountType } from '../utils';
 import { SwapCrabIcon, SwapMainIcon, SwapPangolinIcon } from './icons';
 import { SwitchWalletModal } from './modal/SwitchWallet';
@@ -117,7 +117,7 @@ const ICON_CONFIG = {
   darwinia: { icon: SwapMainIcon },
 };
 
-export function TransferControl({ value, onChange }: CustomFormControlProps) {
+export function TransferControl() {
   const { t } = useTranslation();
   const { accountType, switchAccountType, network } = useApi();
   const { setAccount } = useAccount();

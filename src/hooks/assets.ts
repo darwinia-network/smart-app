@@ -12,6 +12,7 @@ export function useAssets(asset: Assets = 'ring') {
   const { accountType, api } = useApi();
   const [formattedBalance, setFormattedBalance] = useState<string>('');
   const [assets, setAssets] = useState<{ ring: BN; kton: BN }>({ ring: null, kton: null });
+  const [refresh, setRefresh] = useState<number>(Math.random()); // FIXME: just for refresh balance;
 
   useEffect(() => {
     if (account && accountType === 'main') {
@@ -29,7 +30,7 @@ export function useAssets(asset: Assets = 'ring') {
     } else {
       setAssets({ ring: new BN(0), kton: new BN(0) });
     }
-  }, [account, accountType, asset, api]);
+  }, [account, accountType, asset, api, refresh]);
 
-  return { assets, formattedBalance, setFormattedBalance };
+  return { assets, formattedBalance, setFormattedBalance, setRefresh };
 }

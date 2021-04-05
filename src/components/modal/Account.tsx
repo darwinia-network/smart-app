@@ -3,8 +3,10 @@ import { CopyOutlined } from '@ant-design/icons';
 import BaseIdentityIcon from '@polkadot/react-identicon';
 import { Button, Card, Col, List, Modal, Row, Tabs } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
+import BN from 'bn.js';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAccount } from '../../hooks';
+import { useAccount, useApi } from '../../hooks';
 import { useAssets } from '../../hooks/assets';
 import { formatBalance } from '../../utils/format/formatBalance';
 import { Account } from '../Account';
@@ -40,15 +42,21 @@ const history = [
 export function AccountModal({
   isVisible,
   cancel,
-  confirm,
+  assets,
   defaultActiveTabKey = 'assets',
-}: IModalProps & { defaultActiveTabKey?: TabKey }) {
-  const { account } = useAccount();
+}: IModalProps & { defaultActiveTabKey?: TabKey; assets: { ring: BN; kton: BN } }) {
+  const { account, setAccount } = useAccount();
+  const { setAccounts } = useApi();
   const { t } = useTranslation();
-  const { assets, formattedBalance } = useAssets();
 
   return (
-    <Modal title={t('Account')} visible={isVisible} footer={null} onCancel={cancel}>
+    <Modal
+      title={t('Account')}
+      visible={isVisible}
+      footer={null}
+      onCancel={cancel}
+      destroyOnClose={true}
+    >
       <Card className='mb-4'>
         <Row gutter={4} className='overflow-hidden'>
           <Col span={4}>
@@ -85,7 +93,14 @@ export function AccountModal({
             </Row>
 
             <Row>
-              <Button size='small' className='rounded-xl text-sm'>
+              <Button
+                size='small'
+                className='rounded-xl text-sm'
+                onClick={() => {
+                  setAccount(null);
+                  setAccounts(null);
+                }}
+              >
                 {t('disconnect')}
               </Button>
             </Row>
@@ -98,7 +113,7 @@ export function AccountModal({
           <List
             itemLayout='horizontal'
             dataSource={[
-              { image: '/image/ring.svg', asset: 'ring', amount: formattedBalance },
+              { image: '/image/ring.svg', asset: 'ring', amount: formatBalance(assets.ring) },
               { image: '/image/kton.svg', asset: 'kton', amount: formatBalance(assets.kton) },
             ]}
             renderItem={(item) => (

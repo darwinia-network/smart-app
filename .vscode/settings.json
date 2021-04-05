@@ -1,5 +1,13 @@
 {
-  "cSpell.words": ["antd", "commitlint", "craco", "kton", "stylelint", "tailwindcss"],
+  "cSpell.words": [
+    "antd",
+    "commitlint",
+    "craco",
+    "finalitytimeout",
+    "kton",
+    "stylelint",
+    "tailwindcss"
+  ],
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#ff6433",
     "activityBar.activeBorder": "#00ff3d",

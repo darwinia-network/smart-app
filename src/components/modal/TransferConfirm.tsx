@@ -36,7 +36,7 @@ export function TransferConfirmModal({
           style={{ width: 120, height: 100 }}
         >
           {/* TODO img  */}
-          <img src='/image/darwinia.7ff17f8e.svg' style={{ height: 60 }} alt='' />
+          <img src='/image/darwinia.svg' style={{ height: 60 }} alt='' />
           <Button className='capitalize cursor-default'>{accountType}</Button>
         </div>
 
@@ -46,7 +46,7 @@ export function TransferConfirmModal({
           className='bg-main rounded-xl flex flex-col items-center'
           style={{ width: 120, height: 100 }}
         >
-          <img src='/image/darwinia.7ff17f8e.svg' style={{ height: 60 }} alt='' />
+          <img src='/image/darwinia.svg' style={{ height: 60 }} alt='' />
           <Button className='capitalize cursor-default'>
             {toOppositeAccountType(accountType)}
           </Button>

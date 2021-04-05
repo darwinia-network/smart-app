@@ -12,22 +12,22 @@ function RightCircle() {
       <title>1.通用/2.Icon图标/Line/Transfer</title>
       <defs>
         <linearGradient x1='100%' y1='100%' x2='0%' y2='0%' id='linearGradient-1'>
-          <stop stop-color='#FE3876' offset='0%'></stop>
-          <stop stop-color='#7C30DD' offset='71.4447846%'></stop>
-          <stop stop-color='#3A30DD' offset='100%'></stop>
+          <stop stopColor='#FE3876' offset='0%'></stop>
+          <stop stopColor='#7C30DD' offset='71.4447846%'></stop>
+          <stop stopColor='#3A30DD' offset='100%'></stop>
         </linearGradient>
       </defs>
       <g
         id='1.通用/2.Icon图标/Line/Transfer'
         stroke='none'
-        stroke-width='1'
+        strokeWidth='1'
         fill='none'
-        fill-rule='evenodd'
+        fillRule='evenodd'
       >
         <rect
           id='矩形'
           fill='#000000'
-          fill-rule='nonzero'
+          fillRule='nonzero'
           opacity='0'
           x='0'
           y='0'

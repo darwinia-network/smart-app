@@ -94,9 +94,17 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
       setNetworkStatus('connecting');
       try {
         if (state.accountType === 'main') {
-          const { accounts: newAccounts, api: newApi } = await connectSubstrate(state.network);
+          const { accounts: newAccounts, api: newApi, extensions } = await connectSubstrate(
+            state.network
+          );
+
           setApi(newApi);
-          setAccounts(newAccounts);
+
+          if (!extensions.length && !newAccounts.length) {
+            setAccounts(null); // FIXME: if refresh the page, extensions and accounts all empty
+          } else {
+            setAccounts(newAccounts);
+          }
         }
         setNetworkStatus('success');
       } catch (error) {

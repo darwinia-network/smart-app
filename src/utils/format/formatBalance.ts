@@ -1,9 +1,7 @@
 // tslint:disable:no-magic-numbers
 import BN from 'bn.js';
 import { isNull, isNumber, isString, isUndefined } from 'lodash';
-
-const DEFAULT_DECIMALS = 9;
-const PRECISION = Math.pow(10, 9);
+import { DEFAULT_DECIMALS, PRECISION } from '../../config/config';
 
 // tslint:disable-next-line: cyclomatic-complexity
 const toString = (value: string | BN | number): string => {

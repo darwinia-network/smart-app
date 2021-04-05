@@ -1,7 +1,7 @@
-import { TranslationOutlined } from '@ant-design/icons';
 import { Dropdown, Menu } from 'antd';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { EarthIcon } from './icons/earth';
 
 export interface LanguageProps {
   className?: string;
@@ -37,7 +37,10 @@ export function Language({ className = '' }: LanguageProps) {
       }
       className={className}
     >
-      <TranslationOutlined />
+      <div className='rounded bg-purple-200 flex items-center px-2 py-1 cursor-pointer'>
+        <EarthIcon />
+        <span className='ml-2 text-xs uppercase'>{current}</span>
+      </div>
     </Dropdown>
   );
 }
