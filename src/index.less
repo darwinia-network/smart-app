@@ -2,10 +2,14 @@
 @import './theme';
 
 /* btn rest */
-.ant-btn-primary:hover,
-.ant-btn-primary:focus {
-  background: @dvm-main-bg;
-  filter: hue-rotate(45deg);
+.ant-btn-primary {
+  border: none !important;
+
+  &:hover,
+  &:focus {
+    background: @dvm-main-bg;
+    filter: hue-rotate(45deg);
+  }
 }
 
 .ant-btn:hover,

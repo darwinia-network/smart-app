@@ -6,7 +6,10 @@
 
 $accent: #ec3783;
 $primary: #5745de;
+
 $bg-main: linear-gradient(-45deg, #fe3876 0%, #7c30dd 71%, #3a30dd 100%);
+
+$radius-base: 12px;
 
 body {
   font-family: 'IBM Plex Sans', sans-serif;
@@ -14,7 +17,7 @@ body {
 
 @mixin main-border {
   border: 2px solid transparent;
-  border-radius: 12px;
+  border-radius: $radius-base;
   background: linear-gradient(#ffffff, #ffffff) padding-box,
     linear-gradient(to right, $primary, $accent) border-box;
 }
@@ -42,7 +45,7 @@ body {
   justify-content: space-between;
   padding: 2rem 10px;
   margin-bottom: 1rem;
-  border-radius: 12px !important;
+  border-radius: $radius-base !important;
   border-width: 1px;
 
   &.ant-radio-button-wrapper-checked {
@@ -63,4 +66,38 @@ body {
 .large-footer-btn .ant-modal-footer {
   display: flex;
   gap: 1em;
+}
+
+.account-tab {
+  .ant-tabs-nav {
+    margin-bottom: 0;
+  }
+
+  .ant-tabs-nav-list {
+    width: 100%;
+
+    .ant-tabs-tab {
+      width: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:first-child {
+        border-radius: $radius-base 0 0 0;
+      }
+
+      &:nth-child(2) {
+        border-radius: 0 $radius-base 0 0;
+        border-left: none;
+        margin-left: 0 !important;
+      }
+    }
+  }
+
+  .ant-tabs-content-holder {
+    border: 1px solid #e5e7eb;
+    border-top: none;
+    padding: 1em;
+    border-radius: 0 0 $radius-base $radius-base;
+  }
 }

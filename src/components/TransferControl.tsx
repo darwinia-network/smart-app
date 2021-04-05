@@ -3,6 +3,7 @@ import { Dropdown, Menu } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Network } from '../config/config';
+import { STYLE_CONFIG } from '../config/network';
 import { useAccount, useApi } from '../hooks';
 import { AccountType, CustomFormControlProps, NetworkType } from '../model';
 import { toOppositeAccountType } from '../utils';
@@ -22,7 +23,7 @@ interface AccountProps {
 
 const networks: NetworkType[] = [Network.main, Network.crab, Network.pangolin];
 
-function AccountGrid({ accountType, title, isFrom = false }: AccountProps) {
+export function AccountGrid({ accountType, title, isFrom = false }: AccountProps) {
   const [account, setAccount] = useState('');
   const panelRef = useRef<HTMLDivElement>(null);
   const { switchNetwork, network } = useApi();
@@ -90,11 +91,16 @@ function AccountGrid({ accountType, title, isFrom = false }: AccountProps) {
           }
         >
           <div
-            className='bg-main rounded-xl flex flex-col items-center'
+            className={'rounded-xl flex flex-col items-center ' + STYLE_CONFIG[network].bg}
             style={{ width: 120, height: 100 }}
           >
-            <img src='/image/darwinia.7ff17f8e.svg' style={{ height: 60 }} alt='' />
-            <span className='dream-btn capitalize'>{account}</span>
+            <img src={STYLE_CONFIG[network].icon} style={{ height: 60 }} alt='' />
+            <span
+              className='capitalize dream-btn'
+              style={network === 'darwinia' ? {} : { border: 'none' }}
+            >
+              {account}
+            </span>
           </div>
 
           {isFrom && <DownOutlined className='mx-2' />}
@@ -111,7 +117,7 @@ const ICON_CONFIG = {
   darwinia: { icon: SwapMainIcon },
 };
 
-export function TransferSelect({ value, onChange }: CustomFormControlProps) {
+export function TransferControl({ value, onChange }: CustomFormControlProps) {
   const { t } = useTranslation();
   const { accountType, switchAccountType, network } = useApi();
   const { setAccount } = useAccount();

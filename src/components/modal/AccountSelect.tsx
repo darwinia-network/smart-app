@@ -17,7 +17,6 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
       title={t('Select Account')}
       visible={isVisible}
       maskClosable={false}
-      closable={!accounts?.length}
       onCancel={cancel}
       footer={
         accounts?.length

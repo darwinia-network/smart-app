@@ -1,48 +1,36 @@
+import { web3FromAddress } from '@polkadot/extension-dapp';
 import { Button, Form, Input, Select } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import BN from 'bn.js';
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import web3 from 'web3';
 import { validateMessages } from '../config/validate-msg';
 import { useApi } from '../hooks';
 import { useAccount } from '../hooks/account';
+import { useAssets } from '../hooks/assets';
 import { Assets } from '../model';
 import { TransferFormValues } from '../model/transfer';
-import { toOppositeAccountType } from '../utils';
-import { connectFactory, getTokenBalanceDarwinia } from '../utils/api/connect';
+import { dvmAddressToAccountId, toOppositeAccountType } from '../utils';
+import { connectFactory } from '../utils/api/connect';
 import { formatBalance } from '../utils/format/formatBalance';
 import { Balance } from './Balance';
+import { AccountModal } from './modal/Account';
+import { TransferAlertModal } from './modal/TransferAlert';
 import { TransferConfirmModal } from './modal/TransferConfirm';
-import { TransferSelect } from './TransferControl';
+import { TransferControl } from './TransferControl';
 
 export function TransferForm() {
   const [form] = useForm<TransferFormValues>();
   const { t } = useTranslation();
   const { account } = useAccount();
   const { accounts, network, accountType, api, setNetworkStatus, setAccounts } = useApi();
-  const [balance, setBalance] = useState<{ ring: BN; kton: BN }>({ ring: null, kton: null });
-  const [formattedBalance, setFormattedBalance] = useState<string>('');
+  const { assets, formattedBalance, setFormattedBalance } = useAssets('ring');
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+  const [isAccountVisible, setIsAccountVisible] = useState(false);
+  const [hash, setHash] = useState<string>('');
   const connect = connectFactory(setAccounts, t, setNetworkStatus);
-
-  useEffect(() => {
-    if (account && accountType === 'main') {
-      getTokenBalanceDarwinia(api, account).then(([ringBalance, ktonBalance]) => {
-        const ring = web3.utils.toBN(ringBalance);
-        const kton = web3.utils.toBN(ktonBalance);
-        const newBalance = { ring, kton };
-        const available = formatBalance(newBalance[form.getFieldValue('assets') as Assets]);
-
-        setBalance(newBalance);
-        setFormattedBalance(available);
-      });
-    } else if (account && accountType === 'smart') {
-      setBalance({ ring: new BN(0), kton: new BN(0) });
-    } else {
-      setBalance({ ring: new BN(0), kton: new BN(0) });
-    }
-  }, [account, accountType, form, api]);
 
   return (
     <>
@@ -51,27 +39,36 @@ export function TransferForm() {
         layout='vertical'
         form={form}
         initialValues={{
-          receiveAddress: '',
+          recipient: '',
           assets: 'ring',
           amount: '',
         }}
         onFinish={(_) => {
-          setIsConfirmVisible(true);
+          setIsAlertVisible(true);
         }}
         validateMessages={validateMessages}
       >
         <Form.Item>
-          <TransferSelect />
+          <TransferControl />
         </Form.Item>
 
         <Form.Item
-          label={t('Receiving Address')}
-          name='receiveAddress'
+          label={t('Recipient Address')}
+          name='recipient'
           rules={[
             { required: true },
-            accountType === 'main'
-              ? { pattern: /^0x[\w\d]+/, message: t('You may have entered a wrong account') }
-              : {},
+            {
+              validator(_, value) {
+                if (accountType === 'main') {
+                  const valid = web3.utils.isAddress(value);
+
+                  return valid ? Promise.resolve() : Promise.reject();
+                } else {
+                  return Promise.resolve();
+                }
+              },
+              message: t('You may have entered a wrong account'),
+            },
           ]}
           extra={
             <span className='text-xs'>
@@ -88,7 +85,7 @@ export function TransferForm() {
         <Form.Item label={t('Assets')} name='assets' rules={[{ required: true }]}>
           <Select
             onChange={(value: Assets) => {
-              const available = formatBalance(balance[value]);
+              const available = formatBalance(assets[value]);
 
               setFormattedBalance(available);
               form.setFieldsValue({ amount: '' });
@@ -131,7 +128,7 @@ export function TransferForm() {
           {!accounts || !account ? (
             <Button
               type='primary'
-              className='block mx-auto w-1/3 rounded-xl text-white border-none'
+              className='block mx-auto w-1/3 rounded-xl text-white'
               onClick={() => {
                 connect(network, accountType);
               }}
@@ -142,7 +139,7 @@ export function TransferForm() {
             <Button
               type='primary'
               htmlType='submit'
-              className='block mx-auto w-1/3 rounded-xl text-white border-none'
+              className='block mx-auto w-1/3 rounded-xl text-white'
             >
               {t('Confirm to transfer')}
             </Button>
@@ -150,15 +147,45 @@ export function TransferForm() {
         </Form.Item>
       </Form>
 
+      <TransferAlertModal
+        isVisible={isAlertVisible}
+        cancel={() => setIsAlertVisible(false)}
+        recipient={form.getFieldValue('recipient')}
+        confirm={() => {
+          setIsAlertVisible(false);
+          setIsConfirmVisible(true);
+        }}
+      />
+
       <TransferConfirmModal
         isVisible={isConfirmVisible}
         cancel={() => setIsConfirmVisible(false)}
         value={form.getFieldsValue()}
-        confirm={() => {
-          const value = form.getFieldsValue();
+        confirm={async () => {
+          // tslint:disable-next-line: no-shadowed-variable
+          const { recipient, amount, assets } = form.getFieldsValue();
+          const toAccount = dvmAddressToAccountId(recipient).toHuman();
+          const injector = await web3FromAddress(account);
 
-          console.log('%c [ value ]-165', 'font-size:13px; background:pink; color:#bf2c9f;', value);
+          api.setSigner(injector.signer);
+
+          // tslint:disable-next-line: no-shadowed-variable
+          const hash =
+            assets === 'ring'
+              ? api.tx.balances.transfer(toAccount, web3.utils.toBN(amount))
+              : api.tx.kton.transfer(toAccount, web3.utils.toBN(amount));
+
+          setHash(hash.toHex()); // TODO: add history
+          setIsAccountVisible(true);
+          setIsConfirmVisible(false);
         }}
+      />
+
+      <AccountModal
+        isVisible={isAccountVisible}
+        defaultActiveTabKey='history'
+        cancel={() => setIsAccountVisible(false)}
+        confirm={() => {}}
       />
     </>
   );

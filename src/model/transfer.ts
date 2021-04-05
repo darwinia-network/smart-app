@@ -1,7 +1,7 @@
 import { Assets } from './common';
 
 export interface TransferFormValues {
-  receiveAddress: string;
+  recipient: string;
   assets: Assets;
   amount: string;
 }

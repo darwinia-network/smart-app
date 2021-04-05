@@ -23,10 +23,10 @@ export function SwitchWalletModal({ isVisible, cancel, confirm }: IModalProps) {
       onOk={ok}
       onCancel={cancel}
       footer={[
-        <Button className='w-1/2' onClick={cancel}>
+        <Button className='w-1/2' key='cancel' onClick={cancel}>
           {t('Cancel')}
         </Button>,
-        <Button type='primary' onClick={ok} className='w-1/2 border-none rounded-xl'>
+        <Button type='primary' key='confirm' onClick={ok} className='w-1/2 rounded-xl'>
           {t('Confirm')}
         </Button>,
       ]}
