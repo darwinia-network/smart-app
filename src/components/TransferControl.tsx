@@ -3,9 +3,9 @@ import { Dropdown, Menu } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Network } from '../config/config';
-import { STYLE_CONFIG } from '../config/network';
+import { NETWORK_STYLE_CONFIG } from '../config/network';
 import { useAccount, useApi } from '../hooks';
-import { AccountType, NetworkType } from '../model';
+import { AccountType, NetworkConfig, NetworkType } from '../model';
 import { toOppositeAccountType } from '../utils';
 import { SwapCrabIcon, SwapMainIcon, SwapPangolinIcon } from './icons';
 import { SwitchWalletModal } from './modal/SwitchWallet';
@@ -21,7 +21,7 @@ interface AccountProps {
   isFrom?: boolean;
 }
 
-const networks: NetworkType[] = [Network.main, Network.crab, Network.pangolin];
+const networks: NetworkType[] = [Network.darwinia, Network.crab, Network.pangolin];
 
 export function AccountGrid({ accountType, title, isFrom = false }: AccountProps) {
   const [account, setAccount] = useState('');
@@ -32,7 +32,7 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
   const whirlReverse = 'animate-whirl-reverse';
 
   useEffect(() => {
-    const textRef = panelRef.current?.querySelector('.bg-main');
+    const textRef = panelRef.current?.querySelector('.bg-darwinia');
 
     panelRef.current?.classList.remove(whirl);
     textRef?.classList.remove(whirlReverse);
@@ -72,7 +72,7 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
                 >
                   <span className='capitalize'>{t(item)}</span>
                   {accountType === 'smart' && (
-                    <span className='bg-main rounded-xl text-xs text-white px-2 py-0.5'>
+                    <span className='bg-darwinia rounded-xl text-xs text-white px-2 py-0.5'>
                       {t('smart')}
                     </span>
                   )}
@@ -91,10 +91,12 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
           }
         >
           <div
-            className={'rounded-xl flex flex-col items-center ' + STYLE_CONFIG[network].bg}
+            className={
+              'rounded-xl flex flex-col items-center ' + NETWORK_STYLE_CONFIG[network].bgClsName
+            }
             style={{ width: 120, height: 100 }}
           >
-            <img src={STYLE_CONFIG[network].icon} style={{ height: 60 }} alt='' />
+            <img src={NETWORK_STYLE_CONFIG[network].logo} style={{ height: 60 }} alt='' />
             <span
               className='capitalize dream-btn'
               style={network === 'darwinia' ? {} : { border: 'none' }}
@@ -110,8 +112,8 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
   );
 }
 
-const ICON_CONFIG = {
-  main: { icon: SwapMainIcon },
+// tslint:disable-next-line: no-any
+const ICON_CONFIG: NetworkConfig<{ icon: (...args: any[]) => JSX.Element }> = {
   crab: { icon: SwapCrabIcon },
   pangolin: { icon: SwapPangolinIcon },
   darwinia: { icon: SwapMainIcon },

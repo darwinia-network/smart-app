@@ -36,3 +36,12 @@ export function dvmAddressToAccountId(address: string | null | undefined): Accou
 
   return accountId;
 }
+
+/**
+ * @param common - cls names that do not depend on network
+ * @param classes - cls names that depend on network
+ * @returns - calculated class name
+ */
+export function clsName(common: string, ...classes: string[]): string {
+  return [...common.split(' '), classes].join(' ');
+}

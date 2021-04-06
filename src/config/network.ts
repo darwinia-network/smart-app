@@ -1,7 +1,7 @@
 import { NetworkConfig } from '../model';
 
-export const STYLE_CONFIG: NetworkConfig<{ icon: string; bg: string }> = {
-  crab: { icon: '/image/crab.svg', bg: 'bg-crab' },
-  darwinia: { icon: '/image/darwinia.svg', bg: 'bg-main' },
-  pangolin: { icon: '/image/pangolin.svg', bg: 'bg-pangolin' },
+export const NETWORK_STYLE_CONFIG: NetworkConfig<{ logo: string; bgClsName: string }> = {
+  crab: { logo: '/image/crab.svg', bgClsName: 'bg-crab' },
+  darwinia: { logo: '/image/darwinia.svg', bgClsName: 'bg-darwinia' },
+  pangolin: { logo: '/image/pangolin.svg', bgClsName: 'bg-pangolin' },
 };

@@ -28,7 +28,7 @@ interface Indicator {
   type: AlertProps['type'];
 }
 
-const INDICATOR_STATUS_ICON: { [key in Indicator['status']]?: ReactNode } = {
+const INDICATOR_STATUS_ICON: { [key in Exclude<Indicator['status'], null>]?: ReactNode } = {
   pending: <LoadingOutlined />,
   sending: <SyncOutlined spin />,
 };
@@ -130,7 +130,7 @@ export function TransferForm() {
           name='amount'
           rules={[
             { required: true },
-            { pattern: /^[\d,]+$/ },
+            { pattern: /^[\d,]+(.\d{1,3})?$/ },
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (
@@ -168,6 +168,7 @@ export function TransferForm() {
             <Button
               type='primary'
               htmlType='submit'
+              disabled={isIndicatorVisible}
               className='block mx-auto w-1/3 rounded-xl text-white'
             >
               {t('Confirm to transfer')}
@@ -201,8 +202,6 @@ export function TransferForm() {
           const count = toBn(amount);
 
           api.setSigner(injector.signer);
-
-          console.log(new BN(amount), count);
 
           // tslint:disable-next-line: no-shadowed-variable
           const extrinsic =

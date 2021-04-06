@@ -32,7 +32,7 @@ export function TransferConfirmModal({
     >
       <div className='flex justify-between items-center mb-4 px-8'>
         <div
-          className='bg-main rounded-xl flex flex-col items-center'
+          className='bg-darwinia rounded-xl flex flex-col items-center'
           style={{ width: 120, height: 100 }}
         >
           {/* TODO img  */}
@@ -43,7 +43,7 @@ export function TransferConfirmModal({
         <RightCircleIcon className='text-4xl' />
 
         <div
-          className='bg-main rounded-xl flex flex-col items-center'
+          className='bg-darwinia rounded-xl flex flex-col items-center'
           style={{ width: 120, height: 100 }}
         >
           <img src='/image/darwinia.svg' style={{ height: 60 }} alt='' />

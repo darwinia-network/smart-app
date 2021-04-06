@@ -26,7 +26,7 @@ export function Account({
     <>
       <div
         className={
-          'flex items-center justify-between bg-main h-auto leading-normal gap-2 pl-4 ' +
+          'flex items-center justify-between bg-darwinia h-auto leading-normal gap-2 pl-4 ' +
           rounded +
           className
         }

@@ -24,7 +24,6 @@ module.exports = {
         },
       },
       backgroundImage: (theme) => ({
-        main: 'linear-gradient(-45deg, #fe3876 0%, #7c30dd 71%, #3a30dd 100%)',
         darwinia: 'linear-gradient(-45deg, #fe3876 0%, #7c30dd 71%, #3a30dd 100%)',
       }),
       backgroundColor: (theme) => ({

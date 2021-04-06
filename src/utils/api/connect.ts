@@ -98,6 +98,7 @@ export function connectFactory(
 ): (network: NetworkType, accountType: AccountType) => Promise<void> {
   return async (network: NetworkType, accountType: AccountType) => {
     const connect = accountType === 'main' ? connectSubstrate : connectEth;
+
     indicator('connecting');
 
     connect(network)

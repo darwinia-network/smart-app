@@ -7,7 +7,6 @@ export enum Network {
   pangolin = 'pangolin',
   crab = 'crab',
   darwinia = 'darwinia',
-  main = 'darwinia',
 }
 
 export const DEFAULT_DECIMALS = 9;

@@ -1,11 +1,13 @@
 import { Button, Layout, Spin } from 'antd';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Route, Switch } from 'react-router-dom';
 import { Connection } from './components/Connection';
 import { Language } from './components/Language';
-import { STYLE_CONFIG } from './config/network';
+import { NETWORK_STYLE_CONFIG } from './config/network';
 import { Path, routes } from './config/routes';
 import { useApi } from './hooks';
+import { clsName } from './utils';
 
 const { Header, Content } = Layout;
 
@@ -19,12 +21,20 @@ const links: { name: string; href?: string; path?: string }[] = [
 function App() {
   const { t } = useTranslation();
   const { networkStatus, network } = useApi();
+  const linkCls = useMemo(
+    () =>
+      clsName(
+        'h-1/2 flex items-center px-4 py-2 rounded-xl',
+        NETWORK_STYLE_CONFIG[network].bgClsName
+      ),
+    [network]
+  );
 
   return (
     <Layout style={{ height: '100vh' }}>
       <Header className='flex items-center justify-between px-4 bg-white'>
-        <Link to={Path.root} className='h-1/2 flex items-center px-4 py-2 bg-main rounded-xl'>
-          <img src={STYLE_CONFIG[network].icon} style={{ height: 46 }} alt='' />
+        <Link to={Path.root} className={linkCls}>
+          <img src={NETWORK_STYLE_CONFIG[network].logo} style={{ height: 46 }} alt='' />
           <span className='text-white'>DVM</span>
         </Link>
 
