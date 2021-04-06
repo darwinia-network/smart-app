@@ -10,12 +10,12 @@ function Earth() {
       xmlns='http://www.w3.org/2000/svg'
     >
       <title>形状结合</title>
-      <g id='DVM' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'>
+      <g id='DVM' stroke='none' strokeWidth='1' fill='none' fillRule='evenodd'>
         <g
           id='主页'
           transform='translate(-1365.000000, -854.000000)'
           fill='#5745DE'
-          fill-rule='nonzero'
+          fillRule='nonzero'
         >
           <g id='编组' transform='translate(1355.000000, 850.000000)'>
             <path

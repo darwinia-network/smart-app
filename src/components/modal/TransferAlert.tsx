@@ -2,7 +2,6 @@ import { Button, Checkbox, CheckboxOptionType, Modal } from 'antd';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../hooks';
-import { TransferFormValues } from '../../model/transfer';
 import { toOppositeAccountType } from '../../utils';
 import { IModalProps } from './interface';
 

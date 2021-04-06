@@ -1,15 +1,30 @@
+@import '~antd/lib/style/themes/default.less';
+
 // project variables
 @dvm-main-bg: linear-gradient(-45deg, #fe3876 0%, #7c30dd 71%, #3a30dd 100%);
 @dvm-radius-base: 12px;
+@dvm-primary: #5745de;
+@dvm-accent: #ec3783;
+
+// color reset
+@primary-color: @dvm-primary;
+@select-item-selected-option-color: @primary-color;
+@processing-color: @primary-color;
+@select-item-selected-bg: @background-color-base;
+@secondary-color: @primary-color;
+@skeleton-color: @primary-color;
+@btn-primary-bg: @primary-color;
 
 // btn
 @btn-border-radius-base: @dvm-radius-base;
-
 @btn-primary-bg: @dvm-main-bg;
-
 @btn-default-border: 2px solid transparent;
 @btn-default-bg: linear-gradient(#ffffff, #ffffff) padding-box,
   linear-gradient(to right, #5745de, #ec3783) border-box;
 
 // card
 @card-radius: @dvm-radius-base;
+
+:root {
+  --PC: @primary-color;
+}

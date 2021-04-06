@@ -32,7 +32,7 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
   const whirlReverse = 'animate-whirl-reverse';
 
   useEffect(() => {
-    const textRef = panelRef.current?.querySelector('.bg-darwinia');
+    const textRef = panelRef.current?.querySelector(`.${NETWORK_STYLE_CONFIG[network].bgClsName}`);
 
     panelRef.current?.classList.remove(whirl);
     textRef?.classList.remove(whirlReverse);
@@ -50,6 +50,7 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => panelRef.current?.removeEventListener('animationend', listener);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountType]);
 
   return (
@@ -72,7 +73,12 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
                 >
                   <span className='capitalize'>{t(item)}</span>
                   {accountType === 'smart' && (
-                    <span className='bg-darwinia rounded-xl text-xs text-white px-2 py-0.5'>
+                    <span
+                      className={
+                        'rounded-xl text-xs text-white px-2 py-0.5 ' +
+                        NETWORK_STYLE_CONFIG[network].bgClsName
+                      }
+                    >
                       {t('smart')}
                     </span>
                   )}

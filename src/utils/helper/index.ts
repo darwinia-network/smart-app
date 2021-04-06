@@ -43,5 +43,5 @@ export function dvmAddressToAccountId(address: string | null | undefined): Accou
  * @returns - calculated class name
  */
 export function clsName(common: string, ...classes: string[]): string {
-  return [...common.split(' '), classes].join(' ');
+  return [...common.split(' '), ...classes.filter((name) => !!name)].join(' ');
 }

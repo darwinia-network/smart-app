@@ -1,5 +1,5 @@
 import { Button, Layout, Spin } from 'antd';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Route, Switch } from 'react-router-dom';
 import { Connection } from './components/Connection';
@@ -7,7 +7,18 @@ import { Language } from './components/Language';
 import { NETWORK_STYLE_CONFIG } from './config/network';
 import { Path, routes } from './config/routes';
 import { useApi } from './hooks';
+import { NetworkConfig } from './model';
+import crabThemeJson from './theme/crab.json';
+import darwiniaThemeJson from './theme/darwinia.json';
+import pangolinThemeJson from './theme/pangolin.json';
 import { clsName } from './utils';
+
+declare global {
+  interface Window {
+    // tslint:disable-next-line: no-any
+    less: any;
+  }
+}
 
 const { Header, Content } = Layout;
 
@@ -17,6 +28,12 @@ const links: { name: string; href?: string; path?: string }[] = [
   { name: 'Wormhole', href: '' },
   { name: 'Browser', href: '' },
 ];
+
+const THEME_CONFIG: NetworkConfig<{ [key in keyof typeof darwiniaThemeJson]: string }> = {
+  darwinia: darwiniaThemeJson,
+  crab: crabThemeJson,
+  pangolin: pangolinThemeJson,
+};
 
 function App() {
   const { t } = useTranslation();
@@ -30,9 +47,17 @@ function App() {
     [network]
   );
 
+  useEffect(() => {
+    window.less
+      .modifyVars(THEME_CONFIG[network])
+      .then(() => console.log('success'))
+      // tslint:disable-next-line: no-any
+      .catch((error: any) => console.log(error));
+  }, [network]);
+
   return (
     <Layout style={{ height: '100vh' }}>
-      <Header className='flex items-center justify-between px-4 bg-white'>
+      <Header className='flex items-center justify-between px-4'>
         <Link to={Path.root} className={linkCls}>
           <img src={NETWORK_STYLE_CONFIG[network].logo} style={{ height: 46 }} alt='' />
           <span className='text-white'>DVM</span>

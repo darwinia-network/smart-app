@@ -1,8 +1,10 @@
 import { Button, Modal } from 'antd';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { NETWORK_STYLE_CONFIG } from '../../config/network';
 import { useApi } from '../../hooks';
 import { TransferFormValues } from '../../model/transfer';
-import { toOppositeAccountType } from '../../utils';
+import { clsName, toOppositeAccountType } from '../../utils';
 import { RightCircleIcon } from '../icons/right-circle';
 import { IModalProps } from './interface';
 
@@ -13,7 +15,11 @@ export function TransferConfirmModal({
   value,
 }: IModalProps & { value: TransferFormValues }) {
   const { t } = useTranslation();
-  const { accountType } = useApi();
+  const { accountType, network } = useApi();
+  const cls = useMemo(
+    () => clsName('rounded-xl flex flex-col items-center', NETWORK_STYLE_CONFIG[network].bgClsName),
+    [network]
+  );
 
   return (
     <Modal
@@ -31,22 +37,16 @@ export function TransferConfirmModal({
       wrapClassName='large-footer-btn'
     >
       <div className='flex justify-between items-center mb-4 px-8'>
-        <div
-          className='bg-darwinia rounded-xl flex flex-col items-center'
-          style={{ width: 120, height: 100 }}
-        >
+        <div className={cls} style={{ width: 120, height: 100 }}>
           {/* TODO img  */}
-          <img src='/image/darwinia.svg' style={{ height: 60 }} alt='' />
+          <img src={NETWORK_STYLE_CONFIG[network].logo} style={{ height: 60 }} alt='' />
           <Button className='capitalize cursor-default'>{accountType}</Button>
         </div>
 
         <RightCircleIcon className='text-4xl' />
 
-        <div
-          className='bg-darwinia rounded-xl flex flex-col items-center'
-          style={{ width: 120, height: 100 }}
-        >
-          <img src='/image/darwinia.svg' style={{ height: 60 }} alt='' />
+        <div className={cls} style={{ width: 120, height: 100 }}>
+          <img src={NETWORK_STYLE_CONFIG[network].logo} style={{ height: 60 }} alt='' />
           <Button className='capitalize cursor-default'>
             {toOppositeAccountType(accountType)}
           </Button>

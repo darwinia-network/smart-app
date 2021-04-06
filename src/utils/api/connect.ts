@@ -6,11 +6,6 @@ import { message } from 'antd';
 import { TFunction } from 'i18next';
 import { AccountType, NetworkConfig, NetworkType } from '../../model';
 
-declare global {
-  interface Window {
-    darwiniaApi: ApiPromise | null;
-  }
-}
 export interface Connection {
   accounts: ExtType.InjectedAccountWithMeta[];
   api: ApiPromise | null;
