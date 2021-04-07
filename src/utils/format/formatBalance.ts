@@ -1,7 +1,7 @@
 // tslint:disable:no-magic-numbers
 import BN from 'bn.js';
 import { isNull, isNumber, isString, isUndefined } from 'lodash';
-import { DEFAULT_DECIMALS, PRECISION } from '../../config/config';
+import { PRECISION } from '../../config';
 
 // tslint:disable-next-line: cyclomatic-complexity
 const toString = (value: string | BN | number): string => {
@@ -32,11 +32,11 @@ export function formatBalance(balance: string | BN | number): string {
   }
 
   if (Number.isSafeInteger(Number(origin))) {
-    const value = Number(origin) / PRECISION;
+    const value = Number(origin) / Math.pow(10, PRECISION);
 
     return prettyNumber(String(value));
   } else {
-    const position = origin.length - DEFAULT_DECIMALS;
+    const position = origin.length - PRECISION;
     const prefix = origin.slice(0, position + 1);
     const suffix = origin.substr(position, 3);
 

@@ -4,7 +4,10 @@ import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import type ExtType from '@polkadot/extension-inject/types';
 import { message } from 'antd';
 import { TFunction } from 'i18next';
-import { AccountType, NetworkConfig, NetworkType } from '../../model';
+import Web3 from 'web3';
+import { TOKEN_ERC20_KTON, TOKEN_ERC20_RING } from '../../config';
+import { AccountType, IAccountMeta, NetworkConfig, NetworkType } from '../../model';
+import tokenABI from './tokenABI.json';
 
 export interface Connection {
   accounts: ExtType.InjectedAccountWithMeta[];
@@ -13,6 +16,8 @@ export interface Connection {
 }
 
 export type ConnectStatus = 'pending' | 'connecting' | 'success' | 'fail';
+
+export type TokenBalance = [string, string];
 
 const RPC_CONFIG: NetworkConfig<string> = {
   crab: 'wss://crab.darwinia.network',
@@ -61,17 +66,31 @@ export async function connectSubstrate(
   }
 }
 
-// tslint:disable-next-line: cyclomatic-complexity
-export async function connectEth() {
-  return Promise.resolve({ accounts: [] });
+export function isMetamaskInstalled(): boolean {
+  return typeof window.ethereum !== 'undefined' || typeof window.web3 !== 'undefined';
+}
+
+export async function connectEth(): Promise<{ accounts: IAccountMeta[] }> {
+  if (!isMetamaskInstalled) {
+    console.error('You must install metamask first!');
+    return;
+  }
+
+  await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+  const accounts: string[] = await window.ethereum.request({ method: 'eth_accounts' });
+
+  return {
+    accounts: accounts.map((address) => ({ address })),
+  };
 }
 
 export async function getTokenBalanceDarwinia(
   api: ApiPromise,
   account = ''
-): Promise<[string, string]> {
+): Promise<TokenBalance> {
   try {
-    await api.isReady;
+    await api?.isReady;
     // type = 0 query ring balance.  type = 1 query kton balance.
     /* tslint:disable */
     const ringUsableBalance = await (api?.rpc as any).balances.usableBalance(0, account);
@@ -80,14 +99,12 @@ export async function getTokenBalanceDarwinia(
 
     return [ringUsableBalance.usableBalance.toString(), ktonUsableBalance.usableBalance.toString()];
   } catch (error) {
-    console.log('%c [ error ]-65', 'font-size:13px; background:pink; color:#bf2c9f;', error);
-
     return ['0', '0'];
   }
 }
 
 export function connectFactory(
-  successFn: (accounts: ExtType.InjectedAccountWithMeta[]) => void,
+  successFn: (accounts: IAccountMeta[]) => void,
   t: TFunction,
   indicator?: (status: ConnectStatus) => void
 ): (network: NetworkType, accountType: AccountType) => Promise<void> {
@@ -106,4 +123,27 @@ export function connectFactory(
         message.error(t('Error occurs during connect to {{type}} network.', { type: network }));
       });
   };
+}
+
+export async function getTokenBalanceEth(account = ''): Promise<TokenBalance> {
+  try {
+    const web3 = new Web3(window.ethereum);
+    // tslint:disable-next-line: no-any
+    const ringContract = new web3.eth.Contract(tokenABI as any, TOKEN_ERC20_RING);
+    // tslint:disable-next-line: no-any
+    const ktonContract = new web3.eth.Contract(tokenABI as any, TOKEN_ERC20_KTON);
+    const ringBalance = await ringContract.methods
+      .balanceOf(account)
+      .call()
+      .catch(() => '0');
+    const ktonBalance = await ktonContract.methods
+      .balanceOf(account)
+      .call()
+      .catch(() => '0');
+
+    return [ringBalance, ktonBalance];
+  } catch (error) {
+    console.log('%c [ error ]-144', 'font-size:13px; background:pink; color:#bf2c9f;', error);
+    return ['0', '0'];
+  }
 }

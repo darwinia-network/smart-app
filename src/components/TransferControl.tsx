@@ -2,7 +2,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Menu } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Network } from '../config/config';
+import { Network } from '../config';
 import { NETWORK_STYLE_CONFIG } from '../config/network';
 import { useAccount, useApi } from '../hooks';
 import { AccountType, NetworkConfig, NetworkType } from '../model';
@@ -128,7 +128,7 @@ const ICON_CONFIG: NetworkConfig<{ icon: (...args: any[]) => JSX.Element }> = {
 export function TransferControl() {
   const { t } = useTranslation();
   const { accountType, switchAccountType, network } = useApi();
-  const { setAccount } = useAccount();
+  const { setAccount, account } = useAccount();
   const [isWalletSwitcherVisible, setIsWalletSwitcherVisible] = useState(false);
 
   return (
@@ -139,7 +139,11 @@ export function TransferControl() {
         <div className='flex items-center justify-center self-stretch'>
           {React.createElement(ICON_CONFIG[network].icon, {
             onClick: () => {
-              setIsWalletSwitcherVisible(true);
+              if (!!account) {
+                setIsWalletSwitcherVisible(true);
+              } else {
+                switchAccountType(toOppositeAccountType(accountType));
+              }
             },
             className:
               'cursor-pointer text-4xl mt-6 transform origin-center transition-all duration-300',

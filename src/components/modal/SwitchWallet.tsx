@@ -1,20 +1,22 @@
 import { Button, Modal } from 'antd';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApi } from '../../hooks';
+import { useAccount, useApi } from '../../hooks';
 import { toOppositeAccountType } from '../../utils';
 import { IModalProps } from './interface';
 
 export function SwitchWalletModal({ isVisible, cancel, confirm }: IModalProps) {
   const { switchAccountType, accountType } = useApi();
+  const { setAccount } = useAccount();
   const { t } = useTranslation();
   const ok = useCallback(() => {
     switchAccountType(toOppositeAccountType(accountType));
+    setAccount(null);
     if (confirm) {
       confirm();
     }
     cancel();
-  }, [accountType, cancel, switchAccountType, confirm]);
+  }, [accountType, cancel, switchAccountType, confirm, setAccount]);
 
   return (
     <Modal

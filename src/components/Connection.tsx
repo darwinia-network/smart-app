@@ -2,6 +2,7 @@ import { Button, Dropdown, Menu } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useApi } from '../hooks';
+import { toOppositeAccountType } from '../utils';
 import { Account } from './Account';
 import { AccountSelectModal } from './modal/AccountSelect';
 import { SwitchWalletModal } from './modal/SwitchWallet';
@@ -13,13 +14,18 @@ export function Connection() {
   const [isWalletSwitcherVisible, setIsWalletSwitcherVisible] = useState(false);
   const [isAccountSwitcherVisible, setIsAccountSwitcherVisible] = useState(false);
   const { account, setAccount } = useAccount();
-  const { accounts, setAccounts } = useApi();
+  const { accounts, setAccounts, accountType } = useApi();
 
+  // tslint:disable-next-line: cyclomatic-complexity
   useEffect(() => {
-    if (!!accounts && !account) {
+    if (accountType === 'main' && !!accounts && !account) {
       setIsAccountSwitcherVisible(true);
     }
-  }, [accounts, account]);
+
+    if (accountType === 'smart' && !!accounts) {
+      setAccount(accounts[0].address);
+    }
+  }, [accounts, account, accountType, setAccount]);
 
   return (
     <>
@@ -38,10 +44,10 @@ export function Connection() {
             overlay={
               <Menu>
                 <Menu.Item onClick={() => setIsAccountSwitcherVisible(true)}>
-                  {t('Use another mainnet address')}
+                  {t('Use another {{type}} address', { type: accountType })}
                 </Menu.Item>
                 <Menu.Item onClick={() => setIsWalletSwitcherVisible(true)}>
-                  {t('Switch to smart address')}
+                  {t('Switch to {{type}} address', { type: toOppositeAccountType(accountType) })}
                 </Menu.Item>
                 <Menu.Item
                   onClick={() => {

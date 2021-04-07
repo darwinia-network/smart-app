@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ApiPromise } from '@polkadot/api';
-import type ExtType from '@polkadot/extension-inject/types';
 import React, {
   createContext,
   Dispatch,
@@ -10,12 +9,17 @@ import React, {
   useReducer,
   useState,
 } from 'react';
-import { AccountType, NetworkType } from '../model';
-import { connectNodeProvider, ConnectStatus, connectSubstrate } from '../utils/api/connect';
+import { AccountType, IAccountMeta, NetworkType } from '../model';
+import {
+  connectEth,
+  connectNodeProvider,
+  ConnectStatus,
+  connectSubstrate,
+} from '../utils/api/connect';
 
 interface StoreState {
   accountType: AccountType;
-  accounts: ExtType.InjectedAccountWithMeta[];
+  accounts: IAccountMeta[];
   network: NetworkType;
   networkStatus: ConnectStatus; // FIXME unused now;
 }
@@ -60,13 +64,13 @@ export function accountReducer(state: StoreState, action: Action<any>): StoreSta
 
 export type ApiCtx = {
   accountType: AccountType;
-  accounts: ExtType.InjectedAccountWithMeta[];
+  accounts: IAccountMeta[];
   api: ApiPromise;
   createAction: ActionHelper;
   dispatch: Dispatch<Action>;
   network: NetworkType;
   networkStatus: ConnectStatus;
-  setAccounts: (accounts: ExtType.InjectedAccountWithMeta[]) => void;
+  setAccounts: (accounts: IAccountMeta[]) => void;
   setNetworkStatus: (status: ConnectStatus) => void;
   switchAccountType: (type: AccountType) => void;
   switchNetwork: (type: NetworkType) => void;
@@ -82,14 +86,14 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
     dispatch({ type, payload: payload as never });
   const switchAccountType = useCallback(createAction<AccountType>('switchAccountType'), []);
   const switchNetwork = useCallback(createAction<NetworkType>('switchNetwork'), []);
-  const setAccounts = useCallback(
-    createAction<ExtType.InjectedAccountWithMeta[]>('setAccounts'),
-    []
-  );
+  const setAccounts = useCallback(createAction<IAccountMeta[]>('setAccounts'), []);
   const setNetworkStatus = useCallback(createAction<ConnectStatus>('updateNetworkStatus'), []);
   const [api, setApi] = useState<ApiPromise>(null);
 
   useEffect(() => {
+    let metamaskAccountChanged: (accounts: string[]) => void;
+
+    // tslint:disable-next-line: cyclomatic-complexity
     (async () => {
       setNetworkStatus('connecting');
       try {
@@ -106,11 +110,28 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
             setAccounts(newAccounts);
           }
         }
+
+        if (state.accountType === 'smart') {
+          const { accounts: newAccounts } = await connectEth();
+
+          setAccounts(newAccounts);
+
+          metamaskAccountChanged = (accounts: string[]) => {
+            setAccounts(accounts.map((address) => ({ address })));
+          };
+
+          window.ethereum.on('accountsChanged', metamaskAccountChanged);
+          // TODO any other event to handle, e.g: disconnect
+          window.ethereum.on('disconnect', () => {});
+        }
+
         setNetworkStatus('success');
       } catch (error) {
         setNetworkStatus('fail');
       }
     })();
+
+    return () => {};
   }, [state.accountType]);
 
   /**

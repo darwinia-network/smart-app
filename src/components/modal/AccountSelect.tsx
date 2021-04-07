@@ -45,7 +45,7 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
         <Form form={form} initialValues={{ account }}>
           <Form.Item name='account' rules={[{ required: true }]}>
             <Radio.Group className='w-full'>
-              {accounts.map((item, index) => (
+              {accounts.map((item) => (
                 <Radio.Button value={item.address} key={item.address} className='radio-list'>
                   <BaseIdentityIcon
                     theme='substrate'
@@ -54,7 +54,7 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
                     value={item.address}
                   />
                   <div className='flex flex-col'>
-                    <b>{item.meta.name}</b>
+                    <b>{item.meta?.name}</b>
                     <span>{item.address}</span>
                   </div>
                 </Radio.Button>

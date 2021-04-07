@@ -13,13 +13,6 @@ import darwiniaThemeJson from './theme/darwinia.json';
 import pangolinThemeJson from './theme/pangolin.json';
 import { clsName } from './utils';
 
-declare global {
-  interface Window {
-    // tslint:disable-next-line: no-any
-    less: any;
-  }
-}
-
 const { Header, Content } = Layout;
 
 const links: { name: string; href?: string; path?: string }[] = [

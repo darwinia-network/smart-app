@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import { DEFAULT_DECIMALS } from '../../config/config';
+import { PRECISION } from '../../config';
 
 // tslint:disable-next-line: no-magic-numbers
 const TEN = new BN(10);
@@ -15,7 +15,7 @@ export function toBn(input: string): BN {
   // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
   const isDecimalValue = input.match(/^(\d+)\.(\d+)$/);
   const siUnitPower = 0;
-  const basePower = DEFAULT_DECIMALS;
+  const basePower = PRECISION;
   const siPower = new BN(basePower);
 
   let result: BN = null;

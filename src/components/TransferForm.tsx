@@ -4,7 +4,7 @@ import { web3FromAddress } from '@polkadot/extension-dapp';
 import { Alert, AlertProps, Button, Form, Input, notification, Select } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import BN from 'bn.js';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import web3 from 'web3';
 import { validateMessages } from '../config/validate-msg';
@@ -47,7 +47,8 @@ export function TransferForm() {
   const { t } = useTranslation();
   const { account } = useAccount();
   const { accounts, network, accountType, api, setNetworkStatus, setAccounts } = useApi();
-  const { assets, formattedBalance, setFormattedBalance, setRefresh } = useAssets('ring');
+  const [asset, setAsset] = useState<Assets>('ring');
+  const { assets, setRefresh } = useAssets(asset);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [isAccountVisible, setIsAccountVisible] = useState(false);
@@ -61,6 +62,10 @@ export function TransferForm() {
   // tslint:disable-next-line: no-magic-numbers
   const delayCloseIndicator = () => setTimeout(() => setIsIndictorVisible(false), 5000);
 
+  useEffect(() => {
+    return () => {};
+  }, []);
+
   return (
     <>
       <Form
@@ -69,7 +74,7 @@ export function TransferForm() {
         form={form}
         initialValues={{
           recipient: '',
-          assets: 'ring',
+          assets: asset,
           amount: '',
         }}
         onFinish={(_) => {
@@ -114,9 +119,7 @@ export function TransferForm() {
         <Form.Item label={t('Assets')} name='assets' rules={[{ required: true }]}>
           <Select
             onChange={(value: Assets) => {
-              const available = formatBalance(assets[value]);
-
-              setFormattedBalance(available);
+              setAsset(value);
               form.setFieldsValue({ amount: '' });
             }}
           >
@@ -135,7 +138,7 @@ export function TransferForm() {
               validator(_, value) {
                 if (
                   !value ||
-                  (!!value && new BN(value).lt(new BN(formattedBalance.split('.')[0])))
+                  (!!value && new BN(value).lt(new BN(formatBalance(assets[asset]).split('.')[0])))
                 ) {
                   return Promise.resolve();
                 } else {
@@ -148,7 +151,7 @@ export function TransferForm() {
         >
           <Balance
             placeholder={t('Available balance {{balance}}', {
-              balance: formattedBalance,
+              balance: formatBalance(assets[asset]),
             })}
           />
         </Form.Item>
