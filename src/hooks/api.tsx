@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ApiPromise } from '@polkadot/api';
+import { Button, notification } from 'antd';
 import React, {
   createContext,
   Dispatch,
@@ -9,12 +10,15 @@ import React, {
   useReducer,
   useState,
 } from 'react';
+import { useTranslation } from 'react-i18next';
+import { NetworkIds } from '../config';
 import { AccountType, IAccountMeta, NetworkType } from '../model';
 import {
   connectEth,
   connectNodeProvider,
   ConnectStatus,
   connectSubstrate,
+  isNetworkConsistent,
 } from '../utils/api/connect';
 
 interface StoreState {
@@ -89,10 +93,22 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const setAccounts = useCallback(createAction<IAccountMeta[]>('setAccounts'), []);
   const setNetworkStatus = useCallback(createAction<ConnectStatus>('updateNetworkStatus'), []);
   const [api, setApi] = useState<ApiPromise>(null);
+  const { t } = useTranslation();
+  const connectToEth = useCallback(async () => {
+    const { accounts: newAccounts } = await connectEth(state.network);
+
+    setAccounts(newAccounts);
+
+    const metamaskAccountChanged = (accounts: string[]) => {
+      setAccounts(accounts.map((address) => ({ address })));
+    };
+
+    window.ethereum.on('accountsChanged', metamaskAccountChanged);
+    // TODO any other event to handle, e.g: disconnect
+    window.ethereum.on('disconnect', () => {});
+  }, []);
 
   useEffect(() => {
-    let metamaskAccountChanged: (accounts: string[]) => void;
-
     // tslint:disable-next-line: cyclomatic-complexity
     (async () => {
       setNetworkStatus('connecting');
@@ -112,17 +128,38 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
         }
 
         if (state.accountType === 'smart') {
-          const { accounts: newAccounts } = await connectEth();
+          const isConsistent = await isNetworkConsistent(state.network);
 
-          setAccounts(newAccounts);
+          if (!isConsistent) {
+            const key = `key${Date.now()}`;
 
-          metamaskAccountChanged = (accounts: string[]) => {
-            setAccounts(accounts.map((address) => ({ address })));
-          };
+            notification.error({
+              message: t('Incorrect network'),
+              description: t('Network is not consistent! Please switch to {{type}} in metamask', {
+                type: state.network,
+              }),
+              btn: (
+                <Button type='primary' onClick={() => notification.close(key)}>
+                  {t('I known')}
+                </Button>
+              ),
+              key,
+              onClose: () => notification.close(key),
+            });
 
-          window.ethereum.on('accountsChanged', metamaskAccountChanged);
-          // TODO any other event to handle, e.g: disconnect
-          window.ethereum.on('disconnect', () => {});
+            setNetworkStatus('fail');
+
+            window.ethereum.on('chainChanged', (chainId: string) => {
+              const id = parseInt(chainId, 16).toString();
+
+              if (id === NetworkIds[state.network]) {
+                connectToEth();
+              }
+            });
+
+            return;
+          }
+          connectToEth();
         }
 
         setNetworkStatus('success');

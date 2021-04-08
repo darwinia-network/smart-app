@@ -3,19 +3,27 @@ import { SubmittableResult } from '@polkadot/api';
 import { web3FromAddress } from '@polkadot/extension-dapp';
 import { Alert, AlertProps, Button, Form, Input, notification, Select } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
-import BN from 'bn.js';
+import Bignumber from 'bignumber.js';
 import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import web3 from 'web3';
+import Web3 from 'web3';
+import { DVM_WITHDRAW_ADDRESS, PRECISION } from '../config';
 import { validateMessages } from '../config/validate-msg';
 import { useApi } from '../hooks';
 import { useAccount } from '../hooks/account';
 import { useAssets } from '../hooks/assets';
 import { Assets } from '../model';
 import { TransferFormValues } from '../model/transfer';
-import { dvmAddressToAccountId, toBn, toOppositeAccountType } from '../utils';
+import {
+  convertSS58Address,
+  dvmAddressToAccountId,
+  registry,
+  toBn,
+  toOppositeAccountType,
+} from '../utils';
 import { connectFactory } from '../utils/api/connect';
 import { formatBalance } from '../utils/format/formatBalance';
+import { isValidAddress } from '../utils/helper/validate';
 import { Balance } from './Balance';
 import { AccountModal } from './modal/Account';
 import { TransferAlertModal } from './modal/TransferAlert';
@@ -61,10 +69,121 @@ export function TransferForm() {
   const connect = connectFactory(setAccounts, t, setNetworkStatus);
   // tslint:disable-next-line: no-magic-numbers
   const delayCloseIndicator = () => setTimeout(() => setIsIndictorVisible(false), 5000);
+  const handleSuccess = (index: string) => {
+    setIndicator({
+      type: 'success',
+      message: <IndicatorMessage msg={t('Extrinsic success')} index={index} />,
+      status: 'success',
+    });
+    setRefresh(Math.random());
+    delayCloseIndicator();
+    setIsAccountVisible(true);
+  };
+  const handleError = () => {
+    notification.error({
+      message: t('Extrinsic Error'),
+      icon: <FrownOutlined color='red' />,
+    });
+    delayCloseIndicator();
+  };
+
+  const mainnetToSmart = async () => {
+    setIndicator({ message: t('Waiting for sign'), type: 'info', status: 'pending' });
+    setIsIndictorVisible(true);
+
+    // tslint:disable-next-line: no-shadowed-variable
+    const { recipient, amount, assets } = form.getFieldsValue();
+    const toAccount = dvmAddressToAccountId(recipient).toHuman();
+    const injector = await web3FromAddress(account);
+    const count = toBn(amount);
+
+    api.setSigner(injector.signer);
+
+    const extrinsic =
+      assets === 'ring'
+        ? api.tx.balances.transfer(toAccount, count)
+        : api.tx.kton.transfer(toAccount, count);
+
+    const unsubscribe = await extrinsic.signAndSend(
+      account,
+      // tslint:disable-next-line: cyclomatic-complexity
+      async (result: SubmittableResult) => {
+        if (!result || !result.status) {
+          return;
+        }
+
+        setIndicator({ message: t('Sending'), type: 'info', status: 'sending' });
+
+        if (result.status.isFinalized || result.status.isInBlock) {
+          unsubscribe();
+
+          result.events
+            .filter(({ event: { section } }) => section === 'system')
+            .forEach(({ event: { method, index } }) => {
+              if (method === 'ExtrinsicFailed') {
+                setIndicator({
+                  type: 'warning',
+                  message: (
+                    <IndicatorMessage msg={t('Extrinsic failed!')} index={index.toRawType()} />
+                  ),
+                  status: 'fail',
+                });
+                delayCloseIndicator();
+              } else if (method === 'ExtrinsicSuccess') {
+                handleSuccess(index.toRawType());
+              }
+            });
+        }
+
+        if (result.isError) {
+          handleError();
+        }
+      }
+    );
+
+    setIsConfirmVisible(false);
+  };
+
+  const smartToMainnet = async () => {
+    const { recipient, amount } = form.getFieldsValue();
+    const accountIdHex = registry.createType('AccountId', convertSS58Address(recipient)).toHex();
+    const web3 = new Web3(window.ethereum);
+
+    if (accountIdHex === '0x0000000000000000000000000000000000000000000000000000000000000000') {
+      return;
+    }
+
+    try {
+      setIsIndictorVisible(true);
+      setIndicator({ message: t('Sending'), type: 'info', status: 'sending' });
+
+      await web3.eth
+        .sendTransaction({
+          from: account,
+          to: DVM_WITHDRAW_ADDRESS,
+          data: accountIdHex,
+          value: Web3.utils.toWei(amount),
+          gas: 55000,
+        })
+        .on('error', (e) => {
+          handleError();
+        })
+        .on('transactionHash', (transactionHash) => {
+          handleSuccess(transactionHash);
+        });
+    } catch (err) {
+      handleError();
+    }
+
+    setIsConfirmVisible(false);
+  };
 
   useEffect(() => {
-    return () => {};
-  }, []);
+    form.setFields([
+      { name: 'recipient', errors: [], touched: false, value: null },
+      { name: 'amount', errors: [], touched: false, value: null },
+    ]);
+  }, [accountType, form]);
 
   return (
     <>
@@ -93,13 +212,11 @@ export function TransferForm() {
             { required: true },
             {
               validator(_, value) {
-                if (accountType === 'main') {
-                  const valid = web3.utils.isAddress(value);
-
-                  return valid ? Promise.resolve() : Promise.reject();
-                } else {
+                if (!value) {
                   return Promise.resolve();
                 }
+
+                return isValidAddress(value, accountType) ? Promise.resolve() : Promise.reject();
               },
               message: t('You may have entered a wrong account'),
             },
@@ -136,22 +253,27 @@ export function TransferForm() {
             { pattern: /^[\d,]+(.\d{1,3})?$/ },
             ({ getFieldValue }) => ({
               validator(_, value) {
-                if (
-                  !value ||
-                  (!!value && new BN(value).lt(new BN(formatBalance(assets[asset]).split('.')[0])))
-                ) {
+                const base = new Bignumber(
+                  // tslint:disable-next-line: no-magic-numbers
+                  value * Math.pow(10, accountType === 'main' ? PRECISION : 18)
+                );
+                const max = new Bignumber(assets[asset].toString());
+
+                if (!value || (!!value && base.lt(max))) {
                   return Promise.resolve();
                 } else {
                   return Promise.reject();
                 }
               },
-              message: t('Greater than max available amount!'),
+              message: t(
+                'A valid amount must be greater than 0 and less than the maximum available amount'
+              ),
             }),
           ]}
         >
           <Balance
             placeholder={t('Available balance {{balance}}', {
-              balance: formatBalance(assets[asset]),
+              balance: formatBalance(assets[asset], accountType),
             })}
           />
         </Form.Item>
@@ -194,81 +316,14 @@ export function TransferForm() {
         isVisible={isConfirmVisible}
         cancel={() => setIsConfirmVisible(false)}
         value={form.getFieldsValue()}
-        confirm={async () => {
-          setIndicator({ message: t('Waiting for sign'), type: 'info', status: 'pending' });
-          setIsIndictorVisible(true);
+        confirm={() => {
+          if (accountType === 'main') {
+            mainnetToSmart();
+          }
 
-          // tslint:disable-next-line: no-shadowed-variable
-          const { recipient, amount, assets } = form.getFieldsValue();
-          const toAccount = dvmAddressToAccountId(recipient).toHuman();
-          const injector = await web3FromAddress(account);
-          const count = toBn(amount);
-
-          api.setSigner(injector.signer);
-
-          // tslint:disable-next-line: no-shadowed-variable
-          const extrinsic =
-            assets === 'ring'
-              ? api.tx.balances.transfer(toAccount, count)
-              : api.tx.kton.transfer(toAccount, count);
-
-          const unsubscribe = await extrinsic.signAndSend(
-            account,
-            // tslint:disable-next-line: cyclomatic-complexity
-            async (result: SubmittableResult) => {
-              if (!result || !result.status) {
-                return;
-              }
-
-              setIndicator({ message: t('Sending'), type: 'info', status: 'sending' });
-
-              if (result.status.isFinalized || result.status.isInBlock) {
-                unsubscribe();
-
-                result.events
-                  .filter(({ event: { section } }) => section === 'system')
-                  .forEach(({ event: { method, index } }) => {
-                    if (method === 'ExtrinsicFailed') {
-                      setIndicator({
-                        type: 'warning',
-                        message: (
-                          <IndicatorMessage
-                            msg={t('Extrinsic failed!')}
-                            index={index.toRawType()}
-                          />
-                        ),
-                        status: 'fail',
-                      });
-                      delayCloseIndicator();
-                    } else if (method === 'ExtrinsicSuccess') {
-                      setIndicator({
-                        type: 'success',
-                        message: (
-                          <IndicatorMessage
-                            msg={t('Extrinsic success')}
-                            index={index.toRawType()}
-                          />
-                        ),
-                        status: 'success',
-                      });
-                      setRefresh(Math.random());
-                      delayCloseIndicator();
-                      setIsAccountVisible(true);
-                    }
-                  });
-              }
-
-              if (result.isError) {
-                notification.error({
-                  message: t('Extrinsic Error'),
-                  icon: <FrownOutlined color='red' />,
-                });
-                setIsIndictorVisible(false);
-              }
-            }
-          );
-
-          setIsConfirmVisible(false);
+          if (accountType === 'smart') {
+            smartToMainnet();
+          }
         }}
       />
 

@@ -5,3 +5,7 @@ export declare global {
     ethereum: any;
   }
 }
+export declare module '@metamask/jazzicon' {
+  declare class jazzicon {}
+  export default jazzicon;
+}

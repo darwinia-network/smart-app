@@ -24,7 +24,10 @@ export function useAssets(asset: Assets = 'ring') {
       } else if (account && accountType === 'smart') {
         const [ring, kton] = await getTokenBalanceEth(account);
 
-        setAssets({ ring: web3.utils.toBN(ring), kton: web3.utils.toBN(kton) });
+        setAssets({
+          ring: web3.utils.toBN(ring),
+          kton: web3.utils.toBN(kton),
+        });
       } else {
         setAssets({ ring: new BN(0), kton: new BN(0) });
       }

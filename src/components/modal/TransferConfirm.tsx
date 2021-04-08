@@ -1,3 +1,4 @@
+import { ArrowRightOutlined, RightCircleFilled } from '@ant-design/icons';
 import { Button, Modal } from 'antd';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +21,18 @@ export function TransferConfirmModal({
     () => clsName('rounded-xl flex flex-col items-center', NETWORK_STYLE_CONFIG[network].bgClsName),
     [network]
   );
+  const icon = useMemo(() => {
+    if (network === 'darwinia') {
+      return <RightCircleIcon className='text-4xl' />;
+    } else {
+      return (
+        <ArrowRightOutlined
+          className='text-2xl rounded-full leading-none p-1'
+          style={{ color: 'white', backgroundColor: network === 'crab' ? '#ec3783' : '#5745de' }}
+        />
+      );
+    }
+  }, [network]);
 
   return (
     <Modal
@@ -38,12 +51,11 @@ export function TransferConfirmModal({
     >
       <div className='flex justify-between items-center mb-4 px-8'>
         <div className={cls} style={{ width: 120, height: 100 }}>
-          {/* TODO img  */}
           <img src={NETWORK_STYLE_CONFIG[network].logo} style={{ height: 60 }} alt='' />
           <Button className='capitalize cursor-default'>{accountType}</Button>
         </div>
 
-        <RightCircleIcon className='text-4xl' />
+        {icon}
 
         <div className={cls} style={{ width: 120, height: 100 }}>
           <img src={NETWORK_STYLE_CONFIG[network].logo} style={{ height: 60 }} alt='' />

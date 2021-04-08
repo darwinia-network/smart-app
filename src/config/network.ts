@@ -11,3 +11,9 @@ export const NETWORK_STYLE_CONFIG: NetworkConfig<{ logo: string; bgClsName: stri
   darwinia: { logo: '/image/darwinia.svg', bgClsName: 'bg-darwinia' },
   pangolin: { logo: '/image/pangolin.svg', bgClsName: 'bg-pangolin' },
 };
+
+export enum NetworkIds {
+  darwinia = '1',
+  pangolin = '43',
+  crab = 'NaN',
+}

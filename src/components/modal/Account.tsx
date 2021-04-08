@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useAccount, useApi } from '../../hooks';
 import { formatBalance } from '../../utils/format/formatBalance';
 import { Account } from '../Account';
+import { JazzIcon } from '../icons';
 import { ViewBrowserIcon } from '../icons/view-browser';
 import { ShortAccount } from '../ShortAccount';
 import { IModalProps } from './interface';
@@ -44,7 +45,7 @@ export function AccountModal({
   defaultActiveTabKey = 'assets',
 }: IModalProps & { defaultActiveTabKey?: TabKey; assets: { ring: BN; kton: BN } }) {
   const { account, setAccount } = useAccount();
-  const { setAccounts } = useApi();
+  const { setAccounts, accountType } = useApi();
   const { t } = useTranslation();
 
   return (
@@ -58,12 +59,16 @@ export function AccountModal({
       <Card className='mb-4'>
         <Row gutter={4} className='overflow-hidden'>
           <Col span={4}>
-            <BaseIdentityIcon
-              theme='substrate'
-              size={iconSize}
-              className='mr-2 rounded-full border border-solid border-gray-100'
-              value={account}
-            />
+            {accountType === 'main' ? (
+              <BaseIdentityIcon
+                theme='substrate'
+                size={iconSize}
+                className='mr-2 rounded-full border border-solid border-gray-100'
+                value={account}
+              />
+            ) : (
+              <JazzIcon address={account} />
+            )}
           </Col>
           <Col span={20}>
             <Row>
@@ -111,8 +116,16 @@ export function AccountModal({
           <List
             itemLayout='horizontal'
             dataSource={[
-              { image: '/image/ring.svg', asset: 'ring', amount: formatBalance(assets.ring) },
-              { image: '/image/kton.svg', asset: 'kton', amount: formatBalance(assets.kton) },
+              {
+                image: '/image/ring.svg',
+                asset: 'ring',
+                amount: formatBalance(assets.ring, accountType),
+              },
+              {
+                image: '/image/kton.svg',
+                asset: 'kton',
+                amount: formatBalance(assets.kton, accountType),
+              },
             ]}
             renderItem={(item) => (
               <List.Item>

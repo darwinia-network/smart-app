@@ -1,7 +1,9 @@
 // tslint:disable:no-magic-numbers
 import BN from 'bn.js';
 import { isNull, isNumber, isString, isUndefined } from 'lodash';
+import Web3 from 'web3';
 import { PRECISION } from '../../config';
+import { AccountType } from '../../model';
 
 // tslint:disable-next-line: cyclomatic-complexity
 const toString = (value: string | BN | number): string => {
@@ -12,7 +14,7 @@ const toString = (value: string | BN | number): string => {
   } else if (isNumber(value)) {
     return String(value);
   } else if (isUndefined(value) || isNaN(value) || isNull(value)) {
-    return '';
+    return '0';
   } else {
     throw new TypeError(
       `Can not convert the value ${value} to String type. Value type if ${typeof value}`
@@ -24,7 +26,13 @@ const isDecimal = (value: number | string) => {
   return /\d+\.\d+/.test(String(value));
 };
 
-export function formatBalance(balance: string | BN | number): string {
+export function formatBalance(balance: string | BN | number, accountType: AccountType): string {
+  return accountType === 'main'
+    ? formatBalanceForMainnet(balance)
+    : Web3.utils.fromWei(toString(balance));
+}
+
+export function formatBalanceForMainnet(balance: string | BN | number): string {
   const origin = toString(balance);
 
   if (origin.length === 0 || origin === '0') {

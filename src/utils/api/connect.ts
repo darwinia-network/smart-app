@@ -5,9 +5,8 @@ import type ExtType from '@polkadot/extension-inject/types';
 import { message } from 'antd';
 import { TFunction } from 'i18next';
 import Web3 from 'web3';
-import { TOKEN_ERC20_KTON, TOKEN_ERC20_RING } from '../../config';
+import { NetworkIds } from '../../config';
 import { AccountType, IAccountMeta, NetworkConfig, NetworkType } from '../../model';
-import tokenABI from './tokenABI.json';
 
 export interface Connection {
   accounts: ExtType.InjectedAccountWithMeta[];
@@ -70,7 +69,14 @@ export function isMetamaskInstalled(): boolean {
   return typeof window.ethereum !== 'undefined' || typeof window.web3 !== 'undefined';
 }
 
-export async function connectEth(): Promise<{ accounts: IAccountMeta[] }> {
+export async function isNetworkConsistent(network: NetworkType): Promise<boolean> {
+  // id 1: eth mainnet 3: ropsten 4: rinkeby 5: goerli 42: kovan  43: pangolin
+  const actualId = await window.ethereum.request({ method: 'net_version' });
+
+  return NetworkIds[network] === actualId;
+}
+
+export async function connectEth(network: NetworkType): Promise<{ accounts: IAccountMeta[] }> {
   if (!isMetamaskInstalled) {
     console.error('You must install metamask first!');
     return;
@@ -128,20 +134,12 @@ export function connectFactory(
 export async function getTokenBalanceEth(account = ''): Promise<TokenBalance> {
   try {
     const web3 = new Web3(window.ethereum);
-    // tslint:disable-next-line: no-any
-    const ringContract = new web3.eth.Contract(tokenABI as any, TOKEN_ERC20_RING);
-    // tslint:disable-next-line: no-any
-    const ktonContract = new web3.eth.Contract(tokenABI as any, TOKEN_ERC20_KTON);
-    const ringBalance = await ringContract.methods
-      .balanceOf(account)
-      .call()
-      .catch(() => '0');
-    const ktonBalance = await ktonContract.methods
-      .balanceOf(account)
-      .call()
-      .catch(() => '0');
+    const ring = await web3.eth.getBalance(account);
+    const kton = '0';
 
-    return [ringBalance, ktonBalance];
+    // TODO: kton
+
+    return [ring, kton];
   } catch (error) {
     console.log('%c [ error ]-144', 'font-size:13px; background:pink; color:#bf2c9f;', error);
     return ['0', '0'];
