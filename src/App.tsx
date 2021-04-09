@@ -1,5 +1,7 @@
-import { Button, Layout, Spin } from 'antd';
-import { useEffect, useMemo } from 'react';
+import { UnorderedListOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Layout, Menu, Spin } from 'antd';
+import isMobile from 'ismobilejs';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Route, Switch } from 'react-router-dom';
 import { Connection } from './components/Connection';
@@ -15,7 +17,13 @@ import { clsName } from './utils';
 
 const { Header, Content } = Layout;
 
-const links: { name: string; href?: string; path?: string }[] = [
+interface LinkItem {
+  name: string;
+  href?: string;
+  path?: string;
+}
+
+const links: LinkItem[] = [
   { name: 'DVM Guide', path: Path.intro },
   { name: 'Wallet', href: '' },
   { name: 'Wormhole', href: '' },
@@ -39,6 +47,13 @@ function App() {
       ),
     [network]
   );
+  const linkItem = (item: LinkItem) =>
+    item.path ? (
+      <Link to={item.path}>{t(item.name)}</Link>
+    ) : (
+      <span onClick={() => window.open(item.href)}>{t(item.name)}</span>
+    );
+  const { phone: isPhone } = isMobile();
 
   useEffect(() => {
     window.less
@@ -57,18 +72,27 @@ function App() {
         </Link>
 
         <div className='flex justify-between items-center flex-1 px-8'>
-          <div className='flex-1'>
-            {links.map((item, index) => (
-              <Button type='link' key={index}>
-                {item.path ? (
-                  <Link to={item.path}>{t(item.name)}</Link>
-                ) : (
-                  <span onClick={() => window.open(item.href)}>{t(item.name)}</span>
-                )}
-              </Button>
-            ))}
-          </div>
-
+          {isPhone ? (
+            <Dropdown
+              overlay={
+                <Menu>
+                  {links.map((item, index) => (
+                    <Menu.Item key={index}>{linkItem(item)}</Menu.Item>
+                  ))}
+                </Menu>
+              }
+            >
+              <UnorderedListOutlined />
+            </Dropdown>
+          ) : (
+            <div className='flex-1'>
+              {links.map((item, index) => (
+                <Button type='link' key={index}>
+                  {linkItem(item)}
+                </Button>
+              ))}
+            </div>
+          )}
           <Connection />
         </div>
       </Header>

@@ -26,7 +26,7 @@ export function Account({
   const containerCls = useMemo(
     () =>
       clsName(
-        'flex items-center justify-between h-auto leading-normal gap-2 pl-4',
+        'flex items-center justify-between h-auto leading-normal gap-2 pl-4 whitespace-nowrap',
         rounded,
         className,
         NETWORK_STYLE_CONFIG[network].bgClsName
