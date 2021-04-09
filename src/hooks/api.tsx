@@ -108,6 +108,9 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
     window.ethereum.on('disconnect', () => {});
   }, []);
 
+  /**
+   * connect to substrate or metamask when account type changed.
+   */
   useEffect(() => {
     // tslint:disable-next-line: cyclomatic-complexity
     (async () => {
@@ -121,7 +124,7 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
           setApi(newApi);
 
           if (!extensions.length && !newAccounts.length) {
-            setAccounts(null); // FIXME: if refresh the page, extensions and accounts all empty
+            setAccounts(null);
           } else {
             setAccounts(newAccounts);
           }
@@ -149,6 +152,7 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
 
             setNetworkStatus('fail');
 
+            // FIXME: should cancel listening after component destroy ?
             window.ethereum.on('chainChanged', (chainId: string) => {
               const id = parseInt(chainId, 16).toString();
 
@@ -159,6 +163,7 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
 
             return;
           }
+
           connectToEth();
         }
 
@@ -183,6 +188,9 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
     })();
   }, [state.network]);
 
+  /**
+   * reset node provider on mainnet as soon as network changed.
+   */
   useEffect(() => {
     (async () => {
       setNetworkStatus('connecting');

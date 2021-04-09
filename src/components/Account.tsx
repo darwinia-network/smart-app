@@ -40,7 +40,15 @@ export function Account({
 
   return (
     <>
-      <div className={containerCls} onClick={() => setIsVisible(true)}>
+      <div
+        className={containerCls}
+        onClick={(event) => {
+          // tslint:disable-next-line: no-any
+          if ((event.target as any).nodeName !== 'svg') {
+            setIsVisible(true);
+          }
+        }}
+      >
         <img
           src={NETWORK_STYLE_CONFIG[network].logo}
           className='scale-150'

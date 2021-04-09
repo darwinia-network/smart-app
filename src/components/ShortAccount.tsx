@@ -1,5 +1,7 @@
 import { CopyOutlined } from '@ant-design/icons';
-import { Tooltip } from 'antd';
+import { message, Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
+import { copyTextToClipboard } from '../utils';
 
 export interface ShortAccountProps {
   account: string;
@@ -12,6 +14,7 @@ export function ShortAccount({
   className = '',
   isCopyBtnDisplay = true,
 }: ShortAccountProps) {
+  const { t } = useTranslation();
   const endPosition = 6;
   const shortAccount = (
     <span className='cursor-default'>
@@ -24,7 +27,15 @@ export function ShortAccount({
       {isCopyBtnDisplay ? (
         <>
           <Tooltip title={account}>{shortAccount}</Tooltip>
-          <CopyOutlined className='ml-2' style={{ cursor: 'copy' }} />
+          <CopyOutlined
+            onClick={() => {
+              copyTextToClipboard(account).then(() => {
+                message.success(t('Success copied!'));
+              });
+            }}
+            className='ml-2'
+            style={{ cursor: 'copy' }}
+          />
         </>
       ) : (
         shortAccount

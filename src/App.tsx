@@ -43,7 +43,7 @@ function App() {
   useEffect(() => {
     window.less
       .modifyVars(THEME_CONFIG[network])
-      .then(() => console.log('success'))
+      .then(() => console.log('Theme changed success'))
       // tslint:disable-next-line: no-any
       .catch((error: any) => console.log(error));
   }, [network]);

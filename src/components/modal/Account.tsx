@@ -1,11 +1,12 @@
 // tslint:disable:no-magic-numbers
 import { CopyOutlined } from '@ant-design/icons';
 import BaseIdentityIcon from '@polkadot/react-identicon';
-import { Button, Card, Col, List, Modal, Row, Tabs } from 'antd';
+import { Button, Card, Col, List, message, Modal, Row, Tabs } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 import BN from 'bn.js';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useApi } from '../../hooks';
+import { copyTextToClipboard } from '../../utils';
 import { formatBalance } from '../../utils/format/formatBalance';
 import { Account } from '../Account';
 import { JazzIcon } from '../icons';
@@ -76,7 +77,7 @@ export function AccountModal({
                 <span className='mr-4'>{account}</span>
                 <Account
                   isLargeRounded={false}
-                  logoStyle={{ height: '.65rem', transform: 'scale(3)' }}
+                  logoStyle={{ height: '.63rem', transform: 'scale(3)' }}
                   className='inline-flex'
                   textClassName='text-xs transform scale-75'
                 />
@@ -84,7 +85,15 @@ export function AccountModal({
             </Row>
 
             <Row className='my-2' gutter={8}>
-              <Col className='flex items-center' style={{ cursor: 'copy' }}>
+              <Col
+                className='flex items-center'
+                onClick={() => {
+                  copyTextToClipboard(account).then(() => {
+                    message.success(t('Success copied'));
+                  });
+                }}
+                style={{ cursor: 'copy' }}
+              >
                 <CopyOutlined className='mr-2' />
                 <span>{t('Copy address')}</span>
               </Col>

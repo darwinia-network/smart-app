@@ -1,4 +1,4 @@
-import { Button, Dropdown, Menu } from 'antd';
+import { Button, Dropdown, Menu, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useApi } from '../hooks';
@@ -43,8 +43,16 @@ export function Connection() {
           <Dropdown
             overlay={
               <Menu>
-                <Menu.Item onClick={() => setIsAccountSwitcherVisible(true)}>
-                  {t('Use another {{type}} address', { type: accountType })}
+                <Menu.Item
+                  disabled={accountType === 'smart'}
+                  onClick={() => setIsAccountSwitcherVisible(true)}
+                >
+                  <Tooltip
+                    placement='left'
+                    title={accountType === 'smart' ? t('Switch in metamask please!') : null}
+                  >
+                    {t('Use another {{type}} address', { type: accountType })}
+                  </Tooltip>
                 </Menu.Item>
                 <Menu.Item onClick={() => setIsWalletSwitcherVisible(true)}>
                   {t('Switch to {{type}} address', { type: toOppositeAccountType(accountType) })}

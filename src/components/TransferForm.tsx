@@ -28,6 +28,7 @@ import { Balance } from './Balance';
 import { AccountModal } from './modal/Account';
 import { TransferAlertModal } from './modal/TransferAlert';
 import { TransferConfirmModal } from './modal/TransferConfirm';
+import { ShortAccount } from './ShortAccount';
 import { TransferControl } from './TransferControl';
 
 interface Indicator {
@@ -44,8 +45,8 @@ const INDICATOR_STATUS_ICON: { [key in Exclude<Indicator['status'], null>]?: Rea
 function IndicatorMessage({ msg, index }: { msg: string; index: string }) {
   return (
     <p className='flex justify-between'>
-      <span>{msg}</span>
-      <span>{index}</span>
+      <span className='mr-4'>{msg}</span>
+      <ShortAccount account={index} />
     </p>
   );
 }
@@ -157,7 +158,7 @@ export function TransferForm() {
       setIsIndictorVisible(true);
       setIndicator({ message: t('Sending'), type: 'info', status: 'sending' });
 
-      await web3.eth
+      const txHash = await web3.eth
         .sendTransaction({
           from: account,
           to: DVM_WITHDRAW_ADDRESS,
@@ -168,14 +169,14 @@ export function TransferForm() {
         .on('error', (e) => {
           handleError();
         })
-        .on('transactionHash', (transactionHash) => {
-          handleSuccess(transactionHash);
+        .on('transactionHash', (_) => {
+          setIsConfirmVisible(false);
         });
+
+      handleSuccess(txHash.transactionHash);
     } catch (err) {
       handleError();
     }
-
-    setIsConfirmVisible(false);
   };
 
   useEffect(() => {
