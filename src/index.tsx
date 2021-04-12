@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
 import './config/i18n';
-import { AccountProvider, ApiProvider } from './hooks';
+import { AccountProvider, ApiProvider, AssetsProvider } from './hooks';
 import './index.less';
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
@@ -13,7 +13,9 @@ ReactDOM.render(
     <Router>
       <ApiProvider>
         <AccountProvider>
-          <App />
+          <AssetsProvider>
+            <App />
+          </AssetsProvider>
         </AccountProvider>
       </ApiProvider>
     </Router>

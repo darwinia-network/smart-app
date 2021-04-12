@@ -1,5 +1,5 @@
-import { ArrowRightOutlined, RightCircleFilled } from '@ant-design/icons';
-import { Button, Modal } from 'antd';
+import { ArrowRightOutlined } from '@ant-design/icons';
+import { Button, Modal, Tag } from 'antd';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NETWORK_STYLE_CONFIG } from '../../config/network';
@@ -74,7 +74,11 @@ export function TransferConfirmModal({
         <h4 className='text-gray-400 mb-2'>{t('Amount')}</h4>
         <p>
           {value.amount} <span className='uppercase'>{value.assets}</span>
-          {value.assets === 'kton' && <span>{t('Need to receive')}</span>}
+          {value.assets === 'kton' && (
+            <Tag color='blue' className='ml-4'>
+              {t('Need to receive')}
+            </Tag>
+          )}
         </p>
       </div>
     </Modal>

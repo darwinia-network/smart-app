@@ -1,10 +1,11 @@
 import { UnorderedListOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Layout, Menu, Spin } from 'antd';
 import isMobile from 'ismobilejs';
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Route, Switch } from 'react-router-dom';
 import { Connection } from './components/Connection';
+import { KtonDraw } from './components/KtonDraw';
 import { Language } from './components/Language';
 import { NETWORK_STYLE_CONFIG } from './config/network';
 import { Path, routes } from './config/routes';
@@ -104,6 +105,7 @@ function App() {
             ))}
           </Switch>
           <Language className='text-2xl cursor-pointer ml-16 fixed bottom-8 right-8 text-purple-700' />
+          <KtonDraw />
         </Spin>
       </Content>
     </Layout>

@@ -9,9 +9,7 @@ import { useTranslation } from 'react-i18next';
 import Web3 from 'web3';
 import { DVM_WITHDRAW_ADDRESS, PRECISION } from '../config';
 import { validateMessages } from '../config/validate-msg';
-import { useApi } from '../hooks';
-import { useAccount } from '../hooks/account';
-import { useAssets } from '../hooks/assets';
+import { useAccount, useApi, useAssets } from '../hooks';
 import { Assets } from '../model';
 import { TransferFormValues } from '../model/transfer';
 import {
@@ -42,6 +40,8 @@ const INDICATOR_STATUS_ICON: { [key in Exclude<Indicator['status'], null>]?: Rea
   sending: <SyncOutlined spin />,
 };
 
+const DELAY_TIME = 5000;
+
 function IndicatorMessage({ msg, index }: { msg: string; index: string }) {
   return (
     <p className='flex justify-between'>
@@ -56,8 +56,8 @@ export function TransferForm() {
   const { t } = useTranslation();
   const { account } = useAccount();
   const { accounts, network, accountType, api, setNetworkStatus, setAccounts } = useApi();
-  const [asset, setAsset] = useState<Assets>('ring');
-  const { assets, setRefresh } = useAssets(asset);
+  const { assets, reloadAssets } = useAssets();
+  const [balance, setBalance] = useState<string>(null);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [isAccountVisible, setIsAccountVisible] = useState(false);
@@ -69,14 +69,14 @@ export function TransferForm() {
   });
   const connect = connectFactory(setAccounts, t, setNetworkStatus);
   // tslint:disable-next-line: no-magic-numbers
-  const delayCloseIndicator = () => setTimeout(() => setIsIndictorVisible(false), 5000);
+  const delayCloseIndicator = () => setTimeout(() => setIsIndictorVisible(false), DELAY_TIME);
   const handleSuccess = (index: string) => {
     setIndicator({
       type: 'success',
       message: <IndicatorMessage msg={t('Extrinsic success')} index={index} />,
       status: 'success',
     });
-    setRefresh(Math.random());
+    reloadAssets();
     delayCloseIndicator();
     setIsAccountVisible(true);
   };
@@ -125,7 +125,7 @@ export function TransferForm() {
                 setIndicator({
                   type: 'warning',
                   message: (
-                    <IndicatorMessage msg={t('Extrinsic failed!')} index={index.toRawType()} />
+                    <IndicatorMessage msg={t('Extrinsic failed')} index={index.toRawType()} />
                   ),
                   status: 'fail',
                 });
@@ -186,6 +186,12 @@ export function TransferForm() {
     ]);
   }, [accountType, form]);
 
+  useEffect(() => {
+    const asset = form.getFieldValue('assets') as Assets;
+
+    setBalance(formatBalance(assets[asset], accountType, asset));
+  }, [assets, accountType, form]);
+
   return (
     <>
       <Form
@@ -194,7 +200,7 @@ export function TransferForm() {
         form={form}
         initialValues={{
           recipient: '',
-          assets: asset,
+          assets: 'ring',
           amount: '',
         }}
         onFinish={(_) => {
@@ -237,7 +243,7 @@ export function TransferForm() {
         <Form.Item label={t('Assets')} name='assets' rules={[{ required: true }]}>
           <Select
             onChange={(value: Assets) => {
-              setAsset(value);
+              setBalance(formatBalance(assets[value], accountType, value));
               form.setFieldsValue({ amount: '' });
             }}
           >
@@ -253,10 +259,14 @@ export function TransferForm() {
             { required: true },
             { pattern: /^[\d,]+(.\d{1,3})?$/ },
             ({ getFieldValue }) => ({
+              // tslint:disable-next-line: cyclomatic-complexity
               validator(_, value) {
+                const asset = getFieldValue('assets') as Assets;
                 const base = new Bignumber(
-                  // tslint:disable-next-line: no-magic-numbers
-                  value * Math.pow(10, accountType === 'main' ? PRECISION : 18)
+                  asset === 'kton' && accountType === 'smart'
+                    ? value
+                    : // tslint:disable-next-line: no-magic-numbers
+                      value * Math.pow(10, accountType === 'main' ? PRECISION : 18)
                 );
                 const max = new Bignumber(assets[asset].toString());
 
@@ -272,11 +282,7 @@ export function TransferForm() {
             }),
           ]}
         >
-          <Balance
-            placeholder={t('Available balance {{balance}}', {
-              balance: formatBalance(assets[asset], accountType),
-            })}
-          />
+          <Balance placeholder={t('Available balance {{balance}}', { balance })} />
         </Form.Item>
 
         <Form.Item>
@@ -337,7 +343,7 @@ export function TransferForm() {
       />
 
       <Alert
-        className='fixed top-24 right-8'
+        className='fixed top-40 right-8 border-none'
         message={indicator.message}
         type={indicator.type}
         icon={INDICATOR_STATUS_ICON[indicator.status] || null}

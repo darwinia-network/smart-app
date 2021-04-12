@@ -5,8 +5,9 @@ import type ExtType from '@polkadot/extension-inject/types';
 import { message } from 'antd';
 import { TFunction } from 'i18next';
 import Web3 from 'web3';
-import { NetworkIds } from '../../config';
+import { NetworkIds, TOKEN_ERC20_KTON } from '../../config';
 import { AccountType, IAccountMeta, NetworkConfig, NetworkType } from '../../model';
+import ktonABI from './abi/ktonABI.json';
 
 export interface Connection {
   accounts: ExtType.InjectedAccountWithMeta[];
@@ -135,9 +136,9 @@ export async function getTokenBalanceEth(account = ''): Promise<TokenBalance> {
   try {
     const web3 = new Web3(window.ethereum);
     const ring = await web3.eth.getBalance(account);
-    const kton = '0';
-
-    // TODO: kton
+    // tslint:disable-next-line: no-any
+    const ktonContract = new web3.eth.Contract(ktonABI as any, TOKEN_ERC20_KTON, { gas: 55000 });
+    const kton = await ktonContract.methods.balanceOf(account).call();
 
     return [ring, kton];
   } catch (error) {

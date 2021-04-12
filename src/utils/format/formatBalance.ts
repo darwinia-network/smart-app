@@ -3,7 +3,7 @@ import BN from 'bn.js';
 import { isNull, isNumber, isString, isUndefined } from 'lodash';
 import Web3 from 'web3';
 import { PRECISION } from '../../config';
-import { AccountType } from '../../model';
+import { AccountType, Assets } from '../../model';
 
 // tslint:disable-next-line: cyclomatic-complexity
 const toString = (value: string | BN | number): string => {
@@ -26,10 +26,20 @@ const isDecimal = (value: number | string) => {
   return /\d+\.\d+/.test(String(value));
 };
 
-export function formatBalance(balance: string | BN | number, accountType: AccountType): string {
-  return accountType === 'main'
-    ? formatBalanceForMainnet(balance)
-    : Web3.utils.fromWei(toString(balance));
+export function formatBalance(
+  balance: string | BN | number,
+  accountType: AccountType,
+  assetType: Assets = 'ring'
+): string {
+  if (accountType === 'main') {
+    return formatBalanceForMainnet(balance);
+  }
+
+  if (accountType === 'smart') {
+    return assetType === 'ring' ? Web3.utils.fromWei(toString(balance)) : toString(balance);
+  }
+
+  return '';
 }
 
 export function formatBalanceForMainnet(balance: string | BN | number): string {

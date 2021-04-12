@@ -1,8 +1,7 @@
 import React, { CSSProperties, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NETWORK_STYLE_CONFIG } from '../config/network';
-import { useApi } from '../hooks';
-import { useAssets } from '../hooks/assets';
+import { useApi, useAssets } from '../hooks';
 import { clsName } from '../utils';
 import { AccountModal } from './modal/Account';
 

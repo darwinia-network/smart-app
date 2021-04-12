@@ -30,7 +30,7 @@ export function ShortAccount({
           <CopyOutlined
             onClick={() => {
               copyTextToClipboard(account).then(() => {
-                message.success(t('Success copied!'));
+                message.success(t('Success copied'));
               });
             }}
             className='ml-2'

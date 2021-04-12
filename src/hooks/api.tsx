@@ -12,7 +12,7 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NetworkIds } from '../config';
-import { AccountType, IAccountMeta, NetworkType } from '../model';
+import { AccountType, Action, IAccountMeta, NetworkType } from '../model';
 import {
   connectEth,
   connectNodeProvider,
@@ -30,12 +30,7 @@ interface StoreState {
 
 type ActionType = 'switchAccountType' | 'switchNetwork' | 'updateNetworkStatus' | 'setAccounts';
 
-interface Action<T = string> {
-  type: ActionType;
-  payload: T;
-}
-
-const store: StoreState = {
+const initialState: StoreState = {
   accountType: 'main',
   network: 'pangolin',
   accounts: null,
@@ -43,7 +38,7 @@ const store: StoreState = {
 };
 
 // tslint:disable-next-line: cyclomatic-complexity no-any
-export function accountReducer(state: StoreState, action: Action<any>): StoreState {
+export function accountReducer(state: StoreState, action: Action<ActionType, any>): StoreState {
   switch (action.type) {
     case 'switchAccountType': {
       return { ...state, accounts: null, accountType: action.payload as AccountType };
@@ -71,7 +66,7 @@ export type ApiCtx = {
   accounts: IAccountMeta[];
   api: ApiPromise;
   createAction: ActionHelper;
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<Action<ActionType>>;
   network: NetworkType;
   networkStatus: ConnectStatus;
   setAccounts: (accounts: IAccountMeta[]) => void;
@@ -85,7 +80,7 @@ type ActionHelper = <T = string>(type: ActionType) => (payload: T) => void;
 export const ApiContext = createContext<ApiCtx>(null);
 
 export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
-  const [state, dispatch] = useReducer(accountReducer, store);
+  const [state, dispatch] = useReducer(accountReducer, initialState);
   const createAction: ActionHelper = (type) => (payload) =>
     dispatch({ type, payload: payload as never });
   const switchAccountType = useCallback(createAction<AccountType>('switchAccountType'), []);
@@ -148,6 +143,8 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
               ),
               key,
               onClose: () => notification.close(key),
+              // tslint:disable-next-line: no-magic-numbers
+              duration: 10 * 1000,
             });
 
             setNetworkStatus('fail');

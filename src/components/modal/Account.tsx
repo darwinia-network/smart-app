@@ -133,7 +133,7 @@ export function AccountModal({
               {
                 image: '/image/kton.svg',
                 asset: 'kton',
-                amount: formatBalance(assets.kton, accountType),
+                amount: formatBalance(assets.kton, accountType, 'kton'),
               },
             ]}
             renderItem={(item) => (
