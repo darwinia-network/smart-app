@@ -32,12 +32,6 @@ export const AssetsProvider = ({ children }: React.PropsWithChildren<{}>) => {
       [ring, kton] = await getTokenBalanceEth(account);
     }
 
-    console.log(
-      '%c [ [ring, kton, accountType] ]-25',
-      'font-size:13px; background:pink; color:#bf2c9f;',
-      [ring, kton, accountType]
-    );
-
     setAssets({
       ring: web3.utils.toBN(ring),
       kton: web3.utils.toBN(kton),

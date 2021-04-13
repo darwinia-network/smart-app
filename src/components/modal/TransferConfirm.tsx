@@ -74,7 +74,7 @@ export function TransferConfirmModal({
         <h4 className='text-gray-400 mb-2'>{t('Amount')}</h4>
         <p>
           {value.amount} <span className='uppercase'>{value.assets}</span>
-          {value.assets === 'kton' && (
+          {value.assets === 'kton' && accountType === 'main' && (
             <Tag color='blue' className='ml-4'>
               {t('Need to receive')}
             </Tag>

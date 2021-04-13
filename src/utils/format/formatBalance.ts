@@ -32,7 +32,7 @@ export function formatBalance(
   assetType: Assets = 'ring'
 ): string {
   if (accountType === 'main') {
-    return formatBalanceForMainnet(balance);
+    return precisionBalance(balance);
   }
 
   if (accountType === 'smart') {
@@ -42,7 +42,7 @@ export function formatBalance(
   return '';
 }
 
-export function formatBalanceForMainnet(balance: string | BN | number): string {
+export function precisionBalance(balance: string | BN | number): string {
   const origin = toString(balance);
 
   if (origin.length === 0 || origin === '0') {

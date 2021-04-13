@@ -3,10 +3,13 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import type ExtType from '@polkadot/extension-inject/types';
 import { message } from 'antd';
+import Bignumber from 'bignumber.js';
+import BN from 'bn.js';
 import { TFunction } from 'i18next';
 import Web3 from 'web3';
-import { NetworkIds, TOKEN_ERC20_KTON } from '../../config';
+import { DVM_KTON_WITHDRAW_ADDRESS, NetworkIds, TOKEN_ERC20_KTON } from '../../config';
 import { AccountType, IAccountMeta, NetworkConfig, NetworkType } from '../../model';
+import { precisionBalance } from '../format/formatBalance';
 import ktonABI from './abi/ktonABI.json';
 
 export interface Connection {
@@ -145,4 +148,40 @@ export async function getTokenBalanceEth(account = ''): Promise<TokenBalance> {
     console.log('%c [ error ]-144', 'font-size:13px; background:pink; color:#bf2c9f;', error);
     return ['0', '0'];
   }
+}
+
+/**
+ * @param account receive account - metamask current active account;
+ * @param amount receive amount
+ * @returns transaction hash
+ */
+export async function receiveKton(account: string, amount: BN): Promise<string> {
+  // ?FIXE: use code below after contract updated.
+  // const web3 = new Web3(window.ethereum || window.web3.currentProvider);
+  // const ktonContract = new web3.eth.Contract(x16ABI as any, TOKEN_ERC20_KTON);
+  // const result = await ktonContract.methods
+  //   .transfer_and_call(
+  //     TOKEN_ERC20_KTON,
+  //     web3.utils.toWei(amount)
+  //   )
+  //   .send({ from: account });
+
+  const valueLength = 64;
+  const balance = precisionBalance(amount.toString());
+  console.log('%c [ balance ]-171', 'font-size:13px; background:pink; color:#bf2c9f;', balance);
+  const count = new Bignumber(10).toString(16);
+  // tslint:disable-next-line: no-magic-numbers
+  const value = new Array(valueLength - count.length).fill(0).join('') + count;
+  // tslint:disable-next-line: no-magic-numbers
+  const data = `0x784deab5000000000000000000000000${TOKEN_ERC20_KTON.slice(2)}${value}`;
+  const web3 = new Web3(window.ethereum);
+  const txHash = await web3.eth.sendTransaction({
+    from: account,
+    to: DVM_KTON_WITHDRAW_ADDRESS,
+    data,
+    value: '0x00',
+    gas: 300000,
+  });
+
+  return txHash.transactionHash;
 }

@@ -1,13 +1,15 @@
 import { FrownOutlined, LoadingOutlined, SyncOutlined } from '@ant-design/icons';
 import { SubmittableResult } from '@polkadot/api';
 import { web3FromAddress } from '@polkadot/extension-dapp';
+import { u8aToHex } from '@polkadot/util';
+import { decodeAddress } from '@polkadot/util-crypto';
 import { Alert, AlertProps, Button, Form, Input, notification, Select } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import Bignumber from 'bignumber.js';
 import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Web3 from 'web3';
-import { DVM_WITHDRAW_ADDRESS, PRECISION } from '../config';
+import { DVM_RING_WITHDRAW_ADDRESS, PRECISION, TOKEN_ERC20_KTON } from '../config';
 import { validateMessages } from '../config/validate-msg';
 import { useAccount, useApi, useAssets } from '../hooks';
 import { Assets } from '../model';
@@ -19,7 +21,8 @@ import {
   toBn,
   toOppositeAccountType,
 } from '../utils';
-import { connectFactory } from '../utils/api/connect';
+import KtonABI from '../utils/api/abi/ktonABI.json';
+import { connectFactory } from '../utils/api/api';
 import { formatBalance } from '../utils/format/formatBalance';
 import { isValidAddress } from '../utils/helper/validate';
 import { Balance } from './Balance';
@@ -146,7 +149,7 @@ export function TransferForm() {
   };
 
   const smartToMainnet = async () => {
-    const { recipient, amount } = form.getFieldsValue();
+    const { recipient, amount, assets: selectedAsset } = form.getFieldsValue();
     const accountIdHex = registry.createType('AccountId', convertSS58Address(recipient)).toHex();
     const web3 = new Web3(window.ethereum);
 
@@ -157,21 +160,35 @@ export function TransferForm() {
     try {
       setIsIndictorVisible(true);
       setIndicator({ message: t('Sending'), type: 'info', status: 'sending' });
+      let txHash;
 
-      const txHash = await web3.eth
-        .sendTransaction({
-          from: account,
-          to: DVM_WITHDRAW_ADDRESS,
-          data: accountIdHex,
-          value: Web3.utils.toWei(amount),
-          gas: 55000,
-        })
-        .on('error', (e) => {
-          handleError();
-        })
-        .on('transactionHash', (_) => {
-          setIsConfirmVisible(false);
-        });
+      if (selectedAsset === 'ring') {
+        txHash = await web3.eth
+          .sendTransaction({
+            from: account,
+            to: DVM_RING_WITHDRAW_ADDRESS,
+            data: accountIdHex,
+            value: Web3.utils.toWei(amount),
+            gas: 55000,
+          })
+          .on('error', (e) => {
+            handleError();
+          })
+          .on('transactionHash', (_) => {
+            setIsConfirmVisible(false);
+          });
+      }
+
+      if (selectedAsset === 'kton') {
+        const withdrawalAddress = u8aToHex(decodeAddress(recipient));
+        // tslint:disable-next-line: no-any
+        const ktonContract = new web3.eth.Contract(KtonABI as any, TOKEN_ERC20_KTON);
+
+        txHash = await ktonContract.methods
+          .withdraw(withdrawalAddress, amount)
+          .send({ from: account });
+        setIsConfirmVisible(false);
+      }
 
       handleSuccess(txHash.transactionHash);
     } catch (err) {

@@ -19,7 +19,7 @@ import {
   ConnectStatus,
   connectSubstrate,
   isNetworkConsistent,
-} from '../utils/api/connect';
+} from '../utils/api/api';
 
 interface StoreState {
   accountType: AccountType;
@@ -174,28 +174,23 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
   }, [state.accountType]);
 
   /**
-   * disconnect api connections;
+   * 1. disconnect api connections;
+   * 2. reset node provider on mainnet as soon as network changed.
    */
   useEffect(() => {
     (async () => {
       if (api) {
         await api.disconnect();
+
         setApi(null);
       }
-    })();
-  }, [state.network]);
 
-  /**
-   * reset node provider on mainnet as soon as network changed.
-   */
-  useEffect(() => {
-    (async () => {
       setNetworkStatus('connecting');
-      if (state.accountType === 'main') {
-        const newApi = await connectNodeProvider(state.network);
 
-        setApi(newApi);
-      }
+      const newApi = await connectNodeProvider(state.network);
+
+      setApi(newApi);
+
       setNetworkStatus('success');
     })();
   }, [state.network]);
