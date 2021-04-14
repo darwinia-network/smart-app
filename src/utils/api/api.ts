@@ -168,8 +168,7 @@ export async function receiveKton(account: string, amount: BN): Promise<string> 
 
   const valueLength = 64;
   const balance = precisionBalance(amount.toString());
-  console.log('%c [ balance ]-171', 'font-size:13px; background:pink; color:#bf2c9f;', balance);
-  const count = new Bignumber(10).toString(16);
+  const count = new Bignumber(balance).toString(16);
   // tslint:disable-next-line: no-magic-numbers
   const value = new Array(valueLength - count.length).fill(0).join('') + count;
   // tslint:disable-next-line: no-magic-numbers

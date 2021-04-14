@@ -1,3 +1,4 @@
+import Bignumber from 'bignumber.js';
 // tslint:disable:no-magic-numbers
 import BN from 'bn.js';
 import { isNull, isNumber, isString, isUndefined } from 'lodash';
@@ -36,7 +37,9 @@ export function formatBalance(
   }
 
   if (accountType === 'smart') {
-    return assetType === 'ring' ? Web3.utils.fromWei(toString(balance)) : toString(balance);
+    return assetType === 'ring'
+      ? new Bignumber(Web3.utils.fromWei(toString(balance))).toFixed(4)
+      : toString(balance);
   }
 
   return '';
