@@ -32,7 +32,7 @@ export function Connection() {
 
   return (
     <>
-      {!!accounts ? (
+      {!!accounts && !!account ? (
         <section className='flex items-center gap-2'>
           {account && (
             <Account
