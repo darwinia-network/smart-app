@@ -1,9 +1,10 @@
 import { Button, Dropdown, Menu, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAccount, useApi } from '../hooks';
+import { useAccount, useApi, useAssets } from '../hooks';
 import { toOppositeAccountType } from '../utils';
 import { Account } from './Account';
+import { AccountModal } from './modal/Account';
 import { AccountSelectModal } from './modal/AccountSelect';
 import { SwitchWalletModal } from './modal/SwitchWallet';
 import { ShortAccount } from './ShortAccount';
@@ -13,8 +14,10 @@ export function Connection() {
   const { t } = useTranslation();
   const [isWalletSwitcherVisible, setIsWalletSwitcherVisible] = useState(false);
   const [isAccountSwitcherVisible, setIsAccountSwitcherVisible] = useState(false);
+  const [isAccountDetailVisible, setIsAccountDetailVisible] = useState(false);
   const { account, setAccount } = useAccount();
   const { accounts, setAccounts, accountType } = useApi();
+  const { assets } = useAssets();
 
   // tslint:disable-next-line: cyclomatic-complexity
   useEffect(() => {
@@ -32,7 +35,11 @@ export function Connection() {
       {!!accounts ? (
         <section className='flex items-center gap-2'>
           {account && (
-            <Account>
+            <Account
+              onClick={() => {
+                setIsAccountDetailVisible(true);
+              }}
+            >
               <ShortAccount
                 account={account}
                 className='self-stretch px-4 bg-white my-px mx-px rounded-xl'
@@ -85,6 +92,12 @@ export function Connection() {
       <SwitchWalletModal
         cancel={() => setIsWalletSwitcherVisible(false)}
         isVisible={isWalletSwitcherVisible}
+      />
+
+      <AccountModal
+        assets={assets}
+        isVisible={isAccountDetailVisible}
+        cancel={() => setIsAccountDetailVisible(false)}
       />
     </>
   );
