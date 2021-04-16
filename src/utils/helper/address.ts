@@ -2,7 +2,8 @@ import { TypeRegistry } from '@polkadot/types';
 import { AccountId } from '@polkadot/types/interfaces';
 import { hexToU8a, numberToU8a, stringToU8a, u8aToHex } from '@polkadot/util';
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
-import { S58_PREFIX } from '../../config';
+import { NETWORK_SS58_PREFIX } from './../../config/network';
+import { ValueOf } from './../../model/util';
 
 export const registry = new TypeRegistry();
 
@@ -27,13 +28,17 @@ export function dvmAddressToAccountId(address: string | null | undefined): Accou
   return accountId;
 }
 
-export function convertToSS58(text: string, isShort = false): string {
+export function convertToSS58(
+  text: string,
+  prefix: ValueOf<typeof NETWORK_SS58_PREFIX>,
+  isShort = false
+): string {
   if (!text) {
     return '';
   }
 
   try {
-    let address = encodeAddress(text, S58_PREFIX);
+    let address = encodeAddress(text, prefix);
     const length = 8;
 
     if (isShort) {

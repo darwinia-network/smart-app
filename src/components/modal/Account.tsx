@@ -5,8 +5,9 @@ import { Button, Card, Col, List, message, Modal, Row, Tabs } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 import BN from 'bn.js';
 import { useTranslation } from 'react-i18next';
+import { NETWORK_SS58_PREFIX } from '../../config';
 import { useAccount, useApi } from '../../hooks';
-import { copyTextToClipboard } from '../../utils';
+import { convertToSS58, copyTextToClipboard } from '../../utils';
 import { formatBalance } from '../../utils/format/formatBalance';
 import { Account } from '../Account';
 import { JazzIcon } from '../icons';
@@ -46,7 +47,7 @@ export function AccountModal({
   defaultActiveTabKey = 'assets',
 }: IModalProps & { defaultActiveTabKey?: TabKey; assets: { ring: BN; kton: BN } }) {
   const { account, setAccount } = useAccount();
-  const { setAccounts, accountType } = useApi();
+  const { setAccounts, accountType, network } = useApi();
   const { t } = useTranslation();
 
   return (
@@ -100,7 +101,19 @@ export function AccountModal({
 
               <Col className='flex items-center cursor-pointer'>
                 <ViewBrowserIcon className='mr-2 text-xl' />
-                <span>{t('View in browser')}</span>
+                <span
+                  onClick={() => {
+                    window.open(
+                      `https://${network}.subscan.io/account/${convertToSS58(
+                        account,
+                        NETWORK_SS58_PREFIX[network]
+                      )}`,
+                      'blank'
+                    );
+                  }}
+                >
+                  {t('View in browser')}
+                </span>
               </Col>
             </Row>
 

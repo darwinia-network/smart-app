@@ -17,3 +17,9 @@ export enum NetworkIds {
   pangolin = '43',
   crab = 'NaN',
 }
+
+export const NETWORK_SS58_PREFIX: NetworkConfig<number> = {
+  darwinia: 18,
+  pangolin: 18,
+  crab: 42,
+};

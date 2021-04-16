@@ -5,9 +5,14 @@ import { Alert, AlertProps, Button, Form, Input, notification, Select } from 'an
 import { useForm } from 'antd/lib/form/Form';
 import Bignumber from 'bignumber.js';
 import React, { ReactNode, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import Web3 from 'web3';
-import { DVM_RING_WITHDRAW_ADDRESS, PRECISION, TOKEN_ERC20_KTON } from '../config';
+import {
+  DVM_RING_WITHDRAW_ADDRESS,
+  NETWORK_SS58_PREFIX,
+  PRECISION,
+  TOKEN_ERC20_KTON,
+} from '../config';
 import { validateMessages } from '../config/validate-msg';
 import { useAccount, useApi, useAssets } from '../hooks';
 import { Assets } from '../model';
@@ -150,7 +155,9 @@ export function TransferForm() {
 
   const smartToMainnet = async () => {
     const { recipient, amount, assets: selectedAsset } = form.getFieldsValue();
-    const accountIdHex = registry.createType('AccountId', convertToSS58(recipient)).toHex();
+    const accountIdHex = registry
+      .createType('AccountId', convertToSS58(recipient, NETWORK_SS58_PREFIX[network]))
+      .toHex();
     const web3 = new Web3(window.ethereum);
 
     if (accountIdHex === '0x0000000000000000000000000000000000000000000000000000000000000000') {

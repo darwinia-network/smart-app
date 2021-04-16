@@ -26,9 +26,9 @@ interface LinkItem {
 
 const links: LinkItem[] = [
   { name: 'DVM Guide', path: Path.intro },
-  { name: 'Wallet', href: '' },
-  { name: 'Wormhole', href: '' },
-  { name: 'Browser', href: '' },
+  { name: 'Wallet', href: 'https://apps.darwinia.network' },
+  { name: 'Wormhole', href: 'https://wormhole.darwinia.network' },
+  { name: 'Browser', href: 'https://darwinia.subscan.io' },
 ];
 
 const THEME_CONFIG: NetworkConfig<{ [key in keyof typeof darwiniaThemeJson]: string }> = {
