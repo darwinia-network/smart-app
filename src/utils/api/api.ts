@@ -169,7 +169,6 @@ export async function receiveKton(account: string, amount: BN): Promise<string> 
   const valueLength = 64;
   const balance = precisionBalance(amount.toString());
   const count = new Bignumber(balance).toString(16);
-  // tslint:disable-next-line: no-magic-numbers
   const value = new Array(valueLength - count.length).fill(0).join('') + count;
   // tslint:disable-next-line: no-magic-numbers
   const data = `0x784deab5000000000000000000000000${TOKEN_ERC20_KTON.slice(2)}${value}`;

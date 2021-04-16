@@ -1,13 +1,11 @@
 import { FrownOutlined, LoadingOutlined, SyncOutlined } from '@ant-design/icons';
 import { SubmittableResult } from '@polkadot/api';
 import { web3FromAddress } from '@polkadot/extension-dapp';
-import { u8aToHex } from '@polkadot/util';
-import { decodeAddress } from '@polkadot/util-crypto';
 import { Alert, AlertProps, Button, Form, Input, notification, Select } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import Bignumber from 'bignumber.js';
-import { ReactNode, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { ReactNode, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import Web3 from 'web3';
 import { DVM_RING_WITHDRAW_ADDRESS, PRECISION, TOKEN_ERC20_KTON } from '../config';
 import { validateMessages } from '../config/validate-msg';
@@ -15,7 +13,8 @@ import { useAccount, useApi, useAssets } from '../hooks';
 import { Assets } from '../model';
 import { TransferFormValues } from '../model/transfer';
 import {
-  convertSS58Address,
+  convertToDvm,
+  convertToSS58,
   dvmAddressToAccountId,
   registry,
   toBn,
@@ -24,7 +23,7 @@ import {
 import KtonABI from '../utils/api/abi/ktonABI.json';
 import { connectFactory } from '../utils/api/api';
 import { formatBalance } from '../utils/format/formatBalance';
-import { isValidAddress } from '../utils/helper/validate';
+import { isValidAddress, isValidPolkadotAddress } from '../utils/helper/validate';
 import { Balance } from './Balance';
 import { AccountModal } from './modal/Account';
 import { TransferAlertModal } from './modal/TransferAlert';
@@ -65,6 +64,7 @@ export function TransferForm() {
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [isAccountVisible, setIsAccountVisible] = useState(false);
   const [isIndicatorVisible, setIsIndictorVisible] = useState(false);
+  const [equalToDvmAddress, setEqualToDvmAddress] = useState<string>(null);
   const [indicator, setIndicator] = useState<Indicator>({
     status: 'pending',
     message: t('Waiting for confirm'),
@@ -150,7 +150,7 @@ export function TransferForm() {
 
   const smartToMainnet = async () => {
     const { recipient, amount, assets: selectedAsset } = form.getFieldsValue();
-    const accountIdHex = registry.createType('AccountId', convertSS58Address(recipient)).toHex();
+    const accountIdHex = registry.createType('AccountId', convertToSS58(recipient)).toHex();
     const web3 = new Web3(window.ethereum);
 
     if (accountIdHex === '0x0000000000000000000000000000000000000000000000000000000000000000') {
@@ -180,7 +180,7 @@ export function TransferForm() {
       }
 
       if (selectedAsset === 'kton') {
-        const withdrawalAddress = u8aToHex(decodeAddress(recipient));
+        const withdrawalAddress = convertToDvm(recipient);
         // tslint:disable-next-line: no-any
         const ktonContract = new web3.eth.Contract(KtonABI as any, TOKEN_ERC20_KTON);
 
@@ -240,21 +240,40 @@ export function TransferForm() {
                   return Promise.resolve();
                 }
 
-                return isValidAddress(value, accountType) ? Promise.resolve() : Promise.reject();
+                return isValidAddress(value, accountType, network)
+                  ? Promise.resolve()
+                  : Promise.reject();
               },
               message: t('You may have entered a wrong account'),
             },
           ]}
           extra={
-            <span className='text-xs'>
-              {t(
-                'Please make sure to enter a correct darwinia {{type}} account, the asset loss caused by incorrect account input will not be recovered!',
-                { type: t(toOppositeAccountType(accountType)) }
-              )}
-            </span>
+            <p className='overflow-ellipsis overflow-hidden text-xs'>
+              {!!equalToDvmAddress
+                ? t(
+                    'You may entered SS58 format address, the dvm address corresponding to this transaction is {{equalToDvmAddress}} ',
+                    { equalToDvmAddress }
+                  )
+                : t(
+                    'Please make sure to enter a correct darwinia {{type}} account, the asset loss caused by incorrect account input will not be recovered!',
+                    { type: t(toOppositeAccountType(accountType)) }
+                  )}
+            </p>
           }
         >
-          <Input />
+          <Input
+            onChange={(event) => {
+              const isSS58Address = isValidPolkadotAddress(event.target.value);
+
+              if (accountType === 'main' && network !== 'crab' && isSS58Address) {
+                const address = convertToDvm(event.target.value);
+
+                setEqualToDvmAddress(address);
+              } else {
+                setEqualToDvmAddress(null);
+              }
+            }}
+          />
         </Form.Item>
 
         <Form.Item label={t('Assets')} name='assets' rules={[{ required: true }]}>

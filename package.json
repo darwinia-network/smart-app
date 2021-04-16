@@ -1,6 +1,6 @@
 {
-  "name": "dvm",
-  "version": "0.1.0",
+  "name": "smart-app",
+  "version": "v1.0.0-alpha",
   "private": true,
   "scripts": {
     "start": "PORT=3009 craco start",

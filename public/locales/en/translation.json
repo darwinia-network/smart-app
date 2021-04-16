@@ -62,5 +62,6 @@
   "A valid amount must be greater than 0 and less than the maximum available amount": "A valid amount must be greater than 0 and less than the maximum available amount",
   "Incorrect network": "Incorrect network",
   "Network is not consistent! Please switch to {{type}} in metamask": "Network is not consistent! Please switch to {{type}} in metamask",
-  "I known": "I known"
+  "I known": "I known",
+  "You may entered SS58 format address, the dvm address corresponding to this transaction is {{equalToDvmAddress}} ": "You may entered SS58 format address, the dvm address corresponding to this transaction is {{equalToDvmAddress}} "
 }
