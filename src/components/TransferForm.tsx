@@ -22,6 +22,8 @@ import {
   convertToDvm,
   convertToSS58,
   dvmAddressToAccountId,
+  getInfoFromHash,
+  patchUrl,
   registry,
   toBn,
   toOppositeAccountType,
@@ -230,6 +232,14 @@ export function TransferForm() {
     setBalance(formatBalance(assets[asset], accountType, asset));
   }, [assets, accountType, form]);
 
+  useEffect(() => {
+    const { toAccount } = getInfoFromHash();
+
+    if (toAccount) {
+      form.setFieldsValue({ recipient: toAccount });
+    }
+  }, [form]);
+
   return (
     <>
       <Form
@@ -261,7 +271,15 @@ export function TransferForm() {
                   return Promise.resolve();
                 }
 
-                return isValidAddress(value, accountType) ? Promise.resolve() : Promise.reject();
+                const valid = isValidAddress(value, accountType);
+
+                if (valid) {
+                  patchUrl({ toAccount: value });
+
+                  return Promise.resolve();
+                } else {
+                  return Promise.reject();
+                }
               },
               message: t('You may have entered a wrong account'),
             },

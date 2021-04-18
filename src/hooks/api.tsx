@@ -13,6 +13,7 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import { NetworkIds } from '../config';
 import { AccountType, Action, IAccountMeta, NetworkType } from '../model';
+import { getInfoFromHash, patchUrl } from '../utils';
 import {
   connectEth,
   connectNodeProvider,
@@ -30,9 +31,11 @@ interface StoreState {
 
 type ActionType = 'switchAccountType' | 'switchNetwork' | 'updateNetworkStatus' | 'setAccounts';
 
+const info = getInfoFromHash();
+
 const initialState: StoreState = {
-  accountType: 'substrate',
-  network: 'pangolin',
+  accountType: info.accountType || 'substrate',
+  network: info.network || 'pangolin',
   accounts: null,
   networkStatus: 'pending',
 };
@@ -75,6 +78,7 @@ export type ApiCtx = {
   setNetworkStatus: (status: ConnectStatus) => void;
   switchAccountType: (type: AccountType) => void;
   switchNetwork: (type: NetworkType) => void;
+  setApi: (api: ApiPromise) => void;
 };
 
 type ActionHelper = <T = string>(type: ActionType) => (payload: T) => void;
@@ -167,13 +171,14 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
         }
 
         setNetworkStatus('success');
+        patchUrl({ accountType: state.accountType });
       } catch (error) {
         setNetworkStatus('fail');
       }
     })();
 
     return () => {};
-  }, [state.accountType]);
+  }, [state.accountType, state.network]);
 
   /**
    * 1. disconnect api connections;
@@ -192,6 +197,7 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
       setApi(newApi);
 
       setNetworkStatus('success');
+      patchUrl({ network: state.network });
     })();
   }, [state.network]);
 
@@ -205,6 +211,7 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
         switchNetwork,
         setNetworkStatus,
         setAccounts,
+        setApi,
         api,
         isSmart: state.accountType === 'smart',
         isSubstrate: state.accountType === 'substrate',

@@ -6,12 +6,12 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Web3 from 'web3';
 import { useAccount, useApi, useAssets } from '../hooks';
-import { dvmAddressToAccountId, receiveKton } from '../utils';
+import { connectSubstrate, dvmAddressToAccountId, receiveKton } from '../utils';
 import { precisionBalance } from '../utils/format/formatBalance';
 import { ShortAccount } from './ShortAccount';
 
 export function KtonDraw() {
-  const { api, isSubstrate, isSmart } = useApi();
+  const { api, isSubstrate, isSmart, network, setApi } = useApi();
   const { account } = useAccount();
   const { reloadAssets } = useAssets();
   const [isVisible, setIsVisible] = useState(isSmart);
@@ -37,14 +37,23 @@ export function KtonDraw() {
       }
 
       const address = dvmAddressToAccountId(account).toHuman();
+      let apiPromise = api;
+
+      if (!apiPromise) {
+        const { api: newApi } = await connectSubstrate(network);
+
+        apiPromise = newApi;
+        setApi(newApi);
+      }
+
       // tslint:disable-next-line: no-any
-      const ktonUsableBalance = await (api.rpc as any).balances.usableBalance(1, address);
+      const ktonUsableBalance = await (apiPromise.rpc as any).balances.usableBalance(1, address);
       const count = Web3.utils.toBN(ktonUsableBalance.usableBalance.toString());
 
       setBalance(count);
       setIsVisible(count.gt(new BN(0)));
     })();
-  }, [api, account, isSubstrate]);
+  }, [api, account, isSubstrate, network, setApi]);
 
   return isVisible ? (
     <Alert
