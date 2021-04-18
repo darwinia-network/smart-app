@@ -194,7 +194,6 @@ export function TransferForm() {
         const ktonContract = new web3.eth.Contract(KtonABI as any, TOKEN_ERC20_KTON);
         // const count = web3.utils.toBN(web3.utils.toWei(amount, 'ether')); // wormhole style
         const count = amount;
-        console.log('%c [ balance ]-196', 'font-size:13px; background:pink; color:#bf2c9f;', count);
 
         setIsConfirmVisible(false);
 
@@ -253,9 +252,7 @@ export function TransferForm() {
                   return Promise.resolve();
                 }
 
-                return isValidAddress(value, accountType, network)
-                  ? Promise.resolve()
-                  : Promise.reject();
+                return isValidAddress(value, accountType) ? Promise.resolve() : Promise.reject();
               },
               message: t('You may have entered a wrong account'),
             },
@@ -278,7 +275,7 @@ export function TransferForm() {
             onChange={(event) => {
               const isSS58Address = isValidPolkadotAddress(event.target.value);
 
-              if (accountType === 'main' && network !== 'crab' && isSS58Address) {
+              if (accountType === 'main' && isSS58Address) {
                 const address = convertToDvm(event.target.value);
 
                 setEqualToDvmAddress(address);
