@@ -1,5 +1,5 @@
 import { Button, Checkbox, CheckboxOptionType, Modal } from 'antd';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../hooks';
 import { toOppositeAccountType } from '../../utils';
@@ -22,6 +22,8 @@ const options: CheckboxOptionType[] = [
   },
 ];
 
+const defaultChecked: string[] = ['direction'];
+
 export function TransferAlertModal({
   isVisible,
   cancel,
@@ -29,7 +31,7 @@ export function TransferAlertModal({
   recipient,
 }: IModalProps & { recipient: string }) {
   const { t } = useTranslation();
-  const [checkedList, setCheckedList] = useState(['direction']);
+  const [checkedList, setCheckedList] = useState(defaultChecked);
   const [isAllSelected, setIsAllSelected] = useState(false);
   const { accountType } = useApi();
   const optionsTrans = useMemo(
@@ -44,20 +46,28 @@ export function TransferAlertModal({
       })),
     [accountType, t, recipient]
   );
+  const onCancel = useCallback(() => {
+    setCheckedList(defaultChecked);
+    cancel();
+  }, [cancel]);
+  const onConfirm = useCallback(() => {
+    setCheckedList(defaultChecked);
+    confirm();
+  }, [confirm]);
 
   return (
     <Modal
       title={t('Attention')}
       visible={isVisible}
-      onCancel={cancel}
+      onCancel={onCancel}
       footer={[
-        <Button className='w-1/2' key='cancel-btn' onClick={cancel}>
+        <Button className='w-1/2' key='cancel-btn' onClick={onCancel}>
           {t('Cancel')}
         </Button>,
         <Button
           key='primary-btn'
           type='primary'
-          onClick={confirm}
+          onClick={onConfirm}
           disabled={!isAllSelected}
           className='w-1/2 rounded-xl'
         >

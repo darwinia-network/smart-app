@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import Web3 from 'web3';
 import {
   DVM_RING_WITHDRAW_ADDRESS,
+  ETHER_PRECISION,
   NETWORK_SS58_PREFIX,
   PRECISION,
   TOKEN_ERC20_KTON,
@@ -167,10 +168,9 @@ export function TransferForm() {
     try {
       setIsIndictorVisible(true);
       setIndicator({ message: t('Sending'), type: 'info', status: 'sending' });
-      let txHash;
 
       if (selectedAsset === 'ring') {
-        txHash = await web3.eth
+        const txHash = await web3.eth
           .sendTransaction({
             from: account,
             to: DVM_RING_WITHDRAW_ADDRESS,
@@ -184,20 +184,26 @@ export function TransferForm() {
           .on('transactionHash', (_) => {
             setIsConfirmVisible(false);
           });
+
+        handleSuccess(txHash.transactionHash);
       }
 
       if (selectedAsset === 'kton') {
         const withdrawalAddress = convertToDvm(recipient);
         // tslint:disable-next-line: no-any
         const ktonContract = new web3.eth.Contract(KtonABI as any, TOKEN_ERC20_KTON);
+        // const count = web3.utils.toBN(web3.utils.toWei(amount, 'ether')); // wormhole style
+        const count = amount;
+        console.log('%c [ balance ]-196', 'font-size:13px; background:pink; color:#bf2c9f;', count);
 
-        txHash = await ktonContract.methods
-          .withdraw(withdrawalAddress, amount)
-          .send({ from: account });
         setIsConfirmVisible(false);
-      }
 
-      handleSuccess(txHash.transactionHash);
+        const txHash = await ktonContract.methods
+          .withdraw(withdrawalAddress, count)
+          .send({ from: account });
+
+        handleSuccess(txHash.transactionHash);
+      }
     } catch (err) {
       handleError();
     }
@@ -308,8 +314,7 @@ export function TransferForm() {
                 const base = new Bignumber(
                   asset === 'kton' && accountType === 'smart'
                     ? value
-                    : // tslint:disable-next-line: no-magic-numbers
-                      value * Math.pow(10, accountType === 'main' ? PRECISION : 18)
+                    : value * Math.pow(10, accountType === 'main' ? PRECISION : ETHER_PRECISION)
                 );
                 const max = new Bignumber(assets[asset].toString());
 

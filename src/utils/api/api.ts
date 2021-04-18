@@ -3,13 +3,11 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import type ExtType from '@polkadot/extension-inject/types';
 import { message } from 'antd';
-import Bignumber from 'bignumber.js';
 import BN from 'bn.js';
 import { TFunction } from 'i18next';
 import Web3 from 'web3';
 import { DVM_KTON_WITHDRAW_ADDRESS, NetworkIds, TOKEN_ERC20_KTON } from '../../config';
 import { AccountType, IAccountMeta, NetworkConfig, NetworkType } from '../../model';
-import { precisionBalance } from '../format/formatBalance';
 import ktonABI from './abi/ktonABI.json';
 
 export interface Connection {
@@ -166,13 +164,11 @@ export async function receiveKton(account: string, amount: BN): Promise<string> 
   //   )
   //   .send({ from: account });
 
-  const valueLength = 64;
-  const balance = precisionBalance(amount.toString());
-  const count = new Bignumber(balance).toString(16);
-  const value = new Array(valueLength - count.length).fill(0).join('') + count;
-  // tslint:disable-next-line: no-magic-numbers
-  const data = `0x784deab5000000000000000000000000${TOKEN_ERC20_KTON.slice(2)}${value}`;
-  const web3 = new Web3(window.ethereum);
+  const web3 = new Web3(window.ethereum || window.web3.currentProvider);
+  const balance = '10' || amount.toString(); // !FIXME: precision issue, wait for update.
+  const result = web3.eth.abi.encodeParameters(['address', 'uint256'], [TOKEN_ERC20_KTON, balance]);
+  const startPosition = 2;
+  const data = '0x784deab5' + result.substr(startPosition);
   const txHash = await web3.eth.sendTransaction({
     from: account,
     to: DVM_KTON_WITHDRAW_ADDRESS,

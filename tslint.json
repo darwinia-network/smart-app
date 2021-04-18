@@ -28,7 +28,7 @@
     "no-inferrable-types": [true, "ignore-params"],
     "no-input-rename": true,
     "no-inputs-metadata-property": true,
-    "no-magic-numbers": true,
+    "no-magic-numbers": [true, 0, 1, -1, 10],
     "no-name-space": true,
     "no-non-null-assertion": true,
     "no-output-native": true,

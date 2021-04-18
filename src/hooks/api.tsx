@@ -181,8 +181,6 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
     (async () => {
       if (api) {
         await api.disconnect();
-
-        setApi(null);
       }
 
       setNetworkStatus('connecting');
