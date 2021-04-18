@@ -117,7 +117,7 @@ export function connectFactory(
   indicator?: (status: ConnectStatus) => void
 ): (network: NetworkType, accountType: AccountType) => Promise<void> {
   return async (network: NetworkType, accountType: AccountType) => {
-    const connect = accountType === 'main' ? connectSubstrate : connectEth;
+    const connect = accountType === 'substrate' ? connectSubstrate : connectEth;
 
     indicator('connecting');
 

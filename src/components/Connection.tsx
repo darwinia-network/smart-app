@@ -16,19 +16,19 @@ export function Connection() {
   const [isAccountSwitcherVisible, setIsAccountSwitcherVisible] = useState(false);
   const [isAccountDetailVisible, setIsAccountDetailVisible] = useState(false);
   const { account, setAccount } = useAccount();
-  const { accounts, setAccounts, accountType } = useApi();
+  const { accounts, setAccounts, accountType, isSubstrate } = useApi();
   const { assets } = useAssets();
 
   // tslint:disable-next-line: cyclomatic-complexity
   useEffect(() => {
-    if (accountType === 'main' && !!accounts && !account) {
+    if (isSubstrate && !!accounts && !account) {
       setIsAccountSwitcherVisible(true);
     }
 
     if (accountType === 'smart' && !!accounts) {
       setAccount(accounts[0].address);
     }
-  }, [accounts, account, accountType, setAccount]);
+  }, [accounts, account, accountType, setAccount, isSubstrate]);
 
   return (
     <>

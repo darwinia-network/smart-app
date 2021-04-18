@@ -9,7 +9,10 @@ export function oppositeFactory<T, U>(value1: T, value2: U): (value: T | U) => T
   return partialRight(swap, value1, value2);
 }
 
-export const toOppositeAccountType = oppositeFactory<AccountType, AccountType>('main', 'smart');
+export const toOppositeAccountType = oppositeFactory<AccountType, AccountType>(
+  'substrate',
+  'smart'
+);
 
 /**
  * @param common - cls names that do not depend on network

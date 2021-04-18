@@ -9,7 +9,6 @@ function Swap() {
       version='1.1'
       xmlns='http://www.w3.org/2000/svg'
     >
-      <title>1.通用/2.Icon图标/Line/Change</title>
       <defs>
         <linearGradient x1='100%' y1='80.8673469%' x2='0%' y2='19.1326531%' id='linearGradient-1'>
           <stop stopColor='#FE3876' offset='0%'></stop>

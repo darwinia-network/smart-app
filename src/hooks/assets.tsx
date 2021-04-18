@@ -19,16 +19,16 @@ export const AssetsContext = createContext<AssetsCtx>(null);
 
 export const AssetsProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const { account } = useAccount();
-  const { accountType, api } = useApi();
+  const { api, isSubstrate, isSmart } = useApi();
   const [assets, setAssets] = useState<{ ring: BN; kton: BN }>({ ring: null, kton: null });
   const reloadAssets = useCallback(async () => {
     let [ring, kton] = ['0', '0'];
 
-    if (account && accountType === 'main') {
+    if (account && isSubstrate) {
       [ring, kton] = await getTokenBalanceDarwinia(api, account);
     }
 
-    if (account && accountType === 'smart') {
+    if (account && isSmart) {
       [ring, kton] = await getTokenBalanceEth(account);
     }
 
@@ -36,7 +36,7 @@ export const AssetsProvider = ({ children }: React.PropsWithChildren<{}>) => {
       ring: web3.utils.toBN(ring),
       kton: web3.utils.toBN(kton),
     });
-  }, [account, accountType, api]);
+  }, [account, api, isSubstrate, isSmart]);
 
   useEffect(() => {
     reloadAssets().then(() => {});

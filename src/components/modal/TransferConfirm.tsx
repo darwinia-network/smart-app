@@ -16,7 +16,7 @@ export function TransferConfirmModal({
   value,
 }: IModalProps & { value: TransferFormValues }) {
   const { t } = useTranslation();
-  const { accountType, network } = useApi();
+  const { accountType, network, isSubstrate } = useApi();
   const cls = useMemo(
     () => clsName('rounded-xl flex flex-col items-center', NETWORK_STYLE_CONFIG[network].bgClsName),
     [network]
@@ -74,7 +74,7 @@ export function TransferConfirmModal({
         <h4 className='text-gray-400 mb-2'>{t('Amount')}</h4>
         <p>
           {value.amount} <span className='uppercase'>{value.assets}</span>
-          {value.assets === 'kton' && accountType === 'main' && (
+          {value.assets === 'kton' && isSubstrate && (
             <Tag color='blue' className='ml-4'>
               {t('Need to receive')}
             </Tag>

@@ -5,7 +5,7 @@ import { AccountType } from '../../model';
 
 // tslint:disable-next-line: cyclomatic-complexity
 export const isValidAddress = (address: string, accountType: AccountType): boolean => {
-  if (accountType === 'main') {
+  if (accountType === 'substrate') {
     const isDvmAddress = Web3.utils.isAddress(address);
     const isSS58Address = isValidPolkadotAddress(address);
 

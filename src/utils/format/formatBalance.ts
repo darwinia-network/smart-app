@@ -32,7 +32,7 @@ export function formatBalance(
   accountType: AccountType,
   assetType: Assets = 'ring'
 ): string {
-  if (accountType === 'main') {
+  if (accountType === 'substrate') {
     return precisionBalance(balance);
   }
 

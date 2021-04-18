@@ -104,10 +104,10 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
           >
             <img src={NETWORK_STYLE_CONFIG[network].logo} style={{ height: 60 }} alt='' />
             <span
-              className='capitalize dream-btn'
+              className='capitalize dream-btn text-base'
               style={network === 'darwinia' ? {} : { border: 'none' }}
             >
-              {account}
+              {t(account)}
             </span>
           </div>
 
@@ -127,7 +127,7 @@ const ICON_CONFIG: NetworkConfig<{ icon: (...args: any[]) => JSX.Element }> = {
 
 export function TransferControl() {
   const { t } = useTranslation();
-  const { accountType, switchAccountType, network } = useApi();
+  const { accountType, switchAccountType, network, isSubstrate } = useApi();
   const { setAccount, account } = useAccount();
   const [isWalletSwitcherVisible, setIsWalletSwitcherVisible] = useState(false);
 
@@ -147,7 +147,7 @@ export function TransferControl() {
             },
             className:
               'cursor-pointer text-4xl mt-6 transform origin-center transition-all duration-300',
-            style: { transform: `rotateY(${accountType === 'main' ? '0' : '180deg'})` },
+            style: { transform: `rotateY(${isSubstrate ? '0' : '180deg'})` },
           })}
         </div>
 

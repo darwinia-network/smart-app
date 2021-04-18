@@ -63,7 +63,16 @@ export function TransferForm() {
   const [form] = useForm<TransferFormValues>();
   const { t } = useTranslation();
   const { account } = useAccount();
-  const { accounts, network, accountType, api, setNetworkStatus, setAccounts } = useApi();
+  const {
+    accounts,
+    network,
+    accountType,
+    api,
+    setNetworkStatus,
+    setAccounts,
+    isSubstrate,
+    isSmart,
+  } = useApi();
   const { assets, reloadAssets } = useAssets();
   const [balance, setBalance] = useState<string>(null);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
@@ -275,7 +284,7 @@ export function TransferForm() {
             onChange={(event) => {
               const isSS58Address = isValidPolkadotAddress(event.target.value);
 
-              if (accountType === 'main' && isSS58Address) {
+              if (isSubstrate && isSS58Address) {
                 const address = convertToDvm(event.target.value);
 
                 setEqualToDvmAddress(address);
@@ -311,7 +320,7 @@ export function TransferForm() {
                 const base = new Bignumber(
                   asset === 'kton' && accountType === 'smart'
                     ? value
-                    : value * Math.pow(10, accountType === 'main' ? PRECISION : ETHER_PRECISION)
+                    : value * Math.pow(10, isSubstrate ? PRECISION : ETHER_PRECISION)
                 );
                 const max = new Bignumber(assets[asset].toString());
 
@@ -369,11 +378,11 @@ export function TransferForm() {
         cancel={() => setIsConfirmVisible(false)}
         value={form.getFieldsValue()}
         confirm={() => {
-          if (accountType === 'main') {
+          if (isSubstrate) {
             mainnetToSmart();
           }
 
-          if (accountType === 'smart') {
+          if (isSmart) {
             smartToMainnet();
           }
         }}

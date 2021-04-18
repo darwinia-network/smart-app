@@ -36,7 +36,7 @@ const history = [
     amount: 99.99,
     timestamp: 'Jan 6',
     account: '0x245B4775082C144C22a4874B0fBa8c70c510c5AE',
-    accountType: 'main',
+    accountType: 'substrate',
   },
 ];
 
@@ -47,7 +47,7 @@ export function AccountModal({
   defaultActiveTabKey = 'assets',
 }: IModalProps & { defaultActiveTabKey?: TabKey; assets: { ring: BN; kton: BN } }) {
   const { account, setAccount } = useAccount();
-  const { setAccounts, accountType, network } = useApi();
+  const { setAccounts, accountType, network, isSubstrate } = useApi();
   const { t } = useTranslation();
 
   return (
@@ -61,7 +61,7 @@ export function AccountModal({
       <Card className='mb-4'>
         <Row gutter={4} className='overflow-hidden'>
           <Col span={4}>
-            {accountType === 'main' ? (
+            {isSubstrate ? (
               <BaseIdentityIcon
                 theme='substrate'
                 size={iconSize}
@@ -180,7 +180,7 @@ export function AccountModal({
                       <span>{t(item.action === 'send' ? 'To' : 'From')}</span>
                       <ShortAccount account={item.account} isCopyBtnDisplay={false} />
                       <Button
-                        type={item.accountType === 'main' ? 'primary' : 'default'}
+                        type={item.accountType === 'substrate' ? 'primary' : 'default'}
                         size='small'
                         className='rounded-xl text-xs cursor-default'
                       >

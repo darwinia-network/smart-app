@@ -11,10 +11,10 @@ import { precisionBalance } from '../utils/format/formatBalance';
 import { ShortAccount } from './ShortAccount';
 
 export function KtonDraw() {
-  const { accountType, api } = useApi();
+  const { accountType, api, isSubstrate, isSmart } = useApi();
   const { account } = useAccount();
   const { reloadAssets } = useAssets();
-  const [isVisible, setIsVisible] = useState(accountType === 'smart');
+  const [isVisible, setIsVisible] = useState(isSmart);
   const [isDisable, setIsDisable] = useState(false);
   const [hash, setHash] = useState(null);
   const { t } = useTranslation();
@@ -29,7 +29,7 @@ export function KtonDraw() {
 
   useEffect(() => {
     (async () => {
-      if (accountType === 'main') {
+      if (isSubstrate) {
         setIsVisible(false);
 
         return;
@@ -42,7 +42,7 @@ export function KtonDraw() {
       setBalance(count);
       setIsVisible(count.gt(new BN(0)));
     })();
-  }, [accountType, api, account]);
+  }, [accountType, api, account, isSubstrate]);
 
   return isVisible ? (
     <Alert

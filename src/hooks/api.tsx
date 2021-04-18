@@ -31,7 +31,7 @@ interface StoreState {
 type ActionType = 'switchAccountType' | 'switchNetwork' | 'updateNetworkStatus' | 'setAccounts';
 
 const initialState: StoreState = {
-  accountType: 'main',
+  accountType: 'substrate',
   network: 'pangolin',
   accounts: null,
   networkStatus: 'pending',
@@ -63,6 +63,8 @@ export function accountReducer(state: StoreState, action: Action<ActionType, any
 
 export type ApiCtx = {
   accountType: AccountType;
+  isSubstrate: boolean;
+  isSmart: boolean;
   accounts: IAccountMeta[];
   api: ApiPromise;
   createAction: ActionHelper;
@@ -111,7 +113,7 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
     (async () => {
       setNetworkStatus('connecting');
       try {
-        if (state.accountType === 'main') {
+        if (state.accountType === 'substrate') {
           const { accounts: newAccounts, api: newApi, extensions } = await connectSubstrate(
             state.network
           );
@@ -204,6 +206,8 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
         setNetworkStatus,
         setAccounts,
         api,
+        isSmart: state.accountType === 'smart',
+        isSubstrate: state.accountType === 'substrate',
       }}
     >
       {children}

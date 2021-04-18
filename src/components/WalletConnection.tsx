@@ -8,7 +8,7 @@ import { connectFactory } from '../utils';
 const CONFIG: {
   [key in AccountType]: { type: string; logo: string; wallet: string; doc: string };
 } = {
-  main: {
+  substrate: {
     type: 'mainnet',
     logo: '/image/polkadot-logo.svg',
     wallet: 'polkadot.js',

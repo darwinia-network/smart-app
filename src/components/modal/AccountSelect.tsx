@@ -8,7 +8,7 @@ import { IModalProps } from './interface';
 const iconSize = 36;
 
 export function AccountSelectModal({ account, isVisible, confirm, cancel }: IModalProps<string>) {
-  const { accountType, accounts } = useApi();
+  const { accounts, isSubstrate } = useApi();
   const { t } = useTranslation();
   const [form] = useForm();
 
@@ -71,8 +71,7 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
         >
           <Button
             onClick={() => {
-              const url =
-                accountType === 'main' ? 'https://polkadot.js.org' : 'https://metamask.io';
+              const url = isSubstrate ? 'https://polkadot.js.org' : 'https://metamask.io';
 
               window.open(url, 'blank');
             }}

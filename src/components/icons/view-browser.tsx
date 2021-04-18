@@ -9,7 +9,6 @@ function ViewBrowser() {
       version='1.1'
       xmlns='http://www.w3.org/2000/svg'
     >
-      <title>1.通用/2.Icon图标/Line/View</title>
       <g
         id='1.通用/2.Icon图标/Line/View'
         stroke='none'
