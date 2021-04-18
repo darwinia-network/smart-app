@@ -11,7 +11,7 @@ import { precisionBalance } from '../utils/format/formatBalance';
 import { ShortAccount } from './ShortAccount';
 
 export function KtonDraw() {
-  const { accountType, api, isSubstrate, isSmart } = useApi();
+  const { api, isSubstrate, isSmart } = useApi();
   const { account } = useAccount();
   const { reloadAssets } = useAssets();
   const [isVisible, setIsVisible] = useState(isSmart);
@@ -31,9 +31,11 @@ export function KtonDraw() {
     (async () => {
       if (isSubstrate) {
         setIsVisible(false);
+        setHash(null);
 
         return;
       }
+
       const address = dvmAddressToAccountId(account).toHuman();
       // tslint:disable-next-line: no-any
       const ktonUsableBalance = await (api.rpc as any).balances.usableBalance(1, address);
@@ -42,7 +44,7 @@ export function KtonDraw() {
       setBalance(count);
       setIsVisible(count.gt(new BN(0)));
     })();
-  }, [accountType, api, account, isSubstrate]);
+  }, [api, account, isSubstrate]);
 
   return isVisible ? (
     <Alert
