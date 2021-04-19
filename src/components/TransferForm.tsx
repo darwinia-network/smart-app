@@ -284,7 +284,9 @@ export function TransferForm() {
                   return Promise.reject();
                 }
               },
-              message: t('You may have entered a wrong account'),
+              message: t(
+                'Incorrect address, this address is neither a legal Ethereum address nor an SS58 address that can be converted into an Ethereum address.'
+              ),
             },
           ]}
           extra={

@@ -57,7 +57,7 @@
   "You have {{amount}} KTON to receive": "您有 {{amount}} KTON 待领取",
   "You haven’t created an account yet, go ahead and create one.": "你还没有创建账号，先去创建吧",
   "You may entered SS58 format address, the dvm address corresponding to this transaction is {{equalToDvmAddress}} ": "输入了SS58格式地址，本次交易对应的DVM地址是：{{equalToDvmAddress}}",
-  "You may have entered a wrong account": "你可能输入了一个错误的地址",
+  "Incorrect address, this address is neither a legal Ethereum address nor an SS58 address that can be converted into an Ethereum address.": "地址错误，此地址即不是合法的以太坊地址，也不是一个可以转换成以太坊地址的SS58地址",
   "crab": "Crab",
   "darwinia": "Darwinia",
   "disconnect": "断开连接",

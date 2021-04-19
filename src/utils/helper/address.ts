@@ -51,10 +51,19 @@ export function convertToSS58(
   }
 }
 
+export function canConvertToDvm(address: string): boolean {
+  return !!convertToDvm(address);
+}
+
 export function convertToDvm(address: string): string {
   if (!address) {
     return '';
   }
 
-  return u8aToHex(decodeAddress(address));
+  const startAt = 2;
+  const result = u8aToHex(decodeAddress(address)).slice(startAt);
+  const PREFIX = '64766d3a00000000000000';
+
+  // tslint:disable-next-line: no-magic-numbers
+  return result.startsWith(PREFIX) ? '0x' + result.slice(-42) : null;
 }

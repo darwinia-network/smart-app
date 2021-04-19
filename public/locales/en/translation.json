@@ -35,7 +35,7 @@
   "substrate": "Substrate",
   "pangolin": "Pangolin",
   "smart": "Smart",
-  "You may have entered a wrong account": "You may have entered a wrong account",
+  "Incorrect address, this address is neither a legal Ethereum address nor an SS58 address that can be converted into an Ethereum address.": "Incorrect address, this address is neither a legal Ethereum address nor an SS58 address that can be converted into an Ethereum address.",
   "Please make sure to enter a correct darwinia {{type}} account, the asset loss caused by incorrect account input will not be recovered!": "Please make sure to enter a correct darwinia {{type}} account, the asset loss caused by incorrect account input will not be recovered!",
   "Switch in metamask please!": "Switch in metamask please!",
   "Use another {{type}} address": "Use another {{type}} address",

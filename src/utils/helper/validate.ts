@@ -2,6 +2,7 @@ import { decodeAddress, encodeAddress } from '@polkadot/keyring';
 import { hexToU8a, isHex } from '@polkadot/util';
 import Web3 from 'web3';
 import { AccountType } from '../../model';
+import { canConvertToDvm } from './address';
 
 // tslint:disable-next-line: cyclomatic-complexity
 export const isValidAddress = (address: string, accountType: AccountType): boolean => {
@@ -9,7 +10,7 @@ export const isValidAddress = (address: string, accountType: AccountType): boole
     const isDvmAddress = Web3.utils.isAddress(address);
     const isSS58Address = isValidPolkadotAddress(address);
 
-    return isDvmAddress || isSS58Address;
+    return isDvmAddress || (isSS58Address && canConvertToDvm(address));
   }
 
   if (accountType === 'smart') {

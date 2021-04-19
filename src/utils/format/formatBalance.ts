@@ -4,7 +4,7 @@ import BN from 'bn.js';
 import { isNull, isNumber, isString, isUndefined } from 'lodash';
 import Web3 from 'web3';
 import { PRECISION } from '../../config';
-import { AccountType, Assets } from '../../model';
+import { AccountType } from '../../model';
 
 // tslint:disable-next-line: cyclomatic-complexity
 const toString = (value: string | BN | number): string => {
