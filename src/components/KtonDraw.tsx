@@ -1,5 +1,5 @@
 import { LoadingOutlined } from '@ant-design/icons';
-import { Alert, Button, notification } from 'antd';
+import { Alert, Button, message, notification } from 'antd';
 import ErrorBoundary from 'antd/lib/alert/ErrorBoundary';
 import BN from 'bn.js';
 import { useEffect, useState } from 'react';
@@ -11,10 +11,10 @@ import { precisionBalance } from '../utils/format/formatBalance';
 import { ShortAccount } from './ShortAccount';
 
 export function KtonDraw() {
-  const { api, isSubstrate, isSmart, network, setApi } = useApi();
+  const { api, isSubstrate, network, setApi } = useApi();
   const { account } = useAccount();
   const { reloadAssets } = useAssets();
-  const [isVisible, setIsVisible] = useState(isSmart);
+  const [isVisible, setIsVisible] = useState(false);
   const [isDisable, setIsDisable] = useState(false);
   const [hash, setHash] = useState(null);
   const { t } = useTranslation();
@@ -46,12 +46,19 @@ export function KtonDraw() {
         setApi(newApi);
       }
 
-      // tslint:disable-next-line: no-any
-      const ktonUsableBalance = await (apiPromise.rpc as any).balances.usableBalance(1, address);
-      const count = Web3.utils.toBN(ktonUsableBalance.usableBalance.toString());
+      try {
+        // tslint:disable-next-line: no-any
+        const ktonUsableBalance = await (apiPromise.rpc as any).balances.usableBalance(1, address);
+        const usableBalance = ktonUsableBalance.usableBalance.toString();
+        const count = Web3.utils.toBN(
+          Web3.utils.toWei(precisionBalance(usableBalance, false), 'ether')
+        );
 
-      setBalance(count);
-      setIsVisible(count.gt(new BN(0)));
+        setBalance(count);
+        setIsVisible(count.gt(new BN(0)));
+      } catch (error) {
+        message.error(error.message);
+      }
     })();
   }, [api, account, isSubstrate, network, setApi]);
 
@@ -73,7 +80,7 @@ export function KtonDraw() {
                 <ShortAccount account={hash} />
               ) : (
                 t('You have {{amount}} KTON to receive', {
-                  amount: precisionBalance(balance.toString()),
+                  amount: Web3.utils.fromWei(balance.toString(), 'ether'),
                 })
               )}
             </span>

@@ -18,6 +18,10 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
       visible={isVisible}
       maskClosable={false}
       onCancel={cancel}
+      bodyStyle={{
+        maxHeight: '50vh',
+        overflow: 'scroll',
+      }}
       footer={
         accounts?.length
           ? [

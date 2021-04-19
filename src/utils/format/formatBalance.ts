@@ -27,42 +27,44 @@ const isDecimal = (value: number | string) => {
   return /\d+\.\d+/.test(String(value));
 };
 
-export function formatBalance(
-  balance: string | BN | number,
-  accountType: AccountType,
-  assetType: Assets = 'ring'
-): string {
+export function formatBalance(balance: string | BN | number, accountType: AccountType): string {
   if (accountType === 'substrate') {
     return precisionBalance(balance);
   }
 
   if (accountType === 'smart') {
-    return assetType === 'ring'
-      ? new Bignumber(Web3.utils.fromWei(toString(balance))).toFixed(4)
-      : toString(balance);
+    return new Bignumber(Web3.utils.fromWei(toString(balance))).toFixed(4);
   }
 
   return '';
 }
 
-export function precisionBalance(balance: string | BN | number): string {
+/**
+ *
+ * @param balance - balance
+ * @param withThousandSplit  - whether to  use thousands separator in result
+ * @returns string type balance
+ */
+export function precisionBalance(balance: string | BN | number, withThousandSplit = true): string {
   const origin = toString(balance);
 
   if (origin.length === 0 || origin === '0') {
     return '0';
   }
 
-  if (Number.isSafeInteger(Number(origin))) {
-    const value = Number(origin) / Math.pow(10, PRECISION);
+  let result: string = null;
 
-    return prettyNumber(String(value));
+  if (Number.isSafeInteger(Number(origin))) {
+    result = (Number(origin) / Math.pow(10, PRECISION)).toString();
   } else {
     const position = origin.length - PRECISION;
     const prefix = origin.slice(0, position + 1);
     const suffix = origin.substr(position, 3);
 
-    return prettyNumber(`${prefix}.${suffix}`);
+    result = `${prefix}.${suffix}`;
   }
+
+  return withThousandSplit ? prettyNumber(result) : result;
 }
 
 export interface PrettyNumberOptions {

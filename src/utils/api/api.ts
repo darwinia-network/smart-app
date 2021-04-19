@@ -62,9 +62,7 @@ export async function connectSubstrate(
     const api = await connectNodeProvider(network);
 
     return { accounts, extensions, api };
-  } catch (err) {
-    console.log('%c [ err ]-52', 'font-size:13px; background:pink; color:#bf2c9f;', err);
-  }
+  } catch (err) {}
 }
 
 export function isMetamaskInstalled(): boolean {
@@ -80,7 +78,6 @@ export async function isNetworkConsistent(network: NetworkType): Promise<boolean
 
 export async function connectEth(network: NetworkType): Promise<{ accounts: IAccountMeta[] }> {
   if (!isMetamaskInstalled) {
-    console.error('You must install metamask first!');
     return;
   }
 
@@ -127,25 +124,40 @@ export function connectFactory(
         indicator('success');
       })
       .catch((error) => {
-        console.log('%c [ error ]-50', 'font-size:13px; background:pink; color:#bf2c9f;', error);
         message.error(t('Error occurs during connect to {{type}} network.', { type: network }));
       });
   };
 }
 
 export async function getTokenBalanceEth(account = ''): Promise<TokenBalance> {
+  const web3 = new Web3(window.ethereum);
+  let ring = '0';
+  let kton = '0';
+
   try {
-    const web3 = new Web3(window.ethereum);
-    const ring = await web3.eth.getBalance(account);
+    ring = await web3.eth.getBalance(account);
+  } catch (error) {
+    console.error(
+      '%c [ get ring balance in ethereum error ]',
+      'font-size:13px; background:pink; color:#bf2c9f;',
+      error.message
+    );
+  }
+
+  try {
     // tslint:disable-next-line: no-any
     const ktonContract = new web3.eth.Contract(ktonABI as any, TOKEN_ERC20_KTON, { gas: 55000 });
-    const kton = await ktonContract.methods.balanceOf(account).call();
 
-    return [ring, kton];
+    kton = await ktonContract.methods.balanceOf(account).call();
   } catch (error) {
-    console.log('%c [ error ]-144', 'font-size:13px; background:pink; color:#bf2c9f;', error);
-    return ['0', '0'];
+    console.error(
+      '%c [ get kton balance in ethereum error ]',
+      'font-size:13px; background:pink; color:#bf2c9f;',
+      error.message
+    );
   }
+
+  return [ring, kton];
 }
 
 /**
@@ -157,7 +169,7 @@ export async function receiveKton(account: string, amount: BN): Promise<string> 
   // ?FIXE: use code below after contract updated.
   // const web3 = new Web3(window.ethereum || window.web3.currentProvider);
   // const ktonContract = new web3.eth.Contract(x16ABI as any, TOKEN_ERC20_KTON);
-  // const result = await ktonContract.methods
+  // const txHash = await ktonContract.methods
   //   .transfer_and_call(
   //     TOKEN_ERC20_KTON,
   //     web3.utils.toWei(amount)
@@ -165,16 +177,16 @@ export async function receiveKton(account: string, amount: BN): Promise<string> 
   //   .send({ from: account });
 
   const web3 = new Web3(window.ethereum || window.web3.currentProvider);
-  const balance = '10' || amount.toString(); // !FIXME: precision issue, wait for update.
+  const balance = amount.toString();
   const result = web3.eth.abi.encodeParameters(['address', 'uint256'], [TOKEN_ERC20_KTON, balance]);
   const startPosition = 2;
-  const data = '0x784deab5' + result.substr(startPosition);
+  const data = '0x3225da29' + result.substr(startPosition);
   const txHash = await web3.eth.sendTransaction({
     from: account,
     to: DVM_KTON_WITHDRAW_ADDRESS,
     data,
     value: '0x00',
-    gas: 300000,
+    gas: 30000000,
   });
 
   return txHash.transactionHash;

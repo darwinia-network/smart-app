@@ -114,7 +114,7 @@ export function TransferForm() {
 
     // tslint:disable-next-line: no-shadowed-variable
     const { recipient, amount, assets } = form.getFieldsValue();
-    const toAccount = dvmAddressToAccountId(recipient).toHuman();
+    const toAccount = dvmAddressToAccountId(equalToDvmAddress || recipient).toHuman();
     const injector = await web3FromAddress(account);
     const count = toBn(amount);
 
@@ -203,8 +203,7 @@ export function TransferForm() {
         const withdrawalAddress = convertToDvm(recipient);
         // tslint:disable-next-line: no-any
         const ktonContract = new web3.eth.Contract(KtonABI as any, TOKEN_ERC20_KTON);
-        // const count = web3.utils.toBN(web3.utils.toWei(amount, 'ether')); // wormhole style
-        const count = amount;
+        const count = web3.utils.toWei(amount, 'ether');
 
         setIsConfirmVisible(false);
 
@@ -229,7 +228,7 @@ export function TransferForm() {
   useEffect(() => {
     const asset = form.getFieldValue('assets') as Assets;
 
-    setBalance(formatBalance(assets[asset], accountType, asset));
+    setBalance(formatBalance(assets[asset], accountType));
   }, [assets, accountType, form]);
 
   useEffect(() => {
@@ -237,8 +236,10 @@ export function TransferForm() {
 
     if (toAccount) {
       form.setFieldsValue({ recipient: toAccount });
+      patchUrl({ toAccount: '' });
     }
-  }, [form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -278,6 +279,8 @@ export function TransferForm() {
 
                   return Promise.resolve();
                 } else {
+                  patchUrl({ toAccount: '' });
+
                   return Promise.reject();
                 }
               },
@@ -316,7 +319,7 @@ export function TransferForm() {
         <Form.Item label={t('Assets')} name='assets' rules={[{ required: true }]}>
           <Select
             onChange={(value: Assets) => {
-              setBalance(formatBalance(assets[value], accountType, value));
+              setBalance(formatBalance(assets[value], accountType));
               form.setFieldsValue({ amount: '' });
             }}
           >
