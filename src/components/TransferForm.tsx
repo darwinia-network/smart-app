@@ -31,7 +31,7 @@ import {
 import KtonABI from '../utils/api/abi/ktonABI.json';
 import { connectFactory } from '../utils/api/api';
 import { formatBalance } from '../utils/format/formatBalance';
-import { isValidAddress, isValidPolkadotAddress } from '../utils/helper/validate';
+import { isSameAddress, isSS58Address, isValidAddress } from '../utils/helper/validate';
 import { Balance } from './Balance';
 import { AccountModal } from './modal/Account';
 import { TransferAlertModal } from './modal/TransferAlert';
@@ -87,6 +87,15 @@ export function TransferForm() {
     message: t('Waiting for confirm'),
     type: 'info',
   });
+  const handleRecipientChange = (value: string) => {
+    if (isSubstrate && isSS58Address(value)) {
+      const address = convertToDvm(value);
+
+      setEqualToDvmAddress(address);
+    } else {
+      setEqualToDvmAddress(null);
+    }
+  };
   const connect = connectFactory(setAccounts, t, setNetworkStatus);
   // tslint:disable-next-line: no-magic-numbers
   const delayCloseIndicator = () => setTimeout(() => setIsIndictorVisible(false), DELAY_TIME);
@@ -223,6 +232,7 @@ export function TransferForm() {
       { name: 'recipient', errors: [], touched: false, value: null },
       { name: 'amount', errors: [], touched: false, value: null },
     ]);
+    setEqualToDvmAddress(null);
   }, [accountType, form]);
 
   useEffect(() => {
@@ -236,6 +246,7 @@ export function TransferForm() {
 
     if (toAccount) {
       form.setFieldsValue({ recipient: toAccount });
+      handleRecipientChange(toAccount);
       patchUrl({ toAccount: '' });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -268,7 +279,13 @@ export function TransferForm() {
             { required: true },
             {
               validator(_, value) {
-                if (!value) {
+                return !isSameAddress(account, value) ? Promise.resolve() : Promise.reject();
+              },
+              message: t('Receiving address and payment address cannot be the same'),
+            },
+            {
+              validator(_, value) {
+                if (!value || isSameAddress(account, value)) {
                   return Promise.resolve();
                 }
 
@@ -303,19 +320,7 @@ export function TransferForm() {
             </p>
           }
         >
-          <Input
-            onChange={(event) => {
-              const isSS58Address = isValidPolkadotAddress(event.target.value);
-
-              if (isSubstrate && isSS58Address) {
-                const address = convertToDvm(event.target.value);
-
-                setEqualToDvmAddress(address);
-              } else {
-                setEqualToDvmAddress(null);
-              }
-            }}
-          />
+          <Input onChange={(event) => handleRecipientChange(event.target.value)} />
         </Form.Item>
 
         <Form.Item label={t('Assets')} name='assets' rules={[{ required: true }]}>

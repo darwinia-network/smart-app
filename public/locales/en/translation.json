@@ -63,5 +63,6 @@
   "Incorrect network": "Incorrect network",
   "Network is not consistent! Please switch to {{type}} in metamask": "Network is not consistent! Please switch to {{type}} in metamask",
   "I known": "I known",
-  "You may entered SS58 format address, the dvm address corresponding to this transaction is {{equalToDvmAddress}} ": "You may entered SS58 format address, the dvm address corresponding to this transaction is {{equalToDvmAddress}} "
+  "You may entered SS58 format address, the dvm address corresponding to this transaction is {{equalToDvmAddress}} ": "You may entered SS58 format address, the dvm address corresponding to this transaction is {{equalToDvmAddress}} ",
+  "Receiving address and payment address cannot be the same": "Receiving address and payment address cannot be the same"
 }
