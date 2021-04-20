@@ -124,7 +124,7 @@ export function connectFactory(
         indicator('success');
       })
       .catch((error) => {
-        message.error(t('Error occurs during connect to {{type}} network.', { type: network }));
+        message.error(t('Unable to connect to {{type}} network.', { type: network }));
       });
   };
 }

@@ -56,13 +56,13 @@ export function Connection() {
                 >
                   <Tooltip
                     placement='left'
-                    title={accountType === 'smart' ? t('Switch in metamask please!') : null}
+                    title={accountType === 'smart' ? t('Please switch network in Metamask') : null}
                   >
-                    {t('Use another {{type}} address', { type: accountType })}
+                    {t('Use another {{type}} address', { type: t(accountType) })}
                   </Tooltip>
                 </Menu.Item>
                 <Menu.Item onClick={() => setIsWalletSwitcherVisible(true)}>
-                  {t('Switch to {{type}} address', { type: toOppositeAccountType(accountType) })}
+                  {t('Switch to {{type}} address', { type: t(toOppositeAccountType(accountType)) })}
                 </Menu.Item>
                 <Menu.Item
                   onClick={() => {
@@ -70,12 +70,12 @@ export function Connection() {
                     setAccounts(null);
                   }}
                 >
-                  {t('disconnect')}
+                  {t('Disconnect')}
                 </Menu.Item>
               </Menu>
             }
           >
-            <Button>{t('Switch Wallet')}</Button>
+            <Button>{t('Switch Network')}</Button>
           </Dropdown>
         </section>
       ) : (

@@ -4,7 +4,7 @@ import { web3FromAddress } from '@polkadot/extension-dapp';
 import { Alert, AlertProps, Button, Form, Input, notification, Select } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import Bignumber from 'bignumber.js';
-import React, { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Web3 from 'web3';
 import {
@@ -54,10 +54,10 @@ const DELAY_TIME = 5000;
 
 function IndicatorMessage({ msg, index }: { msg: string; index: string }) {
   return (
-    <p className='flex justify-between'>
+    <div className='flex justify-between'>
       <span className='mr-4'>{msg}</span>
       <ShortAccount account={index} />
-    </p>
+    </div>
   );
 }
 
@@ -84,7 +84,7 @@ export function TransferForm() {
   const [equalToDvmAddress, setEqualToDvmAddress] = useState<string>(null);
   const [indicator, setIndicator] = useState<Indicator>({
     status: 'pending',
-    message: t('Waiting for confirm'),
+    message: t('Pending'),
     type: 'info',
   });
   const handleRecipientChange = (value: string) => {
@@ -102,7 +102,7 @@ export function TransferForm() {
   const handleSuccess = (index: string) => {
     setIndicator({
       type: 'success',
-      message: <IndicatorMessage msg={t('Extrinsic success')} index={index} />,
+      message: <IndicatorMessage msg={t('Extrinsic Submitted')} index={index} />,
       status: 'success',
     });
     reloadAssets();
@@ -111,7 +111,7 @@ export function TransferForm() {
   };
   const handleError = () => {
     notification.error({
-      message: t('Extrinsic Error'),
+      message: t('Extrinsic Failed'),
       icon: <FrownOutlined color='red' />,
     });
     delayCloseIndicator();
@@ -142,27 +142,32 @@ export function TransferForm() {
           return;
         }
 
-        setIndicator({ message: t('Sending'), type: 'info', status: 'sending' });
+        setIndicator({ message: t('Pending'), type: 'info', status: 'sending' });
 
         if (result.status.isFinalized || result.status.isInBlock) {
           unsubscribe();
 
           result.events
             .filter(({ event: { section } }) => section === 'system')
-            .forEach(({ event: { method, index } }) => {
-              if (method === 'ExtrinsicFailed') {
-                setIndicator({
-                  type: 'warning',
-                  message: (
-                    <IndicatorMessage msg={t('Extrinsic failed')} index={index.toRawType()} />
-                  ),
-                  status: 'fail',
-                });
-                delayCloseIndicator();
-              } else if (method === 'ExtrinsicSuccess') {
-                handleSuccess(index.toRawType());
+            .forEach(
+              ({
+                event: {
+                  method,
+                  data: { hash },
+                },
+              }) => {
+                if (method === 'ExtrinsicFailed') {
+                  setIndicator({
+                    type: 'warning',
+                    message: <IndicatorMessage msg={t('Extrinsic Failed')} index={hash.toHex()} />,
+                    status: 'fail',
+                  });
+                  delayCloseIndicator();
+                } else if (method === 'ExtrinsicSuccess') {
+                  handleSuccess(hash.toHex());
+                }
               }
-            });
+            );
         }
 
         if (result.isError) {
@@ -187,7 +192,7 @@ export function TransferForm() {
 
     try {
       setIsIndictorVisible(true);
-      setIndicator({ message: t('Sending'), type: 'info', status: 'sending' });
+      setIndicator({ message: t('Pending'), type: 'info', status: 'sending' });
 
       if (selectedAsset === 'ring') {
         const txHash = await web3.eth
@@ -273,22 +278,19 @@ export function TransferForm() {
         </Form.Item>
 
         <Form.Item
-          label={t('Recipient Address')}
+          label={t('Destination address')}
           name='recipient'
+          validateFirst={true}
           rules={[
             { required: true },
             {
               validator(_, value) {
                 return !isSameAddress(account, value) ? Promise.resolve() : Promise.reject();
               },
-              message: t('Receiving address and payment address cannot be the same'),
+              message: t('Payment address and destination address cannot be the same'),
             },
             {
               validator(_, value) {
-                if (!value || isSameAddress(account, value)) {
-                  return Promise.resolve();
-                }
-
                 const valid = isValidAddress(value, accountType);
 
                 if (valid) {
@@ -302,7 +304,10 @@ export function TransferForm() {
                 }
               },
               message: t(
-                'Incorrect address, this address is neither a legal Ethereum address nor an SS58 address that can be converted into an Ethereum address.'
+                isSubstrate
+                  ? 'Input error: Please input a smart address in 0x format or SS58 format'
+                  : 'The address is wrong, please fill in a substrate address of the {{network}} network.',
+                { network }
               ),
             },
           ]}
@@ -310,11 +315,11 @@ export function TransferForm() {
             <p className='overflow-ellipsis overflow-hidden text-xs'>
               {!!equalToDvmAddress
                 ? t(
-                    'You may entered SS58 format address, the dvm address corresponding to this transaction is {{equalToDvmAddress}} ',
+                    'The smart address you entered is in SS58 format, and its corresponding 0x format is: {{equalToDvmAddress}} ',
                     { equalToDvmAddress }
                   )
                 : t(
-                    'Please make sure to enter a correct darwinia {{type}} account, the asset loss caused by incorrect account input will not be recovered!',
+                    'Please make sure you have entered the correct {{type}} address. Entering wrong address will cause asset loss and cannot be recovered!',
                     { type: t(toOppositeAccountType(accountType)) }
                   )}
             </p>
@@ -359,12 +364,12 @@ export function TransferForm() {
                 }
               },
               message: t(
-                'A valid amount must be greater than 0 and less than the maximum available amount'
+                'The value entered must be greater than 0 and less than or equal to the maximum available value'
               ),
             }),
           ]}
         >
-          <Balance placeholder={t('Available balance {{balance}}', { balance })} />
+          <Balance placeholder={t('Available balance: {{balance}}', { balance })} />
         </Form.Item>
 
         <Form.Item>

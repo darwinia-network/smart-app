@@ -20,7 +20,7 @@ export function SwitchWalletModal({ isVisible, cancel, confirm }: IModalProps) {
 
   return (
     <Modal
-      title={t('Switch Wallet')}
+      title={t('Switch Network')}
       visible={isVisible}
       onOk={ok}
       onCancel={cancel}
@@ -36,7 +36,7 @@ export function SwitchWalletModal({ isVisible, cancel, confirm }: IModalProps) {
     >
       <p>
         {t(
-          'Do you want to login with darwinia smart account? Current account will be disconnect after switch to darwinia smart account.'
+          'You are trying to switch the network to {{type}} network. The current network will be disconnected after switched.'
         )}
       </p>
     </Modal>

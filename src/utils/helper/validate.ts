@@ -41,7 +41,9 @@ export const isSameAddress = (from: string, to: string): boolean => {
   let fromAddress: string = from;
 
   if (Web3.utils.isAddress(from)) {
-    toAddress = convertToDvm(to);
+    try {
+      toAddress = convertToDvm(to);
+    } catch (err) {}
   }
 
   if (isSS58Address(from)) {

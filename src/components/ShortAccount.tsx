@@ -28,12 +28,13 @@ export function ShortAccount({
         <>
           <Tooltip title={account}>{shortAccount}</Tooltip>
           <CopyOutlined
-            onClick={() => {
+            onClick={(event) => {
+              event.stopPropagation();
               copyTextToClipboard(account).then(() => {
-                message.success(t('Success copied'));
+                message.success(t('Copied'));
               });
             }}
-            className='ml-2'
+            className='ml-2 enlarge-hot-area'
             style={{ cursor: 'copy' }}
           />
         </>

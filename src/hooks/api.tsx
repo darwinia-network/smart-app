@@ -11,9 +11,9 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NetworkIds } from '../config';
+import { NetworkIds, NETWORK_SS58_PREFIX } from '../config';
 import { AccountType, Action, IAccountMeta, NetworkType } from '../model';
-import { getInfoFromHash, patchUrl } from '../utils';
+import { convertToSS58, getInfoFromHash, patchUrl } from '../utils';
 import {
   connectEth,
   connectNodeProvider,
@@ -127,7 +127,15 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
           if (!extensions.length && !newAccounts.length) {
             setAccounts(null);
           } else {
-            setAccounts(newAccounts);
+            const result =
+              state.network === 'crab'
+                ? newAccounts
+                : newAccounts.map(({ address, ...others }) => ({
+                    ...others,
+                    address: convertToSS58(address, NETWORK_SS58_PREFIX.darwinia),
+                  }));
+
+            setAccounts(result);
           }
         }
 
@@ -139,12 +147,12 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
 
             notification.error({
               message: t('Incorrect network'),
-              description: t('Network is not consistent! Please switch to {{type}} in metamask', {
+              description: t('Network error, please switch to {{type}} network in metamask', {
                 type: state.network,
               }),
               btn: (
                 <Button type='primary' onClick={() => notification.close(key)}>
-                  {t('I known')}
+                  {t('I Understand')}
                 </Button>
               ),
               key,

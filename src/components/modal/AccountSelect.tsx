@@ -14,7 +14,7 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
 
   return (
     <Modal
-      title={t('Select Account')}
+      title={t('Select the address to connect')}
       visible={isVisible}
       maskClosable={false}
       onCancel={cancel}
@@ -70,7 +70,7 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
         <Empty
           image='/image/empty.png'
           imageStyle={{ height: 44 }}
-          description={t('You haven’t created an account yet, go ahead and create one.')}
+          description={t('You haven’t created an address yet, please create a address first.')}
           className='flex justify-center flex-col items-center'
         >
           <Button

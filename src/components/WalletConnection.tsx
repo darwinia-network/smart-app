@@ -39,11 +39,11 @@ export function WalletConnection() {
           connect(network, accountType);
         }}
       >
-        {t('Link Wallet')}
+        {t('Connect Wallet')}
       </Button>
 
       <Modal
-        title={t('Connect to Darwinia {{type}} account', {
+        title={t('Connect to {{type}} address', {
           type: CONFIG[accountType].type,
         })}
         visible={isHelperModalVisible}
@@ -53,7 +53,7 @@ export function WalletConnection() {
         <div className='flex flex-col items-center'>
           <p>
             {t(
-              'You are trying to transfer from Darwinia {{type}} account, you must first obtain authorization from the wallet.',
+              'You are trying to transfer from {{type}} address, please authorize in the extension.',
               { type: CONFIG[accountType].type }
             )}
           </p>

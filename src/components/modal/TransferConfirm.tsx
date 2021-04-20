@@ -66,7 +66,7 @@ export function TransferConfirmModal({
       </div>
 
       <div className='my-4 px-8'>
-        <h4 className='text-gray-400 mb-2'>{t('Recipient Address')}</h4>
+        <h4 className='text-gray-400 mb-2'>{t('Destination address')}</h4>
         <p>{value.recipient}</p>
       </div>
 
@@ -76,7 +76,7 @@ export function TransferConfirmModal({
           {value.amount} <span className='uppercase'>{value.assets}</span>
           {value.assets === 'kton' && isSubstrate && (
             <Tag color='blue' className='ml-4'>
-              {t('Need to receive')}
+              {t('Please claim in smart address')}
             </Tag>
           )}
         </p>

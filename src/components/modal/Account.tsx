@@ -52,7 +52,7 @@ export function AccountModal({
 
   return (
     <Modal
-      title={t('Account')}
+      title={t('Address')}
       visible={isVisible}
       footer={null}
       onCancel={cancel}
@@ -90,7 +90,7 @@ export function AccountModal({
                 className='flex items-center'
                 onClick={() => {
                   copyTextToClipboard(account).then(() => {
-                    message.success(t('Success copied'));
+                    message.success(t('Copied'));
                   });
                 }}
                 style={{ cursor: 'copy' }}
@@ -112,7 +112,7 @@ export function AccountModal({
                     );
                   }}
                 >
-                  {t('View in browser')}
+                  {t('View in Subscan')}
                 </span>
               </Col>
             </Row>
@@ -124,9 +124,10 @@ export function AccountModal({
                 onClick={() => {
                   setAccount(null);
                   setAccounts(null);
+                  cancel();
                 }}
               >
-                {t('disconnect')}
+                {t('Disconnect')}
               </Button>
             </Row>
           </Col>
@@ -161,7 +162,7 @@ export function AccountModal({
             )}
           />
         </TabPane>
-        <TabPane tab={t('History')} key='history'>
+        <TabPane tab={t('Transfer History')} key='history'>
           <List
             itemLayout='horizontal'
             dataSource={history}

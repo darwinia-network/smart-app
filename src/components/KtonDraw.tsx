@@ -79,7 +79,7 @@ export function KtonDraw() {
               {hash ? (
                 <ShortAccount account={hash} />
               ) : (
-                t('You have {{amount}} KTON to receive', {
+                t('You have {{amount}} KTON to claim', {
                   amount: Web3.utils.fromWei(balance.toString(), 'ether'),
                 })
               )}
@@ -112,7 +112,7 @@ export function KtonDraw() {
                     message: (
                       <div>
                         <ErrorBoundary>
-                          <h3>{t('Failed to claim')}</h3>
+                          <h3>{t('Claim Failed')}</h3>
                           {err?.receipt && (
                             <p className='overflow-scroll' style={{ maxHeight: 200 }}>
                               {JSON.stringify(err?.receipt)}

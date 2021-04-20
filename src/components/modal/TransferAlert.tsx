@@ -8,11 +8,11 @@ import { IModalProps } from './interface';
 const options: CheckboxOptionType[] = [
   {
     label:
-      'I want to transfer from darwinia {{fromAccountType}} account to darwinia {{toAccountType}} account',
+      'I am trying to transfer from 「Darwinia {{fromAccountType}} address 」to 「Darwinia {{toAccountType}} address」.',
     value: 'direction',
   },
   {
-    label: 'I have confirmed that the darwinia {{toAccount}} account is safe and available.',
+    label: 'I have confirmed that the「Darwinia {{toAccountType}} address」{{toAccount}}',
     value: 'safe',
   },
   {
@@ -39,8 +39,8 @@ export function TransferAlertModal({
       options.map(({ label, ...others }) => ({
         ...others,
         label: t(label as string, {
-          fromAccountType: accountType,
-          toAccountType: toOppositeAccountType(accountType),
+          fromAccountType: t(accountType),
+          toAccountType: t(toOppositeAccountType(accountType)),
           toAccount: recipient,
         }),
       })),
@@ -71,7 +71,7 @@ export function TransferAlertModal({
           disabled={!isAllSelected}
           className='w-1/2 rounded-xl'
         >
-          {t('Next Step')}
+          {t('Next')}
         </Button>,
       ]}
       wrapClassName='large-footer-btn'
