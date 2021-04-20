@@ -22,13 +22,6 @@ export function KtonDraw() {
   const [balance, setBalance] = useState<BN>(new BN(0));
 
   useEffect(() => {
-    // tslint:disable-next-line: no-any
-    window.ethereum.on('message', (msg: any) => {
-      reloadAssets();
-    });
-  }, [reloadAssets]);
-
-  useEffect(() => {
     (async () => {
       if (isSubstrate) {
         setIsVisible(false);
@@ -109,6 +102,7 @@ export function KtonDraw() {
                   const txhash = await receiveKton(account, balance);
 
                   setHash(txhash);
+                  reloadAssets();
                 } catch (err) {
                   notification.error({
                     message: (
