@@ -2,7 +2,7 @@ import { ArrowRightOutlined } from '@ant-design/icons';
 import { Button, Modal, Tag } from 'antd';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NETWORK_STYLE_CONFIG } from '../../config/network';
+import { NETWORK_STYLE_CONFIG, NETWORK_TOKEN_NAME } from '../../config/network';
 import { useApi } from '../../hooks';
 import { TransferFormValues } from '../../model/transfer';
 import { clsName, toOppositeAccountType } from '../../utils';
@@ -73,7 +73,8 @@ export function TransferConfirmModal({
       <div className='my-4 px-8'>
         <h4 className='text-gray-400 mb-2'>{t('Amount')}</h4>
         <p>
-          {value.amount} <span className='uppercase'>{value.assets}</span>
+          {value.amount}
+          <span className='uppercase'>{NETWORK_TOKEN_NAME[network][value.assets]}</span>
           {value.assets === 'kton' && isSubstrate && (
             <Tag color='blue' className='ml-4'>
               {t('Please claim in smart address')}

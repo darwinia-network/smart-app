@@ -11,6 +11,7 @@ import {
   DVM_RING_WITHDRAW_ADDRESS,
   ETHER_PRECISION,
   NETWORK_SS58_PREFIX,
+  NETWORK_TOKEN_NAME,
   PRECISION,
   TOKEN_ERC20_KTON,
 } from '../config';
@@ -124,7 +125,7 @@ export function TransferForm() {
     // tslint:disable-next-line: no-shadowed-variable
     const { recipient, amount, assets } = form.getFieldsValue();
     const toAccount = dvmAddressToAccountId(equalToDvmAddress || recipient).toHuman();
-    const injector = await web3FromAddress(account);
+    const injector = await web3FromAddress(convertToSS58(account, NETWORK_SS58_PREFIX.crab));
     const count = toBn(amount);
 
     api.setSigner(injector.signer);
@@ -305,7 +306,7 @@ export function TransferForm() {
               },
               message: t(
                 isSubstrate
-                  ? 'Input error: Please input a smart address in 0x format or SS58 format'
+                  ? 'Input error Please input a smart address in 0x format or SS58 format'
                   : 'The address is wrong, please fill in a substrate address of the {{network}} network.',
                 { network }
               ),
@@ -335,8 +336,8 @@ export function TransferForm() {
               form.setFieldsValue({ amount: '' });
             }}
           >
-            <Select.Option value='ring'>ring</Select.Option>
-            <Select.Option value='kton'>kton</Select.Option>
+            <Select.Option value='ring'>{NETWORK_TOKEN_NAME[network].ring}</Select.Option>
+            <Select.Option value='kton'>{NETWORK_TOKEN_NAME[network].kton}</Select.Option>
           </Select>
         </Form.Item>
 

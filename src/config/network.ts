@@ -23,3 +23,9 @@ export const NETWORK_SS58_PREFIX: NetworkConfig<number> = {
   pangolin: 18,
   crab: 42,
 };
+
+export const NETWORK_TOKEN_NAME: NetworkConfig<{ ring: string; kton: string }> = {
+  darwinia: { ring: 'RING', kton: 'KTON' },
+  crab: { ring: 'CRING', kton: 'CKTON' },
+  pangolin: { ring: 'PRING', kton: 'PKTON' },
+};

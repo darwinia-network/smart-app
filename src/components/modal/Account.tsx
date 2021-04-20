@@ -5,8 +5,9 @@ import { Button, Card, Col, List, message, Modal, Row, Tabs } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 import BN from 'bn.js';
 import { useTranslation } from 'react-i18next';
-import { NETWORK_SS58_PREFIX } from '../../config';
+import { NETWORK_SS58_PREFIX, NETWORK_TOKEN_NAME } from '../../config';
 import { useAccount, useApi } from '../../hooks';
+import { Assets } from '../../model';
 import { convertToSS58, copyTextToClipboard } from '../../utils';
 import { formatBalance } from '../../utils/format/formatBalance';
 import { Account } from '../Account';
@@ -141,12 +142,12 @@ export function AccountModal({
             dataSource={[
               {
                 image: '/image/ring.svg',
-                asset: 'ring',
+                asset: NETWORK_TOKEN_NAME[network].ring,
                 amount: formatBalance(assets.ring, accountType),
               },
               {
                 image: '/image/kton.svg',
-                asset: 'kton',
+                asset: NETWORK_TOKEN_NAME[network].kton,
                 amount: formatBalance(assets.kton, accountType),
               },
             ]}
@@ -172,7 +173,10 @@ export function AccountModal({
                   className='flex items-center'
                   title={
                     <b>
-                      {t(item.action)} <span className='uppercase'>{item.asset}</span>
+                      {t(item.action)}{' '}
+                      <span className='uppercase'>
+                        {NETWORK_TOKEN_NAME[network][item.asset as Assets]}
+                      </span>
                     </b>
                   }
                   description={
@@ -192,7 +196,7 @@ export function AccountModal({
                 />
                 <div className='flex flex-col items-stretch justify-end'>
                   <b className='uppercase'>
-                    {item.amount} {item.asset}
+                    {item.amount} {NETWORK_TOKEN_NAME[network][item.asset as Assets]}
                   </b>
                   <ViewBrowserIcon className='text-xl text-right cursor-pointer' />
                 </div>

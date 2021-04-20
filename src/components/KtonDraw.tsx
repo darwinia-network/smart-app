@@ -5,6 +5,7 @@ import BN from 'bn.js';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Web3 from 'web3';
+import { NETWORK_TOKEN_NAME } from '../config';
 import { useAccount, useApi, useAssets } from '../hooks';
 import { connectSubstrate, dvmAddressToAccountId, receiveKton } from '../utils';
 import { precisionBalance } from '../utils/format/formatBalance';
@@ -79,8 +80,9 @@ export function KtonDraw() {
               {hash ? (
                 <ShortAccount account={hash} />
               ) : (
-                t('You have {{amount}} KTON to claim', {
+                t('You have {{amount}} {{ktonName}} to claim', {
                   amount: Web3.utils.fromWei(balance.toString(), 'ether'),
+                  ktonName: NETWORK_TOKEN_NAME[network].kton,
                 })
               )}
             </span>
