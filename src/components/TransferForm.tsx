@@ -130,52 +130,58 @@ export function TransferForm() {
 
     api.setSigner(injector.signer);
 
-    const extrinsic =
-      assets === 'ring'
-        ? api.tx.balances.transfer(toAccount, count)
-        : api.tx.kton.transfer(toAccount, count);
+    try {
+      const extrinsic =
+        assets === 'ring'
+          ? api.tx.balances.transfer(toAccount, count)
+          : api.tx.kton.transfer(toAccount, count);
 
-    const unsubscribe = await extrinsic.signAndSend(
-      account,
-      // tslint:disable-next-line: cyclomatic-complexity
-      async (result: SubmittableResult) => {
-        if (!result || !result.status) {
-          return;
-        }
+      const unsubscribe = await extrinsic.signAndSend(
+        account,
+        // tslint:disable-next-line: cyclomatic-complexity
+        async (result: SubmittableResult) => {
+          if (!result || !result.status) {
+            return;
+          }
 
-        setIndicator({ message: t('Pending'), type: 'info', status: 'sending' });
+          setIndicator({ message: t('Pending'), type: 'info', status: 'sending' });
 
-        if (result.status.isFinalized || result.status.isInBlock) {
-          unsubscribe();
+          if (result.status.isFinalized || result.status.isInBlock) {
+            unsubscribe();
 
-          result.events
-            .filter(({ event: { section } }) => section === 'system')
-            .forEach(
-              ({
-                event: {
-                  method,
-                  data: { hash },
-                },
-              }) => {
-                if (method === 'ExtrinsicFailed') {
-                  setIndicator({
-                    type: 'warning',
-                    message: <IndicatorMessage msg={t('Extrinsic Failed')} index={hash.toHex()} />,
-                    status: 'fail',
-                  });
-                  delayCloseIndicator();
-                } else if (method === 'ExtrinsicSuccess') {
-                  handleSuccess(hash.toHex());
+            result.events
+              .filter(({ event: { section } }) => section === 'system')
+              .forEach(
+                ({
+                  event: {
+                    method,
+                    data: { hash },
+                  },
+                }) => {
+                  if (method === 'ExtrinsicFailed') {
+                    setIndicator({
+                      type: 'warning',
+                      message: (
+                        <IndicatorMessage msg={t('Extrinsic Failed')} index={hash.toHex()} />
+                      ),
+                      status: 'fail',
+                    });
+                    delayCloseIndicator();
+                  } else if (method === 'ExtrinsicSuccess') {
+                    handleSuccess(hash.toHex());
+                  }
                 }
-              }
-            );
-        }
+              );
+          }
 
-        if (result.isError) {
-          handleError();
+          if (result.isError) {
+            handleError();
+          }
         }
-      }
-    );
+      );
+    } catch (err) {
+      handleError();
+    }
 
     setIsConfirmVisible(false);
   };
@@ -203,9 +209,6 @@ export function TransferForm() {
             data: accountIdHex,
             value: Web3.utils.toWei(amount),
             gas: 55000,
-          })
-          .on('error', (e) => {
-            handleError();
           })
           .on('transactionHash', (_) => {
             setIsConfirmVisible(false);

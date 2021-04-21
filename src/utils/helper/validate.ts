@@ -3,7 +3,7 @@ import { hexToU8a, isHex } from '@polkadot/util';
 import Web3 from 'web3';
 import { NETWORK_SS58_PREFIX } from '../../config';
 import { AccountType } from '../../model';
-import { canConvertToDvm, convertToDvm, convertToSS58, dvmAddressToAccountId } from './address';
+import { canConvertToEth, convertToEth, convertToSS58, dvmAddressToAccountId } from './address';
 
 // tslint:disable-next-line: cyclomatic-complexity
 export const isValidAddress = (address: string, accountType: AccountType): boolean => {
@@ -11,7 +11,7 @@ export const isValidAddress = (address: string, accountType: AccountType): boole
     const isDvm = Web3.utils.isAddress(address);
     const isSS58 = isSS58Address(address);
 
-    return isDvm || (isSS58 && canConvertToDvm(address));
+    return isDvm || (isSS58 && canConvertToEth(address));
   }
 
   if (accountType === 'smart') {
@@ -42,7 +42,7 @@ export const isSameAddress = (from: string, to: string): boolean => {
 
   if (Web3.utils.isAddress(from)) {
     try {
-      toAddress = convertToDvm(to);
+      toAddress = convertToEth(to);
     } catch (err) {}
   }
 

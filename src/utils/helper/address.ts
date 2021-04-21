@@ -1,6 +1,6 @@
 import { TypeRegistry } from '@polkadot/types';
 import { AccountId } from '@polkadot/types/interfaces';
-import { hexToU8a, numberToU8a, stringToU8a, u8aToBn, u8aToHex } from '@polkadot/util';
+import { hexToU8a, numberToU8a, stringToU8a, u8aToHex } from '@polkadot/util';
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 import { NETWORK_SS58_PREFIX } from './../../config/network';
 import { ValueOf } from './../../model/util';
@@ -51,11 +51,19 @@ export function convertToSS58(
   }
 }
 
-export function canConvertToDvm(address: string): boolean {
-  return !!convertToDvm(address);
+export function convertToDvm(address: string): string {
+  if (!address) {
+    return '';
+  }
+
+  return u8aToHex(decodeAddress(address));
 }
 
-export function convertToDvm(address: string): string {
+export function canConvertToEth(address: string): boolean {
+  return !!convertToEth(address);
+}
+
+export function convertToEth(address: string): string {
   if (!address) {
     return '';
   }
