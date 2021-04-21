@@ -1,6 +1,6 @@
 import { TypeRegistry } from '@polkadot/types';
 import { AccountId } from '@polkadot/types/interfaces';
-import { hexToU8a, numberToU8a, stringToU8a, u8aToHex } from '@polkadot/util';
+import { hexToU8a, numberToU8a, stringToU8a, u8aToBn, u8aToHex } from '@polkadot/util';
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 import { NETWORK_SS58_PREFIX } from './../../config/network';
 import { ValueOf } from './../../model/util';
@@ -65,5 +65,5 @@ export function convertToDvm(address: string): string {
   const PREFIX = '64766d3a00000000000000';
 
   // tslint:disable-next-line: no-magic-numbers
-  return result.startsWith(PREFIX) ? '0x' + result.slice(-42) : null;
+  return result.startsWith(PREFIX) ? '0x' + result.slice(-42, -2) : null;
 }

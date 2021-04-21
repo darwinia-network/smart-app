@@ -316,7 +316,7 @@ export function TransferForm() {
             <p className='overflow-ellipsis overflow-hidden text-xs'>
               {!!equalToDvmAddress
                 ? t(
-                    'The smart address you entered is in SS58 format, and its corresponding 0x format is: {{equalToDvmAddress}} ',
+                    'The smart address you entered is in SS58 format, and its corresponding 0x format is {{equalToDvmAddress}} ',
                     { equalToDvmAddress }
                   )
                 : t(
