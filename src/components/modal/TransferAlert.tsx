@@ -48,10 +48,12 @@ export function TransferAlertModal({
   );
   const onCancel = useCallback(() => {
     setCheckedList(defaultChecked);
+    setIsAllSelected(false);
     cancel();
   }, [cancel]);
   const onConfirm = useCallback(() => {
     setCheckedList(defaultChecked);
+    setIsAllSelected(false);
     confirm();
   }, [confirm]);
 
