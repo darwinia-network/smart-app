@@ -21,6 +21,7 @@ import { Assets } from '../model';
 import { TransferFormValues } from '../model/transfer';
 import {
   convertToDvm,
+  convertToEth,
   convertToSS58,
   dvmAddressToAccountId,
   getInfoFromHash,
@@ -90,7 +91,7 @@ export function TransferForm() {
   });
   const handleRecipientChange = (value: string) => {
     if (isSubstrate && isSS58Address(value)) {
-      const address = convertToDvm(value);
+      const address = convertToEth(value);
 
       setEqualToDvmAddress(address);
     } else {

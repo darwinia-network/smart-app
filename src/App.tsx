@@ -24,13 +24,6 @@ interface LinkItem {
   path?: string;
 }
 
-const links: LinkItem[] = [
-  { name: 'DVM Guide', path: Path.intro },
-  { name: 'Wallet', href: 'https://apps.darwinia.network' },
-  { name: 'Wormhole', href: 'https://wormhole.darwinia.network' },
-  { name: 'Explorer', href: 'https://darwinia.subscan.io' },
-];
-
 const THEME_CONFIG: NetworkConfig<{ [key in keyof typeof darwiniaThemeJson]: string }> = {
   darwinia: darwiniaThemeJson,
   crab: crabThemeJson,
@@ -55,6 +48,15 @@ function App() {
       <span onClick={() => window.open(item.href)}>{t(item.name)}</span>
     );
   const { phone: isPhone } = isMobile();
+  const links = useMemo<LinkItem[]>(
+    () => [
+      { name: 'DVM Guide', path: Path.intro },
+      { name: 'Wallet', href: 'https://apps.darwinia.network' },
+      { name: 'Wormhole', href: 'https://wormhole.darwinia.network' },
+      { name: 'Explorer', href: `https://${network}.subscan.io` },
+    ],
+    [network]
+  );
 
   useEffect(() => {
     window.less

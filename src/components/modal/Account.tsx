@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { NETWORK_SS58_PREFIX, NETWORK_TOKEN_NAME } from '../../config';
 import { useAccount, useApi } from '../../hooks';
 import { Assets } from '../../model';
-import { convertToSS58, copyTextToClipboard } from '../../utils';
+import { convertToSS58, copyTextToClipboard, dvmAddressToAccountId } from '../../utils';
 import { formatBalance } from '../../utils/format/formatBalance';
 import { Account } from '../Account';
 import { JazzIcon } from '../icons';
@@ -104,13 +104,11 @@ export function AccountModal({
                 <ViewBrowserIcon className='mr-2 text-xl' />
                 <span
                   onClick={() => {
-                    window.open(
-                      `https://${network}.subscan.io/account/${convertToSS58(
-                        account,
-                        NETWORK_SS58_PREFIX[network]
-                      )}`,
-                      'blank'
-                    );
+                    const address = isSubstrate
+                      ? convertToSS58(account, NETWORK_SS58_PREFIX[network])
+                      : dvmAddressToAccountId(account).toHuman();
+
+                    window.open(`https://${network}.subscan.io/account/${address}`, 'blank');
                   }}
                 >
                   {t('View in Subscan')}
