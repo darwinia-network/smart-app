@@ -35,6 +35,7 @@ import { connectFactory } from '../utils/api/api';
 import { formatBalance } from '../utils/format/formatBalance';
 import { isSameAddress, isSS58Address, isValidAddress } from '../utils/helper/validate';
 import { Balance } from './Balance';
+import { DownIcon } from './icons';
 import { AccountModal } from './modal/Account';
 import { TransferAlertModal } from './modal/TransferAlert';
 import { TransferConfirmModal } from './modal/TransferConfirm';
@@ -317,7 +318,7 @@ export function TransferForm() {
             },
           ]}
           extra={
-            <p className='overflow-ellipsis overflow-hidden text-xs'>
+            <p className='overflow-ellipsis overflow-hidden text-xs mt-1'>
               {!!equalToDvmAddress
                 ? t(
                     'The smart address you entered is in SS58 format, and its corresponding 0x format is {{equalToDvmAddress}} ',
@@ -330,7 +331,7 @@ export function TransferForm() {
             </p>
           }
         >
-          <Input onChange={(event) => handleRecipientChange(event.target.value)} />
+          <Input onChange={(event) => handleRecipientChange(event.target.value)} size='large' />
         </Form.Item>
 
         <Form.Item label={t('Assets')} name='assets' rules={[{ required: true }]}>
@@ -339,6 +340,8 @@ export function TransferForm() {
               setBalance(formatBalance(assets[value], accountType));
               form.setFieldsValue({ amount: '' });
             }}
+            size='large'
+            suffixIcon={<DownIcon />}
           >
             <Select.Option value='ring'>{NETWORK_TOKEN_NAME[network].ring}</Select.Option>
             <Select.Option value='kton'>{NETWORK_TOKEN_NAME[network].kton}</Select.Option>
@@ -374,14 +377,15 @@ export function TransferForm() {
             }),
           ]}
         >
-          <Balance placeholder={t('Available balance: {{balance}}', { balance })} />
+          <Balance placeholder={t('Available balance: {{balance}}', { balance })} size='large' />
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item style={{ margin: '48px 0 0 0' }}>
           {!accounts || !account ? (
             <Button
               type='primary'
-              className='block mx-auto w-1/3 rounded-xl text-white'
+              className='block mx-auto w-full rounded-xl text-white'
+              size='large'
               onClick={() => {
                 connect(network, accountType);
               }}
@@ -392,8 +396,9 @@ export function TransferForm() {
             <Button
               type='primary'
               htmlType='submit'
+              size='large'
               disabled={isIndicatorVisible}
-              className='block mx-auto w-1/3 rounded-xl text-white'
+              className='block mx-auto w-full rounded-xl text-white'
             >
               {t('Confirm to transfer')}
             </Button>

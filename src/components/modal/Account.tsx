@@ -1,5 +1,4 @@
 // tslint:disable:no-magic-numbers
-import { CopyOutlined } from '@ant-design/icons';
 import BaseIdentityIcon from '@polkadot/react-identicon';
 import { Button, Card, Col, List, message, Modal, Row, Tabs } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
@@ -11,8 +10,7 @@ import { Assets } from '../../model';
 import { convertToSS58, copyTextToClipboard, dvmAddressToAccountId } from '../../utils';
 import { formatBalance } from '../../utils/format/formatBalance';
 import { Account } from '../Account';
-import { JazzIcon } from '../icons';
-import { ViewBrowserIcon } from '../icons/view-browser';
+import { CloseIcon, CopyIcon, JazzIcon, ViewBrowserIcon } from '../icons';
 import { ShortAccount } from '../ShortAccount';
 import { IModalProps } from './interface';
 
@@ -58,6 +56,7 @@ export function AccountModal({
       footer={null}
       onCancel={cancel}
       destroyOnClose={true}
+      closeIcon={<CloseIcon />}
     >
       <Card className='mb-4'>
         <Row gutter={4} className='overflow-hidden'>
@@ -76,12 +75,12 @@ export function AccountModal({
           <Col span={20}>
             <Row>
               <Col>
-                <span className='mr-4'>{account}</span>
+                <span className='mr-4 text-gray-600 text-base'>{account}</span>
                 <Account
                   isLargeRounded={false}
-                  logoStyle={{ height: '.63rem', transform: 'scale(3)' }}
-                  className='inline-flex'
-                  textClassName='text-xs transform scale-75'
+                  logoStyle={{ width: '1.5em', float: 'left' }}
+                  containerStyle={{ display: 'inline-block' }}
+                  textClassName='text-xs h-4 leading-4  mr-0.5'
                 />
               </Col>
             </Row>
@@ -96,8 +95,8 @@ export function AccountModal({
                 }}
                 style={{ cursor: 'copy' }}
               >
-                <CopyOutlined className='mr-2' />
-                <span>{t('Copy address')}</span>
+                <CopyIcon className='mr-2' />
+                <span className='text-xs text-gray-600'>{t('Copy address')}</span>
               </Col>
 
               <Col className='flex items-center cursor-pointer'>
@@ -110,6 +109,7 @@ export function AccountModal({
 
                     window.open(`https://${network}.subscan.io/account/${address}`, 'blank');
                   }}
+                  className='text-xs text-gray-600'
                 >
                   {t('View in Subscan')}
                 </span>
@@ -119,7 +119,7 @@ export function AccountModal({
             <Row>
               <Button
                 size='small'
-                className='rounded-xl text-sm'
+                className='rounded-xl text-xs'
                 onClick={() => {
                   setAccount(null);
                   setAccounts(null);
@@ -153,7 +153,7 @@ export function AccountModal({
               <List.Item>
                 <List.Item.Meta
                   className='flex items-center'
-                  avatar={<Avatar src={item.image} />}
+                  avatar={<Avatar src={item.image} size={30} className='inline-block' />}
                   title={<b className='uppercase'>{item.asset}</b>}
                 />
                 <div>{item.amount}</div>

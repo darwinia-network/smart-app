@@ -1,3 +1,3 @@
 export function Intro() {
-  return <div>this is Intro page</div>;
+  return <div>Coming soon!</div>;
 }

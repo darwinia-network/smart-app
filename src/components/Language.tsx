@@ -1,7 +1,7 @@
 import { Dropdown, Menu } from 'antd';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { EarthIcon } from './icons/earth';
+import { EarthIcon } from './icons';
 
 export interface LanguageProps {
   className?: string;

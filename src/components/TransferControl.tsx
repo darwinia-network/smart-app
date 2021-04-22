@@ -1,5 +1,4 @@
-import { DownOutlined } from '@ant-design/icons';
-import { Dropdown, Menu } from 'antd';
+import { Dropdown, Menu, Tag } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Network } from '../config';
@@ -7,7 +6,7 @@ import { NETWORK_STYLE_CONFIG } from '../config/network';
 import { useAccount, useApi } from '../hooks';
 import { AccountType, NetworkConfig, NetworkType } from '../model';
 import { toOppositeAccountType } from '../utils';
-import { SwapCrabIcon, SwapMainIcon, SwapPangolinIcon } from './icons';
+import { DownIcon, SwapCrabIcon, SwapMainIcon, SwapPangolinIcon } from './icons';
 import { SwitchWalletModal } from './modal/SwitchWallet';
 
 export interface TransferValue {
@@ -67,15 +66,12 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
               }}
             >
               {networks.map((item) => (
-                <Menu.Item
-                  key={item}
-                  className={(item === network ? 'bg-gray-100' : '') + ' flex justify-between'}
-                >
-                  <span className='capitalize'>{t(item)}</span>
+                <Menu.Item key={item} className='flex justify-between px-0'>
+                  <span className='capitalize mr-2'>{t(item)}</span>
                   {accountType === 'smart' && (
                     <span
                       className={
-                        'rounded-xl text-xs text-white px-2 py-0.5 ' +
+                        'opacity-60 rounded-full text-xs text-white px-2 inline-flex items-center ' +
                         NETWORK_STYLE_CONFIG[network].bgClsName
                       }
                     >
@@ -95,23 +91,23 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
           className={
             'border border-gray-200 border-solid flex items-center justify-between text-lg p-1 rounded-xl bg-gray-100'
           }
+          style={{ width: 140, maxWidth: '100%' }}
         >
           <div
             className={
-              'rounded-xl flex flex-col items-center ' + NETWORK_STYLE_CONFIG[network].bgClsName
+              'rounded-xl flex flex-col items-center justify-around pb-1 ' +
+              NETWORK_STYLE_CONFIG[network].bgClsName
             }
-            style={{ width: 120, height: 100 }}
+            // tslint:disable-next-line: no-magic-numbers
+            style={{ width: isFrom ? 80 : '100%' }}
           >
-            <img src={NETWORK_STYLE_CONFIG[network].logo} style={{ height: 60 }} alt='' />
-            <span
-              className='capitalize dream-btn text-base'
-              style={network === 'darwinia' ? {} : { border: 'none' }}
-            >
-              {t(account)}
-            </span>
+            <img src={NETWORK_STYLE_CONFIG[network].logo} className='h-8 sm:h-12 md:16' alt='' />
+            <Tag className='capitalize mr-0 text-xs' style={{ borderRadius: 9999 }}>
+              {account}
+            </Tag>
           </div>
 
-          {isFrom && <DownOutlined className='mx-2' />}
+          {isFrom && <DownIcon className='mr-2' />}
         </div>
       </Dropdown>
     </div>
@@ -133,7 +129,7 @@ export function TransferControl() {
 
   return (
     <>
-      <div className='grid grid-cols-3 items-stretch'>
+      <div className='flex sm:grid sm:grid-cols-3 justify-between'>
         <AccountGrid accountType={accountType} isFrom={true} title={t('From')} />
 
         <div className='flex items-center justify-center self-stretch'>

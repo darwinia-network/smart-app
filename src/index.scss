@@ -9,7 +9,7 @@ $primary: #5745de;
 
 $bg-darwinia: linear-gradient(-45deg, #fe3876 0%, #7c30dd 71%, #3a30dd 100%);
 
-$radius-base: 12px;
+$radius-base: 10px;
 
 body {
   font-family: 'IBM Plex Sans', sans-serif;
@@ -27,7 +27,7 @@ body {
   align-items: center;
   justify-content: center;
   height: 32px;
-  padding: 10px 1em;
+  padding: 10px;
   cursor: pointer;
   @include main-border();
 }
@@ -46,7 +46,7 @@ body {
   padding: 2rem 10px;
   margin-bottom: 1rem;
   border-radius: $radius-base !important;
-  border-width: 1px;
+  border-width: 1px !important;
 
   &.ant-radio-button-wrapper-checked {
     @include main-border();
@@ -83,11 +83,11 @@ body {
       justify-content: center;
 
       &:first-child {
-        border-radius: $radius-base 0 0 0;
+        border-radius: $radius-base 0 0 0 !important;
       }
 
       &:nth-child(2) {
-        border-radius: 0 $radius-base 0 0;
+        border-radius: 0 $radius-base 0 0 !important;
         border-left: none;
         margin-left: 0 !important;
       }
@@ -113,4 +113,12 @@ body {
     bottom: -10px;
     left: -10px;
   }
+}
+
+.ant-list-item-meta-avatar img {
+  width: 100%;
+}
+
+.ant-modal-close {
+  top: -5px;
 }

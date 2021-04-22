@@ -6,7 +6,7 @@ import { message } from 'antd';
 import BN from 'bn.js';
 import { TFunction } from 'i18next';
 import Web3 from 'web3';
-import { DVM_KTON_WITHDRAW_ADDRESS, NetworkIds, TOKEN_ERC20_KTON } from '../../config';
+import { DVM_KTON_WITHDRAW_ADDRESS, NETWORK_IDS, TOKEN_ERC20_KTON } from '../../config';
 import { AccountType, IAccountMeta, NetworkConfig, NetworkType } from '../../model';
 import ktonABI from './abi/ktonABI.json';
 
@@ -73,7 +73,7 @@ export async function isNetworkConsistent(network: NetworkType): Promise<boolean
   // id 1: eth mainnet 3: ropsten 4: rinkeby 5: goerli 42: kovan  43: pangolin
   const actualId = await window.ethereum.request({ method: 'net_version' });
 
-  return NetworkIds[network] === actualId;
+  return NETWORK_IDS[network].includes(actualId);
 }
 
 export async function connectEth(network: NetworkType): Promise<{ accounts: IAccountMeta[] }> {
@@ -125,6 +125,8 @@ export function connectFactory(
       })
       .catch((error) => {
         message.error(t('Unable to connect to {{type}} network.', { type: network }));
+        console.error(error.message);
+        indicator('fail');
       });
   };
 }

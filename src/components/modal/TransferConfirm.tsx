@@ -6,7 +6,7 @@ import { NETWORK_STYLE_CONFIG, NETWORK_TOKEN_NAME } from '../../config/network';
 import { useApi } from '../../hooks';
 import { TransferFormValues } from '../../model/transfer';
 import { clsName, toOppositeAccountType } from '../../utils';
-import { RightCircleIcon } from '../icons/right-circle';
+import { CloseIcon, RightCircleIcon } from '../icons';
 import { IModalProps } from './interface';
 
 export function TransferConfirmModal({
@@ -23,11 +23,11 @@ export function TransferConfirmModal({
   );
   const icon = useMemo(() => {
     if (network === 'darwinia') {
-      return <RightCircleIcon className='text-4xl' />;
+      return <RightCircleIcon className='text-2xl' />;
     } else {
       return (
         <ArrowRightOutlined
-          className='text-2xl rounded-full leading-none p-1'
+          className='rounded-full leading-none p-1'
           style={{ color: 'white', backgroundColor: network === 'crab' ? '#ec3783' : '#5745de' }}
         />
       );
@@ -39,6 +39,7 @@ export function TransferConfirmModal({
       title={t('Transfer Confirm')}
       visible={isVisible}
       onCancel={cancel}
+      closeIcon={<CloseIcon />}
       footer={[
         <Button className='w-1/2' key='cancel-btn' onClick={cancel}>
           {t('Cancel')}
@@ -74,7 +75,7 @@ export function TransferConfirmModal({
         <h4 className='text-gray-400 mb-2'>{t('Amount')}</h4>
         <p>
           {value.amount}
-          <span className='uppercase'>{NETWORK_TOKEN_NAME[network][value.assets]}</span>
+          <span className='uppercase ml-2'>{NETWORK_TOKEN_NAME[network][value.assets]}</span>
           {value.assets === 'kton' && isSubstrate && (
             <Tag color='blue' className='ml-4'>
               {t('Please claim in smart address')}

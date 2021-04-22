@@ -1,7 +1,7 @@
 import Bignumber from 'bignumber.js';
 // tslint:disable:no-magic-numbers
 import BN from 'bn.js';
-import { isNull, isNumber, isString, isUndefined } from 'lodash';
+import { isNull, isNumber, isString, isUndefined, toNumber } from 'lodash';
 import Web3 from 'web3';
 import { PRECISION } from '../../config';
 import { AccountType } from '../../model';
@@ -33,7 +33,9 @@ export function formatBalance(balance: string | BN | number, accountType: Accoun
   }
 
   if (accountType === 'smart') {
-    return new Bignumber(Web3.utils.fromWei(toString(balance))).toFixed(4);
+    const num = new Bignumber(Web3.utils.fromWei(toString(balance)));
+
+    return parseFloat(num.eq(new Bignumber(0)) ? '0' : num.toFixed(4)) + '';
   }
 
   return '';

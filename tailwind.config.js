@@ -30,6 +30,9 @@ module.exports = {
         crab: '#EC3783',
         pangolin: '#5745DE',
       }),
+      borderRadius: {
+        xl: '10px',
+      },
     },
   },
 };

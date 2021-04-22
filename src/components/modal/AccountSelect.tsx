@@ -3,6 +3,7 @@ import { Button, Empty, Form, Modal, Radio } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../hooks';
+import { CloseIcon } from '../icons';
 import { IModalProps } from './interface';
 
 const iconSize = 36;
@@ -22,12 +23,14 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
         maxHeight: '50vh',
         overflow: 'scroll',
       }}
+      closeIcon={<CloseIcon />}
       footer={
         accounts?.length
           ? [
               <Button
                 key='primary-btn'
                 type='primary'
+                size='large'
                 onClick={() => {
                   const value = form.getFieldValue('account');
                   if (!!value) {
@@ -46,7 +49,7 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
       }
     >
       {accounts?.length ? (
-        <Form form={form} initialValues={{ account }}>
+        <Form form={form} initialValues={{ account: account || accounts[0].address }}>
           <Form.Item name='account' rules={[{ required: true }]}>
             <Radio.Group className='w-full'>
               {accounts.map((item) => (
@@ -57,9 +60,9 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
                     className='mr-2 rounded-full border border-solid border-gray-100'
                     value={item.address}
                   />
-                  <div className='flex flex-col'>
+                  <div className='flex flex-col leading-5'>
                     <b>{item.meta?.name}</b>
-                    <span>{item.address}</span>
+                    <span className='opacity-60'>{item.address}</span>
                   </div>
                 </Radio.Button>
               ))}

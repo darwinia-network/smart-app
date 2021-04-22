@@ -1,6 +1,5 @@
 import { UnorderedListOutlined } from '@ant-design/icons';
 import { Affix, Button, Dropdown, Layout, Menu, Spin } from 'antd';
-import isMobile from 'ismobilejs';
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Route, Switch } from 'react-router-dom';
@@ -14,7 +13,6 @@ import { NetworkConfig } from './model';
 import crabThemeJson from './theme/crab.json';
 import darwiniaThemeJson from './theme/darwinia.json';
 import pangolinThemeJson from './theme/pangolin.json';
-import { clsName } from './utils';
 
 const { Header, Content } = Layout;
 
@@ -33,21 +31,12 @@ const THEME_CONFIG: NetworkConfig<{ [key in keyof typeof darwiniaThemeJson]: str
 function App() {
   const { t } = useTranslation();
   const { networkStatus, network } = useApi();
-  const linkCls = useMemo(
-    () =>
-      clsName(
-        'h-1/2 flex items-center px-4 py-2 rounded-xl',
-        NETWORK_STYLE_CONFIG[network].bgClsName
-      ),
-    [network]
-  );
   const linkItem = (item: LinkItem) =>
     item.path ? (
       <Link to={item.path}>{t(item.name)}</Link>
     ) : (
       <span onClick={() => window.open(item.href)}>{t(item.name)}</span>
     );
-  const { phone: isPhone } = isMobile();
   const links = useMemo<LinkItem[]>(
     () => [
       { name: 'DVM Guide', path: Path.intro },
@@ -69,39 +58,41 @@ function App() {
   return (
     <Layout style={{ height: '100vh' }} className='overflow-scroll'>
       <Affix offsetTop={1}>
-        <Header className='flex items-center justify-between px-4' style={{ marginTop: -1 }}>
-          <Link to={Path.root} className={linkCls}>
-            <img src={NETWORK_STYLE_CONFIG[network].logo} style={{ height: 46 }} alt='' />
-            <span className='text-white'>DVM</span>
+        <Header
+          className='flex items-center justify-between sm:px-4 px-1'
+          style={{ marginTop: -1 }}
+        >
+          <Link to={Path.root}>
+            <img src={NETWORK_STYLE_CONFIG[network].logoWithText} alt='' />
           </Link>
 
-          <div className='flex justify-between items-center flex-1 px-8'>
-            {isPhone ? (
-              <Dropdown
-                overlay={
-                  <Menu>
-                    {links.map((item, index) => (
-                      <Menu.Item key={index}>{linkItem(item)}</Menu.Item>
-                    ))}
-                  </Menu>
-                }
-              >
-                <UnorderedListOutlined />
-              </Dropdown>
-            ) : (
-              <div className='flex-1'>
-                {links.map((item, index) => (
-                  <Button type='link' key={index}>
-                    {linkItem(item)}
-                  </Button>
-                ))}
-              </div>
-            )}
+          <div className='flex justify-between items-center flex-1 md:px-8'>
+            <Dropdown
+              className='md:hidden mx-2'
+              overlay={
+                <Menu>
+                  {links.map((item, index) => (
+                    <Menu.Item key={index}>{linkItem(item)}</Menu.Item>
+                  ))}
+                </Menu>
+              }
+            >
+              <UnorderedListOutlined />
+            </Dropdown>
+
+            <div className='flex-1 hidden md:block'>
+              {links.map((item, index) => (
+                <Button type='link' key={index}>
+                  {linkItem(item)}
+                </Button>
+              ))}
+            </div>
+
             <Connection />
           </div>
         </Header>
       </Affix>
-      <Content className='px-16 py-8'>
+      <Content className='sm:px-16 sm:py-8 px-2 py-1'>
         <Spin spinning={networkStatus === 'connecting'}>
           <Switch>
             {routes.map((item, index) => (

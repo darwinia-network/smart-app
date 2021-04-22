@@ -1,8 +1,9 @@
 import { Button, Checkbox, CheckboxOptionType, Modal } from 'antd';
-import { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../hooks';
 import { toOppositeAccountType } from '../../utils';
+import { CloseIcon } from '../icons';
 import { IModalProps } from './interface';
 
 const options: CheckboxOptionType[] = [
@@ -62,6 +63,7 @@ export function TransferAlertModal({
       title={t('Attention')}
       visible={isVisible}
       onCancel={onCancel}
+      closeIcon={<CloseIcon />}
       footer={[
         <Button className='w-1/2' key='cancel-btn' onClick={onCancel}>
           {t('Cancel')}

@@ -1,13 +1,7 @@
 import { Input, InputProps } from 'antd';
 import { CustomFormControlProps } from '../model';
 
-export function Balance({
-  value,
-  onChange,
-  defaultValue,
-  // tslint:disable-next-line: trailing-comma
-  ...others
-}: CustomFormControlProps & InputProps) {
+export function Balance({ value, onChange, ...others }: CustomFormControlProps & InputProps) {
   return (
     <Input
       {...others}

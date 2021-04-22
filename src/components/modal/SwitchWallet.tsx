@@ -1,8 +1,9 @@
 import { Button, Modal } from 'antd';
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useApi } from '../../hooks';
 import { toOppositeAccountType } from '../../utils';
+import { CloseIcon } from '../icons';
 import { IModalProps } from './interface';
 
 export function SwitchWalletModal({ isVisible, cancel, confirm }: IModalProps) {
@@ -24,6 +25,7 @@ export function SwitchWalletModal({ isVisible, cancel, confirm }: IModalProps) {
       visible={isVisible}
       onOk={ok}
       onCancel={cancel}
+      closeIcon={<CloseIcon />}
       footer={[
         <Button className='w-1/2' key='cancel' onClick={cancel}>
           {t('Cancel')}

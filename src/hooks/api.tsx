@@ -11,7 +11,7 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NetworkIds, NETWORK_SS58_PREFIX } from '../config';
+import { NETWORK_IDS, NETWORK_SS58_PREFIX } from '../config';
 import { AccountType, Action, IAccountMeta, NetworkType } from '../model';
 import { convertToSS58, getInfoFromHash, patchUrl } from '../utils';
 import {
@@ -167,15 +167,15 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
             window.ethereum.on('chainChanged', (chainId: string) => {
               const id = parseInt(chainId, 16).toString();
 
-              if (id === NetworkIds[state.network]) {
+              if (NETWORK_IDS[state.network].includes(id)) {
                 connectToEth();
               }
             });
 
             return;
+          } else {
+            connectToEth();
           }
-
-          connectToEth();
         }
 
         setNetworkStatus('success');

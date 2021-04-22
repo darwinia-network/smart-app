@@ -26,7 +26,7 @@ export function Connection() {
     }
 
     if (accountType === 'smart' && !!accounts) {
-      setAccount(accounts[0].address);
+      setAccount(accounts[0]?.address);
     }
   }, [accounts, account, accountType, setAccount, isSubstrate]);
 
@@ -42,7 +42,7 @@ export function Connection() {
             >
               <ShortAccount
                 account={account}
-                className='self-stretch px-4 bg-white my-px mx-px rounded-xl'
+                className='self-stretch sm:px-4 bg-white sm:my-px sm:mx-px sm:rounded-xl'
               />
             </Account>
           )}

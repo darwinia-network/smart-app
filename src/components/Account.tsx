@@ -7,6 +7,7 @@ import { clsName } from '../utils';
 export function Account({
   children,
   logoStyle,
+  containerStyle,
   isLargeRounded = true,
   className = '',
   textClassName = '',
@@ -14,34 +15,39 @@ export function Account({
 }: React.PropsWithChildren<{
   isLargeRounded?: boolean;
   logoStyle?: CSSProperties;
+  containerStyle?: CSSProperties;
   className?: string;
   textClassName?: string;
   onClick?: () => void;
 }>) {
   const { t } = useTranslation();
   const { accountType, network } = useApi();
-  const rounded = isLargeRounded ? 'rounded-xl ' : 'rounded-lg ';
   const containerCls = useMemo(
     () =>
       clsName(
-        'flex items-center justify-between h-auto leading-normal gap-2 pl-4 whitespace-nowrap',
-        rounded,
+        'flex items-center justify-between leading-normal whitespace-nowrap',
+        isLargeRounded ? 'rounded-xl ' : 'rounded-lg ',
         className,
         NETWORK_STYLE_CONFIG[network].bgClsName
       ),
-    [rounded, className, network]
+    [isLargeRounded, className, network]
   );
   const accountCls = useMemo(
-    () => clsName('text-purple-500 px-2 py-0.5 bg-white', rounded, textClassName),
-    [rounded, textClassName]
+    () =>
+      clsName(
+        'text-purple-500 px-2 bg-white mr-1 hidden md:inline',
+        isLargeRounded ? 'rounded-xl ' : 'rounded-md ',
+        textClassName
+      ),
+    [isLargeRounded, textClassName]
   );
 
   return (
-    <div className={containerCls} onClick={onClick}>
+    <div className={containerCls} onClick={onClick} style={containerStyle || {}}>
       <img
         src={NETWORK_STYLE_CONFIG[network].logo}
-        className='scale-150'
         style={logoStyle || { height: 32 }}
+        className='hidden sm:inline-block'
         alt=''
       />
       <span className={accountCls}>{t(accountType)}</span>

@@ -1,7 +1,7 @@
-import { CopyOutlined } from '@ant-design/icons';
 import { message, Tooltip } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { copyTextToClipboard } from '../utils';
+import { CopyIcon } from './icons';
 
 export interface ShortAccountProps {
   account: string;
@@ -27,15 +27,14 @@ export function ShortAccount({
       {isCopyBtnDisplay ? (
         <>
           <Tooltip title={account}>{shortAccount}</Tooltip>
-          <CopyOutlined
+          <CopyIcon
             onClick={(event) => {
               event.stopPropagation();
               copyTextToClipboard(account).then(() => {
                 message.success(t('Copied'));
               });
             }}
-            className='ml-2 enlarge-hot-area'
-            style={{ cursor: 'copy' }}
+            className='ml-2 enlarge-hot-area hidden md:block'
           />
         </>
       ) : (

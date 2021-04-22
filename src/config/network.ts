@@ -6,17 +6,29 @@ export enum Network {
   darwinia = 'darwinia',
 }
 
-export const NETWORK_STYLE_CONFIG: NetworkConfig<{ logo: string; bgClsName: string }> = {
-  crab: { logo: '/image/crab.svg', bgClsName: 'bg-crab' },
-  darwinia: { logo: '/image/darwinia.svg', bgClsName: 'bg-darwinia' },
-  pangolin: { logo: '/image/pangolin.svg', bgClsName: 'bg-pangolin' },
+export const NETWORK_STYLE_CONFIG: NetworkConfig<{
+  logo: string;
+  bgClsName: string;
+  logoWithText: string;
+}> = {
+  crab: { logo: '/image/crab.svg', bgClsName: 'bg-crab', logoWithText: '/image/crab-logo.svg' },
+  darwinia: {
+    logo: '/image/darwinia.svg',
+    bgClsName: 'bg-darwinia',
+    logoWithText: '/image/darwinia-logo.svg',
+  },
+  pangolin: {
+    logo: '/image/pangolin.svg',
+    bgClsName: 'bg-pangolin',
+    logoWithText: '/image/pangolin-logo.svg',
+  },
 };
 
-export enum NetworkIds {
-  darwinia = '1',
-  pangolin = '43',
-  crab = 'NaN',
-}
+export const NETWORK_IDS: NetworkConfig<string[]> = {
+  darwinia: ['1'],
+  pangolin: ['43', '44'],
+  crab: ['NaN'],
+};
 
 export const NETWORK_SS58_PREFIX: NetworkConfig<number> = {
   darwinia: 18,
