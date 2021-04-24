@@ -8,6 +8,7 @@ import { TFunction } from 'i18next';
 import Web3 from 'web3';
 import { DVM_KTON_WITHDRAW_ADDRESS, NETWORK_IDS, TOKEN_ERC20_KTON } from '../../config';
 import { AccountType, IAccountMeta, NetworkConfig, NetworkType } from '../../model';
+import x16ABI from './abi/0x16ABI.json';
 import ktonABI from './abi/ktonABI.json';
 
 export interface Connection {
@@ -168,28 +169,22 @@ export async function getTokenBalanceEth(account = ''): Promise<TokenBalance> {
  * @returns transaction hash
  */
 export async function receiveKton(account: string, amount: BN): Promise<string> {
-  // ?FIXE: use code below after contract updated.
-  // const web3 = new Web3(window.ethereum || window.web3.currentProvider);
-  // const ktonContract = new web3.eth.Contract(x16ABI as any, TOKEN_ERC20_KTON);
-  // const txHash = await ktonContract.methods
-  //   .transfer_and_call(
-  //     TOKEN_ERC20_KTON,
-  //     web3.utils.toWei(amount)
-  //   )
-  //   .send({ from: account });
-
   const web3 = new Web3(window.ethereum || window.web3.currentProvider);
-  const balance = amount.toString();
-  const result = web3.eth.abi.encodeParameters(['address', 'uint256'], [TOKEN_ERC20_KTON, balance]);
-  const startPosition = 2;
-  const data = '0x3225da29' + result.substr(startPosition);
-  const txHash = await web3.eth.sendTransaction({
-    from: account,
-    to: DVM_KTON_WITHDRAW_ADDRESS,
-    data,
-    value: '0x00',
-    gas: 30000000,
-  });
+  // tslint:disable-next-line: no-any
+  const ktonContract = new web3.eth.Contract(x16ABI as any, DVM_KTON_WITHDRAW_ADDRESS);
+  let txHash;
+
+  try {
+    txHash = await ktonContract.methods
+      .transfer_and_call(TOKEN_ERC20_KTON, amount)
+      .send({ from: account, gas: 55000 });
+  } catch (error) {
+    console.warn(
+      '%c [ error ]-182',
+      'font-size:13px; background:pink; color:#bf2c9f;',
+      error.message
+    );
+  }
 
   return txHash.transactionHash;
 }

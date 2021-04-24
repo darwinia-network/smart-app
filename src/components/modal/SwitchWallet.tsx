@@ -2,7 +2,7 @@ import { Button, Modal } from 'antd';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useApi } from '../../hooks';
-import { toOppositeAccountType } from '../../utils';
+import { toOppositeAccountType, toUpperCaseFirst } from '../../utils';
 import { CloseIcon } from '../icons';
 import { IModalProps } from './interface';
 
@@ -38,7 +38,8 @@ export function SwitchWalletModal({ isVisible, cancel, confirm }: IModalProps) {
     >
       <p>
         {t(
-          'You are trying to switch the network to {{type}} network. The current network will be disconnected after switched.'
+          'You are trying to switch the network to {{type}} network. The current network will be disconnected after switched.',
+          { type: toUpperCaseFirst(toOppositeAccountType(accountType)) }
         )}
       </p>
     </Modal>

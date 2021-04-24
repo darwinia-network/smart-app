@@ -66,7 +66,7 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
               }}
             >
               {networks.map((item) => (
-                <Menu.Item key={item} className='flex justify-between px-0'>
+                <Menu.Item key={item} className='flex justify-between'>
                   <span className='capitalize mr-2'>{t(item)}</span>
                   {accountType === 'smart' && (
                     <span

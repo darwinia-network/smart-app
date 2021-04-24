@@ -1,5 +1,4 @@
 import React, { CSSProperties, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { NETWORK_STYLE_CONFIG } from '../config/network';
 import { useApi } from '../hooks';
 import { clsName } from '../utils';
@@ -20,7 +19,6 @@ export function Account({
   textClassName?: string;
   onClick?: () => void;
 }>) {
-  const { t } = useTranslation();
   const { accountType, network } = useApi();
   const containerCls = useMemo(
     () =>
@@ -35,7 +33,7 @@ export function Account({
   const accountCls = useMemo(
     () =>
       clsName(
-        'text-purple-500 px-2 bg-white mr-1 hidden md:inline',
+        'text-purple-500 px-2 bg-white mr-1 hidden md:inline capitalize',
         isLargeRounded ? 'rounded-xl ' : 'rounded-md ',
         textClassName
       ),
@@ -50,7 +48,7 @@ export function Account({
         className='hidden sm:inline-block'
         alt=''
       />
-      <span className={accountCls}>{t(accountType)}</span>
+      <span className={accountCls}>{accountType}</span>
       {children}
     </div>
   );

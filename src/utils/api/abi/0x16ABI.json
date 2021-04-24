@@ -7,10 +7,6 @@
         "type": "address"
       },
       {
-        "name": "acc",
-        "type": "address"
-      },
-      {
         "name": "value",
         "type": "uint256"
       }

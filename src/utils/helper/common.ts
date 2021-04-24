@@ -22,3 +22,10 @@ export const toOppositeAccountType = oppositeFactory<AccountType, AccountType>(
 export function clsName(common: string, ...classes: string[]): string {
   return [...common.split(' '), ...classes.filter((name) => !!name)].join(' ');
 }
+
+/**
+ * first char uppercase
+ */
+export function toUpperCaseFirst(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}

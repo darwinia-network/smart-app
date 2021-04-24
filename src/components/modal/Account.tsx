@@ -1,53 +1,126 @@
 // tslint:disable:no-magic-numbers
+import { LoadingOutlined } from '@ant-design/icons';
 import BaseIdentityIcon from '@polkadot/react-identicon';
-import { Button, Card, Col, List, message, Modal, Row, Tabs } from 'antd';
+import { Button, Card, Col, List, message, Modal, Row, Tabs, Tag } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 import BN from 'bn.js';
+import { useQuery } from 'graphql-hooks';
 import { useTranslation } from 'react-i18next';
+import Web3 from 'web3';
 import { NETWORK_SS58_PREFIX, NETWORK_TOKEN_NAME } from '../../config';
 import { useAccount, useApi } from '../../hooks';
 import { Assets } from '../../model';
-import { convertToSS58, copyTextToClipboard, dvmAddressToAccountId } from '../../utils';
-import { formatBalance } from '../../utils/format/formatBalance';
+import {
+  convertToSS58,
+  copyTextToClipboard,
+  dvmAddressToAccountId,
+  isSS58Address,
+} from '../../utils';
+import { formatBalance, precisionBalance } from '../../utils/format/formatBalance';
 import { Account } from '../Account';
 import { CloseIcon, CopyIcon, JazzIcon, ViewBrowserIcon } from '../icons';
 import { ShortAccount } from '../ShortAccount';
 import { IModalProps } from './interface';
 
-type TabKey = 'assets' | 'history';
+const EVENT_QUERY = `
+  query events($limit: Int, $method: String) {
+    events(last: $limit, filter: {method: {equalTo: $method}}) {
+      nodes {
+        id
+        extrinsic {
+          signerId
+          timestamp
+        }
+        method
+        section
+        data
+      }
+    }
+  }
+`;
 
 const { TabPane } = Tabs;
 
 const iconSize = 42;
 
-const history = [
-  {
-    asset: 'ring',
-    action: 'send',
-    amount: 999.99,
-    timestamp: 'Jan 6',
-    account: '0x245B4775082C144C22a4874B0fBa8c70c510c5AE',
-    accountType: 'smart',
-  },
-  {
-    asset: 'kton',
-    action: 'receive',
-    amount: 99.99,
-    timestamp: 'Jan 6',
-    account: '0x245B4775082C144C22a4874B0fBa8c70c510c5AE',
-    accountType: 'substrate',
-  },
-];
+interface IRecord {
+  id: string;
+  asset: string;
+  action: string;
+  amount: string;
+  timestamp: string;
+  account: string;
+  accountType: string;
+}
+
+interface IEvent {
+  id: string;
+  block: {
+    specVersion: string;
+    id: string;
+  };
+  extrinsic: {
+    signerId: string;
+    timestamp: string;
+  };
+  method: string;
+  section: 'balances' | 'kton';
+  data: string;
+}
+
+enum SectionAssetEnum {
+  balances = 'ring',
+  kton = 'kton',
+}
+
+function eventToInfo(events: IEvent[]): IRecord[] {
+  // tslint:disable-next-line: cyclomatic-complexity
+  return (events || []).map((item) => {
+    const {
+      id,
+      section,
+      method,
+      data,
+      extrinsic: { signerId, timestamp },
+    } = item;
+    const asset = SectionAssetEnum[section];
+    let args = [];
+    const isSS58 = isSS58Address(signerId);
+    const isDvm = Web3.utils.isAddress(signerId);
+
+    try {
+      args = JSON.parse(data);
+    } catch (err) {}
+
+    /**
+     * !FIXME filter action Transfer; const [from, to, value] = args;
+     */
+    return {
+      id: id.split('-')[0],
+      asset: asset || 'unknown',
+      action: method.toLowerCase(),
+      amount: precisionBalance(args[1]),
+      timestamp,
+      accountType: isSS58 ? 'substrate' : isDvm ? 'smart' : 'unknown',
+      account: signerId,
+    };
+  });
+}
 
 export function AccountModal({
   isVisible,
   cancel,
   assets,
-  defaultActiveTabKey = 'assets',
-}: IModalProps & { defaultActiveTabKey?: TabKey; assets: { ring: BN; kton: BN } }) {
+}: IModalProps & { assets: { ring: BN; kton: BN } }) {
   const { account, setAccount } = useAccount();
   const { setAccounts, accountType, network, isSubstrate } = useApi();
   const { t } = useTranslation();
+  const { loading, data } = useQuery(EVENT_QUERY, {
+    variables: {
+      limit: 10,
+      method: 'Transfer',
+    },
+  });
 
   return (
     <Modal
@@ -56,6 +129,7 @@ export function AccountModal({
       footer={null}
       onCancel={cancel}
       destroyOnClose={true}
+      bodyStyle={{ maxHeight: '80vh', overflow: 'hidden' }}
       closeIcon={<CloseIcon />}
     >
       <Card className='mb-4'>
@@ -93,7 +167,7 @@ export function AccountModal({
                     message.success(t('Copied'));
                   });
                 }}
-                style={{ cursor: 'copy' }}
+                style={{ cursor: 'default' }}
               >
                 <CopyIcon className='mr-2' />
                 <span className='text-xs text-gray-600'>{t('Copy address')}</span>
@@ -133,7 +207,7 @@ export function AccountModal({
         </Row>
       </Card>
 
-      <Tabs type='card' defaultActiveKey={defaultActiveTabKey} className='account-tab'>
+      <Tabs type='card' className='account-tab'>
         <TabPane tab={t('Assets')} key='assets'>
           <List
             itemLayout='horizontal'
@@ -161,46 +235,65 @@ export function AccountModal({
             )}
           />
         </TabPane>
-        <TabPane tab={t('Transfer History')} key='history'>
-          <List
-            itemLayout='horizontal'
-            dataSource={history}
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta
-                  className='flex items-center'
-                  title={
-                    <b>
-                      {t(item.action)}{' '}
-                      <span className='uppercase'>
-                        {NETWORK_TOKEN_NAME[network][item.asset as Assets]}
-                      </span>
+        <TabPane
+          tab={t('Transfer History')}
+          key='history'
+          style={{ overflow: 'scroll', maxHeight: 300 }}
+        >
+          {loading ? (
+            <LoadingOutlined spin className='mx-auto my-8 block' />
+          ) : (
+            <List
+              itemLayout='horizontal'
+              dataSource={eventToInfo(data?.events.nodes)}
+              renderItem={(item) => (
+                <List.Item>
+                  <List.Item.Meta
+                    className='flex items-center'
+                    title={
+                      <b>
+                        {t(item.action)}
+                        <span className='uppercase ml-2'>
+                          {NETWORK_TOKEN_NAME[network][item.asset as Assets]}
+                        </span>
+                      </b>
+                    }
+                    description={
+                      <div className='text-xs'>
+                        <p className='my-2'>{item.timestamp}</p>
+
+                        <span className='inline-flex items-center gap-2'>
+                          <span className='inline-flex items-center' style={{ width: 120 }}>
+                            <span>{t(item.action === 'send' ? 'To' : 'From')}</span>
+                            <ShortAccount account={item.account} isCopyBtnDisplay={false} />
+                          </span>
+                          <Tag
+                            color={item.accountType === 'substrate' ? '#5745de' : '#ec3783'}
+                            className='rounded-xl text-xs cursor-default'
+                          >
+                            {t(item.accountType)}
+                          </Tag>
+                        </span>
+                      </div>
+                    }
+                  />
+                  <div className='flex flex-col items-stretch justify-end'>
+                    <b className='uppercase'>
+                      {item.amount} {NETWORK_TOKEN_NAME[network][item.asset as Assets]}
                     </b>
-                  }
-                  description={
-                    <span className='inline-flex gap-2'>
-                      <span>{item.timestamp}</span>
-                      <span>{t(item.action === 'send' ? 'To' : 'From')}</span>
-                      <ShortAccount account={item.account} isCopyBtnDisplay={false} />
-                      <Button
-                        type={item.accountType === 'substrate' ? 'primary' : 'default'}
-                        size='small'
-                        className='rounded-xl text-xs cursor-default'
-                      >
-                        {t(item.accountType)}
-                      </Button>
-                    </span>
-                  }
-                />
-                <div className='flex flex-col items-stretch justify-end'>
-                  <b className='uppercase'>
-                    {item.amount} {NETWORK_TOKEN_NAME[network][item.asset as Assets]}
-                  </b>
-                  <ViewBrowserIcon className='text-xl text-right cursor-pointer' />
-                </div>
-              </List.Item>
-            )}
-          />
+                    <ViewBrowserIcon
+                      onClick={() => {
+                        const url = `https://${network}.subscan.io/block/${item.id}?tab=event`;
+
+                        window.open(url, 'blank');
+                      }}
+                      className='text-xl text-right cursor-pointer'
+                    />
+                  </div>
+                </List.Item>
+              )}
+            />
+          )}
         </TabPane>
       </Tabs>
     </Modal>

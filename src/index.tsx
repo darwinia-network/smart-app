@@ -1,3 +1,4 @@
+import { ClientContext, GraphQLClient } from 'graphql-hooks';
 import { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -8,16 +9,22 @@ import './index.less';
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
 
+const client = new GraphQLClient({
+  url: 'http://localhost:3000/',
+});
+
 ReactDOM.render(
   <Suspense fallback='loading'>
     <Router>
-      <ApiProvider>
-        <AccountProvider>
-          <AssetsProvider>
-            <App />
-          </AssetsProvider>
-        </AccountProvider>
-      </ApiProvider>
+      <ClientContext.Provider value={client}>
+        <ApiProvider>
+          <AccountProvider>
+            <AssetsProvider>
+              <App />
+            </AssetsProvider>
+          </AccountProvider>
+        </ApiProvider>
+      </ClientContext.Provider>
     </Router>
   </Suspense>,
   document.getElementById('root')

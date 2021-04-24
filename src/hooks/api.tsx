@@ -11,7 +11,7 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NETWORK_IDS, NETWORK_SS58_PREFIX } from '../config';
+import { LONG_DURATION, NETWORK_IDS, NETWORK_SS58_PREFIX } from '../config';
 import { AccountType, Action, IAccountMeta, NetworkType } from '../model';
 import { convertToSS58, getInfoFromHash, patchUrl } from '../utils';
 import {
@@ -109,6 +109,17 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
     window.ethereum.on('disconnect', () => {});
   }, []);
 
+  useEffect(() => {
+    if (typeof window.ethereum === 'undefined') {
+      notification.warn({
+        message: 'MetaMask Undetected',
+        description:
+          'Please install MetaMask first! Otherwise, some functions will not work properly.',
+        duration: LONG_DURATION,
+      });
+    }
+  }, []);
+
   /**
    * connect to substrate or metamask when account type changed.
    */
@@ -141,6 +152,15 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
 
         if (state.accountType === 'smart') {
           const isConsistent = await isNetworkConsistent(state.network);
+          const checkConnect = (chainId: string) => {
+            const id = parseInt(chainId, 16).toString();
+
+            if (NETWORK_IDS[state.network].includes(id)) {
+              connectToEth();
+            }
+          };
+
+          window.ethereum.on('connect', checkConnect);
 
           if (!isConsistent) {
             const key = `key${Date.now()}`;
@@ -158,19 +178,13 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
               key,
               onClose: () => notification.close(key),
               // tslint:disable-next-line: no-magic-numbers
-              duration: 10 * 1000,
+              duration: LONG_DURATION,
             });
 
             setNetworkStatus('fail');
 
             // FIXME: should cancel listening after component destroy ?
-            window.ethereum.on('chainChanged', (chainId: string) => {
-              const id = parseInt(chainId, 16).toString();
-
-              if (NETWORK_IDS[state.network].includes(id)) {
-                connectToEth();
-              }
-            });
+            window.ethereum.on('chainChanged', checkConnect);
 
             return;
           } else {

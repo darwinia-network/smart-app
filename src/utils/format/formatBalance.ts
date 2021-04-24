@@ -1,7 +1,7 @@
 import Bignumber from 'bignumber.js';
 // tslint:disable:no-magic-numbers
 import BN from 'bn.js';
-import { isNull, isNumber, isString, isUndefined, toNumber } from 'lodash';
+import { isNull, isNumber, isString, isUndefined } from 'lodash';
 import Web3 from 'web3';
 import { PRECISION } from '../../config';
 import { AccountType } from '../../model';

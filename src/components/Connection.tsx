@@ -2,7 +2,7 @@ import { Button, Dropdown, Menu, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useApi, useAssets } from '../hooks';
-import { toOppositeAccountType } from '../utils';
+import { toOppositeAccountType, toUpperCaseFirst } from '../utils';
 import { Account } from './Account';
 import { AccountModal } from './modal/Account';
 import { AccountSelectModal } from './modal/AccountSelect';
@@ -58,11 +58,13 @@ export function Connection() {
                     placement='left'
                     title={accountType === 'smart' ? t('Please switch network in Metamask') : null}
                   >
-                    {t('Use another {{type}} address', { type: t(accountType) })}
+                    {t('Use another {{type}} address', { type: toUpperCaseFirst(accountType) })}
                   </Tooltip>
                 </Menu.Item>
                 <Menu.Item onClick={() => setIsWalletSwitcherVisible(true)}>
-                  {t('Switch to {{type}} address', { type: t(toOppositeAccountType(accountType)) })}
+                  {t('Switch to {{type}} address', {
+                    type: toUpperCaseFirst(toOppositeAccountType(accountType)),
+                  })}
                 </Menu.Item>
                 <Menu.Item
                   onClick={() => {

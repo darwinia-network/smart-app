@@ -2,18 +2,18 @@ import { Button, Checkbox, CheckboxOptionType, Modal } from 'antd';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../hooks';
-import { toOppositeAccountType } from '../../utils';
+import { toOppositeAccountType, toUpperCaseFirst } from '../../utils';
 import { CloseIcon } from '../icons';
 import { IModalProps } from './interface';
 
 const options: CheckboxOptionType[] = [
   {
     label:
-      'I am trying to transfer from 「Darwinia {{fromAccountType}} address 」to 「Darwinia {{toAccountType}} address」.',
+      'I am trying to transfer from 「{{network}} {{fromAccountType}} address 」to 「{{network}} {{toAccountType}} address」.',
     value: 'direction',
   },
   {
-    label: 'I have confirmed that the「Darwinia {{toAccountType}} address」{{toAccount}}',
+    label: 'I have confirmed that the「{{network}} {{toAccountType}} address」{{toAccount}}',
     value: 'safe',
   },
   {
@@ -34,18 +34,19 @@ export function TransferAlertModal({
   const { t } = useTranslation();
   const [checkedList, setCheckedList] = useState(defaultChecked);
   const [isAllSelected, setIsAllSelected] = useState(false);
-  const { accountType } = useApi();
+  const { accountType, network } = useApi();
   const optionsTrans = useMemo(
     () =>
       options.map(({ label, ...others }) => ({
         ...others,
         label: t(label as string, {
-          fromAccountType: t(accountType),
-          toAccountType: t(toOppositeAccountType(accountType)),
+          fromAccountType: toUpperCaseFirst(accountType),
+          toAccountType: toUpperCaseFirst(toOppositeAccountType(accountType)),
           toAccount: recipient,
+          network: toUpperCaseFirst(network),
         }),
       })),
-    [accountType, t, recipient]
+    [accountType, t, recipient, network]
   );
   const onCancel = useCallback(() => {
     setCheckedList(defaultChecked);

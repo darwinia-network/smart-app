@@ -433,7 +433,6 @@ export function TransferForm() {
 
       <AccountModal
         isVisible={isAccountVisible}
-        defaultActiveTabKey='history'
         assets={assets}
         cancel={() => setIsAccountVisible(false)}
         confirm={() => {}}
