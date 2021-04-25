@@ -4,9 +4,9 @@ import BaseIdentityIcon from '@polkadot/react-identicon';
 import { Button, Card, Col, List, message, Modal, Row, Tabs, Tag } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 import BN from 'bn.js';
+import { formatDistanceToNow } from 'date-fns';
 import { useQuery } from 'graphql-hooks';
 import { useTranslation } from 'react-i18next';
-import Web3 from 'web3';
 import { NETWORK_SS58_PREFIX, NETWORK_TOKEN_NAME } from '../../config';
 import { useAccount, useApi } from '../../hooks';
 import { Assets } from '../../model';
@@ -22,18 +22,29 @@ import { CloseIcon, CopyIcon, JazzIcon, ViewBrowserIcon } from '../icons';
 import { ShortAccount } from '../ShortAccount';
 import { IModalProps } from './interface';
 
-const EVENT_QUERY = `
-  query events($limit: Int, $method: String) {
-    events(last: $limit, filter: {method: {equalTo: $method}}) {
+const TRANSFERS_QUERY = `
+  query transfers($account: String!, $offset: Int, $limit: Int) {
+    transfers(
+      offset: $offset,
+      first: $limit,
+      filter: {
+        fromId: { equalTo: $account },
+        # or: {
+        #   toId: { equalTo: "2q5gtYfh3ULgFbrvXSVQFucLNiqKQF4TW9ifKjDx8AdNo5D2" }
+        # }
+      },
+ 			orderBy: TIMESTAMP_DESC
+    ){
+      totalCount
       nodes {
-        id
-        extrinsic {
-          signerId
-          timestamp
-        }
-        method
-        section
-        data
+        toId
+        fromId
+        amount
+        timestamp
+        tokenId
+        fee
+        blockNumber
+        blockId
       }
     }
   }
@@ -53,55 +64,41 @@ interface IRecord {
   accountType: string;
 }
 
-interface IEvent {
-  id: string;
-  block: {
-    specVersion: string;
-    id: string;
-  };
-  extrinsic: {
-    signerId: string;
-    timestamp: string;
-  };
-  method: string;
-  section: 'balances' | 'kton';
-  data: string;
+interface TransfersQueryRes {
+  transfers: { totalCount: number; nodes: Transfer[] };
 }
 
-enum SectionAssetEnum {
+interface Transfer {
+  amount: string;
+  blockId: string;
+  blockNumber: string;
+  fee: string;
+  fromId: string;
+  timestamp: string;
+  toId: string;
+  tokenId: 'balances' | 'kton';
+}
+
+enum TokenType {
   balances = 'ring',
   kton = 'kton',
 }
 
-function eventToInfo(events: IEvent[]): IRecord[] {
+function patchRecords(source: Transfer[], currentAccount: string): IRecord[] {
   // tslint:disable-next-line: cyclomatic-complexity
-  return (events || []).map((item) => {
-    const {
-      id,
-      section,
-      method,
-      data,
-      extrinsic: { signerId, timestamp },
-    } = item;
-    const asset = SectionAssetEnum[section];
-    let args = [];
+  return (source || []).map((item) => {
+    const { blockId, fromId, toId, amount, tokenId, timestamp } = item;
+    const asset = TokenType[tokenId];
+    const signerId = currentAccount === fromId ? fromId : toId;
     const isSS58 = isSS58Address(signerId);
-    const isDvm = Web3.utils.isAddress(signerId);
 
-    try {
-      args = JSON.parse(data);
-    } catch (err) {}
-
-    /**
-     * !FIXME filter action Transfer; const [from, to, value] = args;
-     */
     return {
-      id: id.split('-')[0],
+      id: blockId,
       asset: asset || 'unknown',
-      action: method.toLowerCase(),
-      amount: precisionBalance(args[1]),
+      action: currentAccount === fromId ? 'send' : 'receive',
+      amount: precisionBalance(amount),
       timestamp,
-      accountType: isSS58 ? 'substrate' : isDvm ? 'smart' : 'unknown',
+      accountType: isSS58 ? 'substrate' : 'smart',
       account: signerId,
     };
   });
@@ -115,10 +112,11 @@ export function AccountModal({
   const { account, setAccount } = useAccount();
   const { setAccounts, accountType, network, isSubstrate } = useApi();
   const { t } = useTranslation();
-  const { loading, data } = useQuery(EVENT_QUERY, {
+  const { loading, data } = useQuery<TransfersQueryRes>(TRANSFERS_QUERY, {
     variables: {
       limit: 10,
-      method: 'Transfer',
+      account: '2qeMxq616BhqvTW8a1bp2g7VKPAmpda1vXuAAz5TxV5ehivG', // !FIXME use account for process test.
+      offset: 0,
     },
   });
 
@@ -245,7 +243,7 @@ export function AccountModal({
           ) : (
             <List
               itemLayout='horizontal'
-              dataSource={eventToInfo(data?.events.nodes)}
+              dataSource={patchRecords(data?.transfers.nodes, account)}
               renderItem={(item) => (
                 <List.Item>
                   <List.Item.Meta
@@ -260,11 +258,15 @@ export function AccountModal({
                     }
                     description={
                       <div className='text-xs'>
-                        <p className='my-2'>{item.timestamp}</p>
+                        <p className='my-2'>
+                          {formatDistanceToNow(new Date(item.timestamp), { addSuffix: true })}
+                        </p>
 
                         <span className='inline-flex items-center gap-2'>
                           <span className='inline-flex items-center' style={{ width: 120 }}>
-                            <span>{t(item.action === 'send' ? 'To' : 'From')}</span>
+                            <span className='mr-1'>
+                              {t(item.action === 'send' ? 'To' : 'From')}
+                            </span>
                             <ShortAccount account={item.account} isCopyBtnDisplay={false} />
                           </span>
                           <Tag
