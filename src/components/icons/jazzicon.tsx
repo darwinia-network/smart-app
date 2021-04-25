@@ -44,6 +44,7 @@ export function JazzIcon({ address, className = '', style = {}, diameter = 46 }:
   useEffect(() => {
     const element = generateIdenticonSvg(address, diameter);
 
+    container.current.childNodes.forEach((node) => container.current.removeChild(node));
     container.current.appendChild(element);
   }, [address, diameter]);
 
