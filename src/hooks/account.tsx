@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { NETWORK_SS58_PREFIX } from '../config';
 import { convertToSS58 } from '../utils';
 import { useApi } from './api';
 
@@ -13,17 +12,17 @@ export const AccountContext = createContext<AccountCtx>(null);
 
 export const AccountProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const [account, setAccount] = useState<string>(null);
-  const { network } = useApi();
+  const { networkConfig } = useApi();
 
   useEffect(() => {
     if (!account) {
       return;
     }
 
-    const ss58Account = convertToSS58(account, NETWORK_SS58_PREFIX[network]);
+    const ss58Account = convertToSS58(account, networkConfig.ss58Prefix);
 
     setAccount(ss58Account);
-  }, [network]);
+  }, [networkConfig]);
 
   return (
     <AccountContext.Provider

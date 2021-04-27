@@ -1,7 +1,7 @@
 import { decodeAddress, encodeAddress } from '@polkadot/keyring';
 import { hexToU8a, isHex } from '@polkadot/util';
 import Web3 from 'web3';
-import { NETWORK_SS58_PREFIX } from '../../config';
+import { NETWORK_CONFIG } from '../../config';
 import { AccountType } from '../../model';
 import { canConvertToEth, convertToEth, convertToSS58, dvmAddressToAccountId } from './address';
 
@@ -52,8 +52,8 @@ export const isSameAddress = (from: string, to: string): boolean => {
     }
 
     if (isSS58Address(to)) {
-      toAddress = convertToSS58(to, NETWORK_SS58_PREFIX.darwinia);
-      fromAddress = convertToSS58(from, NETWORK_SS58_PREFIX.darwinia);
+      toAddress = convertToSS58(to, NETWORK_CONFIG.darwinia.ss58Prefix);
+      fromAddress = convertToSS58(from, NETWORK_CONFIG.darwinia.ss58Prefix);
     }
   }
 

@@ -5,14 +5,13 @@ import BN from 'bn.js';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Web3 from 'web3';
-import { NETWORK_TOKEN_NAME } from '../config';
 import { useAccount, useApi, useAssets } from '../hooks';
-import { connectSubstrate, dvmAddressToAccountId, receiveKton } from '../utils';
+import { connectSubstrate, depositKton, dvmAddressToAccountId } from '../utils';
 import { precisionBalance } from '../utils/format/formatBalance';
 import { ShortAccount } from './ShortAccount';
 
 export function KtonDraw() {
-  const { api, isSubstrate, network, setApi } = useApi();
+  const { api, isSubstrate, network, networkConfig, setApi } = useApi();
   const { account } = useAccount();
   const { reloadAssets } = useAssets();
   const [isVisible, setIsVisible] = useState(false);
@@ -75,7 +74,7 @@ export function KtonDraw() {
               ) : (
                 t('You have {{amount}} {{ktonName}} to claim', {
                   amount: Web3.utils.fromWei(balance.toString(), 'ether'),
-                  ktonName: NETWORK_TOKEN_NAME[network].kton,
+                  ktonName: networkConfig.token.kton,
                 })
               )}
             </span>
@@ -99,7 +98,7 @@ export function KtonDraw() {
                 setIsDisable(true);
 
                 try {
-                  const txhash = await receiveKton(account, balance);
+                  const txhash = await depositKton(account, balance);
 
                   setHash(txhash);
                   reloadAssets();

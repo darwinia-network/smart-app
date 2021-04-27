@@ -7,7 +7,6 @@ import BN from 'bn.js';
 import { formatDistanceToNow } from 'date-fns';
 import { useQuery } from 'graphql-hooks';
 import { useTranslation } from 'react-i18next';
-import { NETWORK_SS58_PREFIX, NETWORK_TOKEN_NAME } from '../../config';
 import { useAccount, useApi } from '../../hooks';
 import { Assets } from '../../model';
 import {
@@ -110,12 +109,13 @@ export function AccountModal({
   assets,
 }: IModalProps & { assets: { ring: BN; kton: BN } }) {
   const { account, setAccount } = useAccount();
-  const { setAccounts, accountType, network, isSubstrate } = useApi();
+  const { setAccounts, accountType, network, isSubstrate, networkConfig } = useApi();
   const { t } = useTranslation();
   const { loading, data } = useQuery<TransfersQueryRes>(TRANSFERS_QUERY, {
     variables: {
       limit: 10,
-      account: '2qeMxq616BhqvTW8a1bp2g7VKPAmpda1vXuAAz5TxV5ehivG', // !FIXME use account for process test.
+      // account: '2qeMxq616BhqvTW8a1bp2g7VKPAmpda1vXuAAz5TxV5ehivG', // test account in darwinia network
+      account,
       offset: 0,
     },
   });
@@ -176,7 +176,7 @@ export function AccountModal({
                 <span
                   onClick={() => {
                     const address = isSubstrate
-                      ? convertToSS58(account, NETWORK_SS58_PREFIX[network])
+                      ? convertToSS58(account, networkConfig.ss58Prefix)
                       : dvmAddressToAccountId(account).toHuman();
 
                     window.open(`https://${network}.subscan.io/account/${address}`, 'blank');
@@ -212,12 +212,12 @@ export function AccountModal({
             dataSource={[
               {
                 image: '/image/ring.svg',
-                asset: NETWORK_TOKEN_NAME[network].ring,
+                asset: networkConfig.token.ring,
                 amount: formatBalance(assets.ring, accountType),
               },
               {
                 image: '/image/kton.svg',
-                asset: NETWORK_TOKEN_NAME[network].kton,
+                asset: networkConfig.token.kton,
                 amount: formatBalance(assets.kton, accountType),
               },
             ]}
@@ -252,7 +252,7 @@ export function AccountModal({
                       <b>
                         {t(item.action)}
                         <span className='uppercase ml-2'>
-                          {NETWORK_TOKEN_NAME[network][item.asset as Assets]}
+                          {networkConfig.token[item.asset as Assets]}
                         </span>
                       </b>
                     }
@@ -281,7 +281,7 @@ export function AccountModal({
                   />
                   <div className='flex flex-col items-stretch justify-end'>
                     <b className='uppercase'>
-                      {item.amount} {NETWORK_TOKEN_NAME[network][item.asset as Assets]}
+                      {item.amount} {networkConfig.token[item.asset as Assets]}
                     </b>
                     <ViewBrowserIcon
                       onClick={() => {

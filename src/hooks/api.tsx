@@ -11,8 +11,8 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LONG_DURATION, NETWORK_IDS, NETWORK_SS58_PREFIX } from '../config';
-import { AccountType, Action, IAccountMeta, NetworkType } from '../model';
+import { LONG_DURATION, NETWORK_CONFIG } from '../config';
+import { AccountType, Action, IAccountMeta, NetConfig, NetworkType } from '../model';
 import { convertToSS58, getInfoFromHash, patchUrl } from '../utils';
 import {
   connectEth,
@@ -79,6 +79,7 @@ export type ApiCtx = {
   switchAccountType: (type: AccountType) => void;
   switchNetwork: (type: NetworkType) => void;
   setApi: (api: ApiPromise) => void;
+  networkConfig: NetConfig;
 };
 
 type ActionHelper = <T = string>(type: ActionType) => (payload: T) => void;
@@ -143,7 +144,7 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
                 ? newAccounts
                 : newAccounts.map(({ address, ...others }) => ({
                     ...others,
-                    address: convertToSS58(address, NETWORK_SS58_PREFIX.darwinia),
+                    address: convertToSS58(address, NETWORK_CONFIG[state.network].ss58Prefix),
                   }));
 
             setAccounts(result);
@@ -155,7 +156,7 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
           const checkConnect = (chainId: string) => {
             const id = parseInt(chainId, 16).toString();
 
-            if (NETWORK_IDS[state.network].includes(id)) {
+            if (NETWORK_CONFIG[state.network].ids.includes(id)) {
               connectToEth();
             }
           };
@@ -237,6 +238,7 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
         api,
         isSmart: state.accountType === 'smart',
         isSubstrate: state.accountType === 'substrate',
+        networkConfig: NETWORK_CONFIG[state.network],
       }}
     >
       {children}

@@ -2,7 +2,6 @@ import { Dropdown, Menu, Tag } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Network } from '../config';
-import { NETWORK_STYLE_CONFIG } from '../config/network';
 import { useAccount, useApi } from '../hooks';
 import { AccountType, NetworkConfig, NetworkType } from '../model';
 import { toOppositeAccountType } from '../utils';
@@ -25,13 +24,13 @@ const networks: NetworkType[] = [Network.darwinia, Network.crab, Network.pangoli
 export function AccountGrid({ accountType, title, isFrom = false }: AccountProps) {
   const [account, setAccount] = useState('');
   const panelRef = useRef<HTMLDivElement>(null);
-  const { switchNetwork, network } = useApi();
+  const { switchNetwork, network, networkConfig } = useApi();
   const { t } = useTranslation();
   const whirl = 'animate-whirl';
   const whirlReverse = 'animate-whirl-reverse';
 
   useEffect(() => {
-    const textRef = panelRef.current?.querySelector(`.${NETWORK_STYLE_CONFIG[network].bgClsName}`);
+    const textRef = panelRef.current?.querySelector(`.${networkConfig.facade.bgClsName}`);
 
     panelRef.current?.classList.remove(whirl);
     textRef?.classList.remove(whirlReverse);
@@ -76,7 +75,7 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
                     <span
                       className={
                         'opacity-60 rounded-full text-xs text-white px-2 inline-flex items-center ' +
-                        NETWORK_STYLE_CONFIG[network].bgClsName
+                        networkConfig.facade.bgClsName
                       }
                     >
                       {t('smart')}
@@ -100,12 +99,12 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
           <div
             className={
               'rounded-xl flex flex-col items-center justify-around pb-1 ' +
-              NETWORK_STYLE_CONFIG[network].bgClsName
+              networkConfig.facade.bgClsName
             }
             // tslint:disable-next-line: no-magic-numbers
             style={{ width: isFrom ? 80 : '100%' }}
           >
-            <img src={NETWORK_STYLE_CONFIG[network].logo} className='h-8 sm:h-12 md:16' alt='' />
+            <img src={networkConfig.facade.logo} className='h-8 sm:h-12 md:16' alt='' />
             <Tag className='capitalize mr-0 text-xs' style={{ borderRadius: 9999 }}>
               {account}
             </Tag>

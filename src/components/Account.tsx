@@ -1,5 +1,4 @@
 import React, { CSSProperties, useMemo } from 'react';
-import { NETWORK_STYLE_CONFIG } from '../config/network';
 import { useApi } from '../hooks';
 import { clsName } from '../utils';
 
@@ -19,16 +18,16 @@ export function Account({
   textClassName?: string;
   onClick?: () => void;
 }>) {
-  const { accountType, network } = useApi();
+  const { accountType, networkConfig } = useApi();
   const containerCls = useMemo(
     () =>
       clsName(
         'flex items-center justify-between leading-normal whitespace-nowrap',
         isLargeRounded ? 'rounded-xl ' : 'rounded-lg ',
         className,
-        NETWORK_STYLE_CONFIG[network].bgClsName
+        networkConfig.facade.bgClsName
       ),
-    [isLargeRounded, className, network]
+    [isLargeRounded, className, networkConfig]
   );
   const accountCls = useMemo(
     () =>
@@ -43,7 +42,7 @@ export function Account({
   return (
     <div className={containerCls} onClick={onClick} style={containerStyle || {}}>
       <img
-        src={NETWORK_STYLE_CONFIG[network].logo}
+        src={networkConfig.facade.logo}
         style={logoStyle || { height: 32 }}
         className='hidden sm:inline-block'
         alt=''

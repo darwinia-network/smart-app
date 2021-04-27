@@ -6,10 +6,10 @@ import { message } from 'antd';
 import BN from 'bn.js';
 import { TFunction } from 'i18next';
 import Web3 from 'web3';
-import { DVM_KTON_WITHDRAW_ADDRESS, NETWORK_IDS, TOKEN_ERC20_KTON } from '../../config';
+import { DVM_KTON_WITHDRAW_ADDRESS, NETWORK_CONFIG, TOKEN_ERC20_KTON } from '../../config';
 import { AccountType, IAccountMeta, NetworkConfig, NetworkType } from '../../model';
-import x16ABI from './abi/0x16ABI.json';
 import ktonABI from './abi/ktonABI.json';
+import precompileABI from './abi/precompileABI.json';
 
 export interface Connection {
   accounts: ExtType.InjectedAccountWithMeta[];
@@ -71,10 +71,10 @@ export function isMetamaskInstalled(): boolean {
 }
 
 export async function isNetworkConsistent(network: NetworkType): Promise<boolean> {
-  // id 1: eth mainnet 3: ropsten 4: rinkeby 5: goerli 42: kovan  43: pangolin
+  // id 1: eth mainnet 3: ropsten 4: rinkeby 5: goerli 42: kovan  43: pangolin(maybe 44)
   const actualId = await window.ethereum.request({ method: 'net_version' });
 
-  return NETWORK_IDS[network].includes(actualId);
+  return NETWORK_CONFIG[network].ids.includes(actualId);
 }
 
 export async function connectEth(network: NetworkType): Promise<{ accounts: IAccountMeta[] }> {
@@ -164,20 +164,19 @@ export async function getTokenBalanceEth(account = ''): Promise<TokenBalance> {
 }
 
 /**
- * @param account receive account - metamask current active account;
- * @param amount receive amount
+ * @param account - metamask current active account;
  * @returns transaction hash
  */
-export async function receiveKton(account: string, amount: BN): Promise<string> {
+export async function depositKton(account: string, amount: BN): Promise<string> {
   const web3 = new Web3(window.ethereum || window.web3.currentProvider);
   // tslint:disable-next-line: no-any
-  const ktonContract = new web3.eth.Contract(x16ABI as any, DVM_KTON_WITHDRAW_ADDRESS);
+  const precompileContract = new web3.eth.Contract(precompileABI as any, DVM_KTON_WITHDRAW_ADDRESS);
   let txHash;
 
   try {
-    txHash = await ktonContract.methods
+    txHash = await precompileContract.methods
       .transfer_and_call(TOKEN_ERC20_KTON, amount)
-      .send({ from: account, gas: 55000 });
+      .send({ from: account, gas: 550000 });
   } catch (error) {
     console.warn(
       '%c [ error ]-182',

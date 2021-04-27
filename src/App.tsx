@@ -6,7 +6,6 @@ import { Link, Route, Switch } from 'react-router-dom';
 import { Connection } from './components/Connection';
 import { KtonDraw } from './components/KtonDraw';
 import { Language } from './components/Language';
-import { NETWORK_STYLE_CONFIG } from './config/network';
 import { Path, routes } from './config/routes';
 import { useApi } from './hooks';
 import { NetworkConfig } from './model';
@@ -30,7 +29,7 @@ const THEME_CONFIG: NetworkConfig<{ [key in keyof typeof darwiniaThemeJson]: str
 
 function App() {
   const { t } = useTranslation();
-  const { networkStatus, network } = useApi();
+  const { networkStatus, network, networkConfig } = useApi();
   const linkItem = (item: LinkItem) =>
     item.path ? (
       <Link to={item.path}>{t(item.name)}</Link>
@@ -63,7 +62,7 @@ function App() {
           style={{ marginTop: -1 }}
         >
           <Link to={Path.root}>
-            <img src={NETWORK_STYLE_CONFIG[network].logoWithText} alt='' />
+            <img src={networkConfig.facade.logoWithText} alt='' />
           </Link>
 
           <div className='flex justify-between items-center flex-1 md:px-8'>

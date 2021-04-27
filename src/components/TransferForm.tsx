@@ -7,14 +7,7 @@ import Bignumber from 'bignumber.js';
 import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Web3 from 'web3';
-import {
-  DVM_RING_WITHDRAW_ADDRESS,
-  ETHER_PRECISION,
-  NETWORK_SS58_PREFIX,
-  NETWORK_TOKEN_NAME,
-  PRECISION,
-  TOKEN_ERC20_KTON,
-} from '../config';
+import { DVM_RING_WITHDRAW_ADDRESS, ETHER_PRECISION, PRECISION, TOKEN_ERC20_KTON } from '../config';
 import { validateMessages } from '../config/validate-msg';
 import { useAccount, useApi, useAssets } from '../hooks';
 import { Assets } from '../model';
@@ -29,6 +22,7 @@ import {
   registry,
   toBn,
   toOppositeAccountType,
+  toUpperCaseFirst,
 } from '../utils';
 import KtonABI from '../utils/api/abi/ktonABI.json';
 import { connectFactory } from '../utils/api/api';
@@ -66,7 +60,7 @@ function IndicatorMessage({ msg, index }: { msg: string; index: string }) {
 
 export function TransferForm() {
   const [form] = useForm<TransferFormValues>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { account } = useAccount();
   const {
     accounts,
@@ -77,6 +71,7 @@ export function TransferForm() {
     setAccounts,
     isSubstrate,
     isSmart,
+    networkConfig,
   } = useApi();
   const { assets, reloadAssets } = useAssets();
   const [balance, setBalance] = useState<string>(null);
@@ -127,7 +122,7 @@ export function TransferForm() {
     // tslint:disable-next-line: no-shadowed-variable
     const { recipient, amount, assets } = form.getFieldsValue();
     const toAccount = dvmAddressToAccountId(equalToDvmAddress || recipient).toHuman();
-    const injector = await web3FromAddress(convertToSS58(account, NETWORK_SS58_PREFIX.crab));
+    const injector = await web3FromAddress(convertToSS58(account, networkConfig.ss58Prefix));
     const count = toBn(amount);
 
     api.setSigner(injector.signer);
@@ -191,7 +186,7 @@ export function TransferForm() {
   const smartToMainnet = async () => {
     const { recipient, amount, assets: selectedAsset } = form.getFieldsValue();
     const accountIdHex = registry
-      .createType('AccountId', convertToSS58(recipient, NETWORK_SS58_PREFIX[network]))
+      .createType('AccountId', convertToSS58(recipient, networkConfig.ss58Prefix))
       .toHex();
     const web3 = new Web3(window.ethereum);
 
@@ -277,7 +272,7 @@ export function TransferForm() {
         onFinish={(_) => {
           setIsAlertVisible(true);
         }}
-        validateMessages={validateMessages}
+        validateMessages={validateMessages[i18n.language as 'en' | 'zh-CN']}
       >
         <Form.Item>
           <TransferControl />
@@ -326,7 +321,7 @@ export function TransferForm() {
                   )
                 : t(
                     'Please make sure you have entered the correct {{type}} address. Entering wrong address will cause asset loss and cannot be recovered!',
-                    { type: t(toOppositeAccountType(accountType)) }
+                    { type: toUpperCaseFirst(toOppositeAccountType(accountType)) }
                   )}
             </p>
           }
@@ -343,8 +338,8 @@ export function TransferForm() {
             size='large'
             suffixIcon={<DownIcon />}
           >
-            <Select.Option value='ring'>{NETWORK_TOKEN_NAME[network].ring}</Select.Option>
-            <Select.Option value='kton'>{NETWORK_TOKEN_NAME[network].kton}</Select.Option>
+            <Select.Option value='ring'>{networkConfig.token.ring}</Select.Option>
+            <Select.Option value='kton'>{networkConfig.token.kton}</Select.Option>
           </Select>
         </Form.Item>
 

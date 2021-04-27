@@ -6,38 +6,35 @@ export enum Network {
   darwinia = 'darwinia',
 }
 
-export const NETWORK_STYLE_CONFIG: NetworkConfig<{
-  logo: string;
-  bgClsName: string;
-  logoWithText: string;
-}> = {
-  crab: { logo: '/image/crab.svg', bgClsName: 'bg-crab', logoWithText: '/image/crab-logo.svg' },
+export const NETWORK_CONFIG: NetworkConfig = {
   darwinia: {
-    logo: '/image/darwinia.svg',
-    bgClsName: 'bg-darwinia',
-    logoWithText: '/image/darwinia-logo.svg',
+    facade: {
+      logo: '/image/darwinia.svg',
+      bgClsName: 'bg-darwinia',
+      logoWithText: '/image/darwinia-logo.svg',
+    },
+    ids: ['1'],
+    ss58Prefix: 18,
+    token: { ring: 'RING', kton: 'KTON' },
   },
   pangolin: {
-    logo: '/image/pangolin.svg',
-    bgClsName: 'bg-pangolin',
-    logoWithText: '/image/pangolin-logo.svg',
+    facade: {
+      logo: '/image/pangolin.svg',
+      bgClsName: 'bg-pangolin',
+      logoWithText: '/image/pangolin-logo.svg',
+    },
+    ids: ['43', '44'],
+    ss58Prefix: 18,
+    token: { ring: 'PRING', kton: 'PKTON' },
   },
-};
-
-export const NETWORK_IDS: NetworkConfig<string[]> = {
-  darwinia: ['1'],
-  pangolin: ['43', '44'],
-  crab: ['NaN'],
-};
-
-export const NETWORK_SS58_PREFIX: NetworkConfig<number> = {
-  darwinia: 18,
-  pangolin: 18,
-  crab: 42,
-};
-
-export const NETWORK_TOKEN_NAME: NetworkConfig<{ ring: string; kton: string }> = {
-  darwinia: { ring: 'RING', kton: 'KTON' },
-  crab: { ring: 'CRING', kton: 'CKTON' },
-  pangolin: { ring: 'PRING', kton: 'PKTON' },
+  crab: {
+    facade: {
+      logo: '/image/crab.svg',
+      bgClsName: 'bg-crab',
+      logoWithText: '/image/crab-logo.svg',
+    },
+    ids: ['NaN'],
+    ss58Prefix: 42,
+    token: { ring: 'PRING', kton: 'PKTON' },
+  },
 };

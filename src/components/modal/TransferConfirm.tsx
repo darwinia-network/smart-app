@@ -2,7 +2,6 @@ import { ArrowRightOutlined } from '@ant-design/icons';
 import { Button, Modal, Tag } from 'antd';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NETWORK_STYLE_CONFIG, NETWORK_TOKEN_NAME } from '../../config/network';
 import { useApi } from '../../hooks';
 import { TransferFormValues } from '../../model/transfer';
 import { clsName, toOppositeAccountType } from '../../utils';
@@ -16,10 +15,10 @@ export function TransferConfirmModal({
   value,
 }: IModalProps & { value: TransferFormValues }) {
   const { t } = useTranslation();
-  const { accountType, network, isSubstrate } = useApi();
+  const { accountType, network, networkConfig, isSubstrate } = useApi();
   const cls = useMemo(
-    () => clsName('rounded-xl flex flex-col items-center', NETWORK_STYLE_CONFIG[network].bgClsName),
-    [network]
+    () => clsName('rounded-xl flex flex-col items-center', networkConfig.facade.bgClsName),
+    [networkConfig]
   );
   const icon = useMemo(() => {
     if (network === 'darwinia') {
@@ -52,14 +51,14 @@ export function TransferConfirmModal({
     >
       <div className='flex justify-between items-center mb-4 px-8'>
         <div className={cls} style={{ width: 120, height: 100 }}>
-          <img src={NETWORK_STYLE_CONFIG[network].logo} style={{ height: 60 }} alt='' />
+          <img src={networkConfig.facade.logo} style={{ height: 60 }} alt='' />
           <Button className='capitalize cursor-default'>{accountType}</Button>
         </div>
 
         {icon}
 
         <div className={cls} style={{ width: 120, height: 100 }}>
-          <img src={NETWORK_STYLE_CONFIG[network].logo} style={{ height: 60 }} alt='' />
+          <img src={networkConfig.facade.logo} style={{ height: 60 }} alt='' />
           <Button className='capitalize cursor-default'>
             {toOppositeAccountType(accountType)}
           </Button>
@@ -75,7 +74,7 @@ export function TransferConfirmModal({
         <h4 className='text-gray-400 mb-2'>{t('Amount')}</h4>
         <p>
           {value.amount}
-          <span className='uppercase ml-2'>{NETWORK_TOKEN_NAME[network][value.assets]}</span>
+          <span className='uppercase ml-2'>{networkConfig.token[value.assets]}</span>
           {value.assets === 'kton' && isSubstrate && (
             <Tag color='blue' className='ml-4'>
               {t('Please claim in smart address')}
