@@ -122,7 +122,8 @@ export function TransferForm() {
     // tslint:disable-next-line: no-shadowed-variable
     const { recipient, amount, assets } = form.getFieldsValue();
     const toAccount = dvmAddressToAccountId(equalToDvmAddress || recipient).toHuman();
-    const injector = await web3FromAddress(convertToSS58(account, networkConfig.ss58Prefix));
+    // tslint:disable-next-line: no-magic-numbers
+    const injector = await web3FromAddress(convertToSS58(account, 42));
     const count = toBn(amount);
 
     api.setSigner(injector.signer);
