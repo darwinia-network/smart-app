@@ -33,8 +33,8 @@ export const NETWORK_CONFIG: NetworkConfig = {
       bgClsName: 'bg-crab',
       logoWithText: '/image/crab-logo.svg',
     },
-    ids: ['NaN'],
+    ids: ['44'],
     ss58Prefix: 42,
-    token: { ring: 'PRING', kton: 'PKTON' },
+    token: { ring: 'CRING', kton: 'CKTON' },
   },
 };
