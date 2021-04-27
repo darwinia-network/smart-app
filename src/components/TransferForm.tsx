@@ -112,7 +112,7 @@ export function TransferForm() {
       message: t('Extrinsic Failed'),
       icon: <FrownOutlined color='red' />,
     });
-    delayCloseIndicator();
+    setIsIndictorVisible(false);
   };
 
   const mainnetToSmart = async () => {

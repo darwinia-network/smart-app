@@ -1498,22 +1498,22 @@
   resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-3.4.0.tgz#c3c5ae543c897caa9c2a68630bed355be5f9990f"
   integrity sha512-JZButFdZ1+/xAfpguQHoabIXkcqRRKpMrWKBkpEZZyxfY9C1DpADFB8PEqGSTeFr135SaTRfKqGKx5xSCLI7ZQ==
 
-"@darwinia/types-known@^1.1.0-alpha.4":
-  version "1.1.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/@darwinia/types-known/-/types-known-1.1.0-alpha.6.tgz#6d64392a463e881eca47865e851533d34f1c72f8"
-  integrity sha512-/ECFbuMPsRSq/BiwO10sDv1JZw/fNwmTMGucYmRS1Iz/gG2uZJCbgsXssjtTdDwyuAPaKStb7CGPo0gawZbYFg==
+"@darwinia/types-known@^1.1.0-alpha.6":
+  version "1.1.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/@darwinia/types-known/-/types-known-1.1.0-alpha.9.tgz#05d8dd66e85e8a225bdf21df4321130b5bac037b"
+  integrity sha512-BS8YfYQ2l1flAuzISetNfgBS+CZ0EWgqLbsY2kZ56SSd23O5lkTwIdKwTGuZdjjYmeEYkYCgu48Z4Kaq/AsQFQ==
   dependencies:
     "@babel/runtime" "^7.9.6"
     "@polkadot/types" "4.0.4-5"
     "@polkadot/util" "6.0.5"
     bn.js "^5.1.2"
 
-"@darwinia/types@1.1.0-alpha.4":
-  version "1.1.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/@darwinia/types/-/types-1.1.0-alpha.4.tgz#7dc4c09f026d7429318ce4b1e478148d466410cd"
-  integrity sha512-W6IOZKDcsyJCdn2Fquq+ZUXjPUM/ZXchTyvr9SJNZAAvnAuJ08jp6DFD8i3tDau7cwENfk+wctJVNnCIfBlUAw==
+"@darwinia/types@1.1.0-alpha.6":
+  version "1.1.0-alpha.6"
+  resolved "https://registry.yarnpkg.com/@darwinia/types/-/types-1.1.0-alpha.6.tgz#acc73588b5ee9f6ecb64a2bb4a02fb02e803dda8"
+  integrity sha512-kdGUXVto8KiLEt0JKKQa8b6MZZkj4oKmXJMY+GYIlzR8eg3kUhiNgc3BUiQNEfgob/vA66Uy1L8Opam/FyJv7Q==
   dependencies:
-    "@darwinia/types-known" "^1.1.0-alpha.4"
+    "@darwinia/types-known" "^1.1.0-alpha.6"
 
 "@emotion/is-prop-valid@^0.8.8":
   version "0.8.8"
