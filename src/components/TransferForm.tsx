@@ -272,7 +272,7 @@ export function TransferForm() {
         onFinish={(_) => {
           setIsAlertVisible(true);
         }}
-        validateMessages={validateMessages[i18n.language as 'en' | 'zh-CN']}
+        validateMessages={validateMessages[i18n.language as 'en' | 'zh-CN' | 'zh']}
       >
         <Form.Item>
           <TransferControl />
