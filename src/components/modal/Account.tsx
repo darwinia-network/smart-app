@@ -240,7 +240,7 @@ export function AccountModal({
         >
           {loading ? (
             <LoadingOutlined spin className='mx-auto my-8 block' />
-          ) : (
+          ) : data?.transfers.nodes.length ? (
             <List
               itemLayout='horizontal'
               dataSource={patchRecords(data?.transfers.nodes, account)}
@@ -295,6 +295,8 @@ export function AccountModal({
                 </List.Item>
               )}
             />
+          ) : (
+            <div className='text-center opacity-60 my-8'>{t('Coming soon...')}</div>
           )}
         </TabPane>
       </Tabs>
