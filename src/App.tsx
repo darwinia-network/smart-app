@@ -38,8 +38,8 @@ function App() {
     );
   const links = useMemo<LinkItem[]>(
     () => [
-      { name: 'DVM Guide', path: Path.intro },
-      { name: 'Wallet', href: 'https://apps.darwinia.network' },
+      { name: 'DVM Guide', href: 'https://crab.network/docs/dvm-intro/' },
+      { name: 'Wallet', href: `https://apps.darwinia.network/#network=${network}` },
       { name: 'Wormhole', href: 'https://wormhole.darwinia.network' },
       { name: 'Explorer', href: `https://${network}.subscan.io` },
     ],
