@@ -175,9 +175,8 @@ export function AccountModal({
                 <ViewBrowserIcon className='mr-2 text-xl' />
                 <span
                   onClick={() => {
-                    const address = isSubstrate
-                      ? convertToSS58(account, networkConfig.ss58Prefix)
-                      : dvmAddressToAccountId(account).toHuman();
+                    const acc = isSubstrate ? account : dvmAddressToAccountId(account).toHuman();
+                    const address = convertToSS58(acc, networkConfig.ss58Prefix);
 
                     window.open(`https://${network}.subscan.io/account/${address}`, 'blank');
                   }}
