@@ -13,8 +13,10 @@ const lang: { name: string; short: string }[] = [
 ];
 
 export function Language({ className = '' }: LanguageProps) {
-  const [current, setCurrent] = useState('zh');
   const { t, i18n } = useTranslation();
+  const [current, setCurrent] = useState(
+    i18n.language.includes('-') ? i18n.language.split('-')[0] : i18n.language
+  );
 
   return (
     <Dropdown

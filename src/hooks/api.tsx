@@ -34,7 +34,7 @@ type ActionType = 'switchAccountType' | 'switchNetwork' | 'updateNetworkStatus' 
 const info = getInfoFromHash();
 
 const initialState: StoreState = {
-  accountType: info.accountType || 'substrate',
+  accountType: info.accountType || 'smart',
   network: info.network || 'pangolin',
   accounts: null,
   networkStatus: 'pending',
