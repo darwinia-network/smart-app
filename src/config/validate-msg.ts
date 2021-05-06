@@ -1,6 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 const typeTemplateEn = '${name} is not a valid ${type}';
-const typeTemplateZh = '${name} 不是合法的 ${type}';
+const typeTemplateZh = '${label}不是合法的 ${type}';
 const en = {
   default: 'Validation error on field ${name}',
   required: '${name} is required',
@@ -51,7 +51,7 @@ const en = {
 
 const zh = {
   default: '验证失败 ${name}',
-  required: '${name} 是必填项',
+  required: '${label}是必填项',
   enum: '${name} 必须是 [${enum}] 中的一个值',
   whitespace: '${name} 不能为空',
   date: {
@@ -93,7 +93,7 @@ const zh = {
     range: '${name} 的长度必须介于 ${min} 和 ${max} 之间',
   },
   pattern: {
-    mismatch: '${name} 格式不匹配',
+    mismatch: '${label}格式不匹配',
   },
 };
 
