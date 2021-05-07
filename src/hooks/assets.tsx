@@ -21,31 +21,42 @@ export const AssetsProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const { account } = useAccount();
   const { api, isSubstrate, isSmart, network } = useApi();
   const [assets, setAssets] = useState<{ ring: BN; kton: BN }>({ ring: null, kton: null });
-  // tslint:disable-next-line: cyclomatic-complexity
-  const reloadAssets = useCallback(async () => {
-    let [ring, kton] = ['0', '0'];
+  const reloadAssets = useCallback(
+    // tslint:disable-next-line: cyclomatic-complexity
+    async (chainId?: string) => {
+      let [ring, kton] = ['0', '0'];
 
-    if (account && isSubstrate) {
-      [ring, kton] = await getTokenBalanceDarwinia(api, account);
-    }
-
-    if (account && isSmart) {
-      const isConsistent = await isNetworkConsistent(network);
-
-      // we have show notification in api provider.
-      if (isConsistent) {
-        [ring, kton] = await getTokenBalanceEth(account);
+      if (account && isSubstrate) {
+        [ring, kton] = await getTokenBalanceDarwinia(api, account);
       }
-    }
 
-    setAssets({
-      ring: web3.utils.toBN(ring),
-      kton: web3.utils.toBN(kton),
-    });
-  }, [account, api, isSubstrate, isSmart, network]);
+      if (account && isSmart) {
+        const isConsistent = await isNetworkConsistent(network, chainId);
+
+        // we have show notification in api provider.
+        if (isConsistent) {
+          [ring, kton] = await getTokenBalanceEth(account);
+        }
+      }
+
+      setAssets({
+        ring: web3.utils.toBN(ring),
+        kton: web3.utils.toBN(kton),
+      });
+    },
+    [account, api, isSubstrate, isSmart, network]
+  );
 
   useEffect(() => {
     reloadAssets().then(() => {});
+
+    if (window.ethereum) {
+      window.ethereum.on('chainChanged', reloadAssets);
+    }
+
+    return () => {
+      window.ethereum.removeListener('chainChanged', reloadAssets);
+    };
   }, [reloadAssets]);
 
   return (

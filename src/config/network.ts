@@ -13,10 +13,21 @@ export const NETWORK_CONFIG: NetworkConfig = {
       bgClsName: 'bg-darwinia',
       logoWithText: '/image/darwinia-logo.svg',
     },
-    ids: ['1'],
     ss58Prefix: 18,
     token: { ring: 'RING', kton: 'KTON' },
     rpc: 'wss://rpc.darwinia.network',
+    ethereumChain: {
+      // TODO
+      chainId: '',
+      chainName: 'darwinia',
+      iconUrls: [],
+      nativeCurrency: {
+        name: '',
+        symbol: '',
+        decimals: 18,
+      },
+      rpcUrls: [],
+    },
   },
   pangolin: {
     facade: {
@@ -24,10 +35,20 @@ export const NETWORK_CONFIG: NetworkConfig = {
       bgClsName: 'bg-pangolin',
       logoWithText: '/image/pangolin-logo.svg',
     },
-    ids: ['43', '44'], // TODO: 44 is a bug?
     ss58Prefix: 18,
     token: { ring: 'PRING', kton: 'PKTON' },
     rpc: 'wss://pangolin-rpc.darwinia.network/',
+    ethereumChain: {
+      chainId: '0x2b',
+      chainName: 'pangolin',
+      iconUrls: [],
+      nativeCurrency: {
+        name: 'Pangolin Network Native Token',
+        symbol: 'PRING',
+        decimals: 18,
+      },
+      rpcUrls: ['https://pangolin-rpc.darwinia.network/'],
+    },
   },
   crab: {
     facade: {
@@ -35,9 +56,19 @@ export const NETWORK_CONFIG: NetworkConfig = {
       bgClsName: 'bg-crab',
       logoWithText: '/image/crab-logo.svg',
     },
-    ids: ['44'],
     ss58Prefix: 42,
     token: { ring: 'CRING', kton: 'CKTON' },
     rpc: 'wss://crab.darwinia.network',
+    ethereumChain: {
+      chainId: '0x2c',
+      chainName: 'crab',
+      iconUrls: [],
+      nativeCurrency: {
+        name: 'Crab Network Native Token',
+        symbol: 'CRING',
+        decimals: 18,
+      },
+      rpcUrls: ['https://crab-rpc.darwinia.network/'],
+    },
   },
 };

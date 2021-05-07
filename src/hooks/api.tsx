@@ -15,6 +15,7 @@ import { LONG_DURATION, NETWORK_CONFIG } from '../config';
 import { AccountType, Action, IAccountMeta, NetConfig, NetworkType } from '../model';
 import { convertToSS58, getInfoFromHash, patchUrl } from '../utils';
 import {
+  addEthereumChain,
   connectEth,
   connectNodeProvider,
   ConnectStatus,
@@ -96,19 +97,61 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const setNetworkStatus = useCallback(createAction<ConnectStatus>('updateNetworkStatus'), []);
   const [api, setApi] = useState<ApiPromise>(null);
   const { t } = useTranslation();
-  const connectToEth = useCallback(async () => {
-    const { accounts: newAccounts } = await connectEth(state.network);
+  const notify = useCallback(() => {
+    const key = `key${Date.now()}`;
 
-    setAccounts(newAccounts);
+    notification.error({
+      message: t('Incorrect network'),
+      description: t(
+        'Network mismatch, you can switch network manually in metamask or do it automatically by clicking the button below',
+        {
+          type: state.network,
+        }
+      ),
+      btn: (
+        <Button
+          type='primary'
+          onClick={() => {
+            addEthereumChain(state.network).then((res) => {
+              if (res === null) {
+                notification.close(key);
+              }
+            });
+          }}
+        >
+          {t('Switch to {{network}}', { network: state.network })}
+        </Button>
+      ),
+      key,
+      onClose: () => notification.close(key),
+      duration: null,
+    });
 
-    const metamaskAccountChanged = (accounts: string[]) => {
-      setAccounts(accounts.map((address) => ({ address })));
-    };
-
-    window.ethereum.on('accountsChanged', metamaskAccountChanged);
-    // TODO any other event to handle, e.g: disconnect
-    window.ethereum.on('disconnect', () => {});
+    setNetworkStatus('fail');
+  }, [state.network]);
+  const metamaskAccountChanged = useCallback((accounts: string[]) => {
+    setAccounts(accounts.map((address) => ({ address })));
   }, []);
+  const connectToEth = useCallback(
+    async (chainId?: string) => {
+      const isMatch = await isNetworkConsistent(state.network, chainId);
+
+      if (!isMatch) {
+        notify();
+
+        return;
+      }
+
+      const { accounts: newAccounts } = await connectEth(state.network);
+
+      setAccounts(newAccounts);
+      setNetworkStatus('success');
+
+      window.ethereum.removeListener('accountsChanged', metamaskAccountChanged);
+      window.ethereum.on('accountsChanged', metamaskAccountChanged);
+    },
+    [state.network]
+  );
 
   useEffect(() => {
     if (typeof window.ethereum === 'undefined') {
@@ -135,6 +178,7 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
           );
 
           setApi(newApi);
+          setNetworkStatus('success');
 
           if (!extensions.length && !newAccounts.length) {
             setAccounts(null);
@@ -152,55 +196,20 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
         }
 
         if (state.accountType === 'smart') {
-          const isConsistent = await isNetworkConsistent(state.network);
-          const checkConnect = (chainId: string) => {
-            const id = parseInt(chainId, 16).toString();
+          connectToEth();
 
-            if (NETWORK_CONFIG[state.network].ids.includes(id)) {
-              connectToEth();
-            }
-          };
-
-          window.ethereum.on('connect', checkConnect);
-
-          if (!isConsistent) {
-            const key = `key${Date.now()}`;
-
-            notification.error({
-              message: t('Incorrect network'),
-              description: t('Network error, please switch to {{type}} network in metamask', {
-                type: state.network,
-              }),
-              btn: (
-                <Button type='primary' onClick={() => notification.close(key)}>
-                  {t('I Understand')}
-                </Button>
-              ),
-              key,
-              onClose: () => notification.close(key),
-              // tslint:disable-next-line: no-magic-numbers
-              duration: LONG_DURATION,
-            });
-
-            setNetworkStatus('fail');
-
-            // FIXME: should cancel listening after component destroy ?
-            window.ethereum.on('chainChanged', checkConnect);
-
-            return;
-          } else {
-            connectToEth();
-          }
+          window.ethereum.on('chainChanged', connectToEth);
         }
 
-        setNetworkStatus('success');
         patchUrl({ accountType: state.accountType });
       } catch (error) {
         setNetworkStatus('fail');
       }
     })();
 
-    return () => {};
+    return () => {
+      window.ethereum.removeListener('chainChanged', connectToEth);
+    };
   }, [state.accountType, state.network]);
 
   /**

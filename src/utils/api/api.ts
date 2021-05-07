@@ -62,11 +62,14 @@ export function isMetamaskInstalled(): boolean {
   return typeof window.ethereum !== 'undefined' || typeof window.web3 !== 'undefined';
 }
 
-export async function isNetworkConsistent(network: NetworkType): Promise<boolean> {
-  // id 1: eth mainnet 3: ropsten 4: rinkeby 5: goerli 42: kovan  43: pangolin(maybe 44)
-  const actualId = await window.ethereum.request({ method: 'net_version' });
+export async function isNetworkConsistent(network: NetworkType, id?: string): Promise<boolean> {
+  id = Web3.utils.isHex(id) ? parseInt(id, 16).toString() : id;
+  // id 1: eth mainnet 3: ropsten 4: rinkeby 5: goerli 42: kovan  43: pangolin 44: crab
+  const actualId: string = !!id
+    ? await Promise.resolve(id)
+    : await window.ethereum.request({ method: 'net_version' });
 
-  return NETWORK_CONFIG[network].ids.includes(actualId);
+  return parseInt(NETWORK_CONFIG[network].ethereumChain.chainId, 16).toString() === actualId;
 }
 
 export async function connectEth(network: NetworkType): Promise<{ accounts: IAccountMeta[] }> {
@@ -178,4 +181,22 @@ export async function depositKton(account: string, amount: BN): Promise<string> 
   }
 
   return txHash.transactionHash;
+}
+
+/**
+ * @description add chain in metamask
+ */
+export async function addEthereumChain(network: NetworkType) {
+  const params = NETWORK_CONFIG[network].ethereumChain;
+
+  try {
+    const result = await window.ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [params],
+    });
+
+    return result;
+  } catch (err) {
+    console.warn('%c [ err ]-199', 'font-size:13px; background:pink; color:#bf2c9f;', err);
+  }
 }

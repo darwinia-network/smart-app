@@ -1,4 +1,5 @@
 import { Config } from './common';
+import { AddEthereumChainParameter } from './metamask';
 
 export type NetworkType = 'pangolin' | 'crab' | 'darwinia';
 
@@ -11,8 +12,6 @@ interface Facade {
   logoWithText: string;
 }
 
-type Ids = string[];
-
 interface Token {
   ring: string;
   kton: string;
@@ -20,10 +19,10 @@ interface Token {
 
 export interface NetConfig {
   facade: Facade;
-  ids: Ids;
   ss58Prefix: SS58Prefix;
   token: Token;
   rpc: string;
+  ethereumChain: AddEthereumChainParameter;
 }
 
 export type NetworkConfig<T = NetConfig> = Config<NetworkType, T>;
