@@ -7,7 +7,7 @@ import BN from 'bn.js';
 import { TFunction } from 'i18next';
 import Web3 from 'web3';
 import { DVM_KTON_WITHDRAW_ADDRESS, NETWORK_CONFIG, TOKEN_ERC20_KTON } from '../../config';
-import { AccountType, IAccountMeta, NetworkConfig, NetworkType } from '../../model';
+import { AccountType, IAccountMeta, NetworkType } from '../../model';
 import ktonABI from './abi/ktonABI.json';
 import precompileABI from './abi/precompileABI.json';
 
@@ -21,16 +21,8 @@ export type ConnectStatus = 'pending' | 'connecting' | 'success' | 'fail';
 
 export type TokenBalance = [string, string];
 
-const RPC_CONFIG: NetworkConfig<string> = {
-  crab: 'wss://crab.darwinia.network',
-  darwinia: 'wss://rpc.darwinia.network',
-  pangolin: 'wss://pangolin-rpc.darwinia.network/',
-};
-
-// const darwiniaApi: ApiPromise | null = null;
-
 export async function connectNodeProvider(type: NetworkType = 'darwinia'): Promise<ApiPromise> {
-  const provider = new WsProvider(RPC_CONFIG[type]);
+  const provider = new WsProvider(NETWORK_CONFIG[type].rpc);
   const darwiniaApi = await ApiPromise.create({
     provider,
     typesBundle: {
@@ -58,7 +50,7 @@ export async function connectSubstrate(
   api: ApiPromise;
 }> {
   try {
-    const extensions = await web3Enable(enable); // TODO: ?
+    const extensions = await web3Enable(enable);
     const accounts = await web3Accounts();
     const api = await connectNodeProvider(network);
 
@@ -176,7 +168,7 @@ export async function depositKton(account: string, amount: BN): Promise<string> 
   try {
     txHash = await precompileContract.methods
       .transfer_and_call(TOKEN_ERC20_KTON, amount)
-      .send({ from: account, gas: 550000 });
+      .send({ from: account, gas: 550000 }); // TODO: estimate gas?
   } catch (error) {
     console.warn(
       '%c [ error ]-182',

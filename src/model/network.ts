@@ -23,6 +23,7 @@ export interface NetConfig {
   ids: Ids;
   ss58Prefix: SS58Prefix;
   token: Token;
+  rpc: string;
 }
 
 export type NetworkConfig<T = NetConfig> = Config<NetworkType, T>;

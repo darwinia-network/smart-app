@@ -16,6 +16,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
     ids: ['1'],
     ss58Prefix: 18,
     token: { ring: 'RING', kton: 'KTON' },
+    rpc: 'wss://rpc.darwinia.network',
   },
   pangolin: {
     facade: {
@@ -23,9 +24,10 @@ export const NETWORK_CONFIG: NetworkConfig = {
       bgClsName: 'bg-pangolin',
       logoWithText: '/image/pangolin-logo.svg',
     },
-    ids: ['43', '44'],
+    ids: ['43', '44'], // TODO: 44 is a bug?
     ss58Prefix: 18,
     token: { ring: 'PRING', kton: 'PKTON' },
+    rpc: 'wss://pangolin-rpc.darwinia.network/',
   },
   crab: {
     facade: {
@@ -36,5 +38,6 @@ export const NETWORK_CONFIG: NetworkConfig = {
     ids: ['44'],
     ss58Prefix: 42,
     token: { ring: 'CRING', kton: 'CKTON' },
+    rpc: 'wss://crab.darwinia.network',
   },
 };
