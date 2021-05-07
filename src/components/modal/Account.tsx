@@ -25,12 +25,12 @@ const TRANSFERS_QUERY = `
   query transfers($account: String!, $offset: Int, $limit: Int) {
     transfers(
       offset: $offset,
-      first: $limit,
+      last: $limit,
       filter: {
-        fromId: { equalTo: $account },
-        # or: {
-        #   toId: { equalTo: "2q5gtYfh3ULgFbrvXSVQFucLNiqKQF4TW9ifKjDx8AdNo5D2" }
-        # }
+        or: [ 
+          { fromId: { equalTo: $account } },
+          { toId: { equalTo: $account } }
+        ]
       },
  			orderBy: TIMESTAMP_DESC
     ){
@@ -235,64 +235,91 @@ export function AccountModal({
         <TabPane
           tab={t('Transfer History')}
           key='history'
-          style={{ overflow: 'scroll', maxHeight: 300 }}
+          style={{ overflow: 'scroll', maxHeight: '35vh' }}
         >
           {loading ? (
             <LoadingOutlined spin className='mx-auto my-8 block' />
           ) : data?.transfers.nodes.length ? (
             <List
               itemLayout='horizontal'
-              dataSource={patchRecords(data?.transfers.nodes, account)}
-              renderItem={(item) => (
-                <List.Item>
-                  <List.Item.Meta
-                    className='flex items-center'
-                    title={
-                      <b>
-                        {t(item.action)}
-                        <span className='uppercase ml-2'>
-                          {networkConfig.token[item.asset as Assets]}
-                        </span>
-                      </b>
-                    }
-                    description={
-                      <div className='text-xs'>
-                        <p className='my-2'>
-                          {formatDistanceToNow(new Date(item.timestamp), { addSuffix: true })}
-                        </p>
-
-                        <span className='inline-flex items-center gap-2'>
-                          <span className='inline-flex items-center' style={{ width: 120 }}>
-                            <span className='mr-1'>
-                              {t(item.action === 'send' ? 'To' : 'From')}
-                            </span>
-                            <ShortAccount account={item.account} isCopyBtnDisplay={false} />
+              dataSource={[
+                ...patchRecords(data?.transfers.nodes, account),
+                {
+                  id: 'more',
+                  asset: '',
+                  action: '',
+                  timestamp: '',
+                  account: '',
+                  accountType: '',
+                  amount: '',
+                },
+              ]}
+              renderItem={(item) =>
+                item.id !== 'more' ? (
+                  <List.Item>
+                    <List.Item.Meta
+                      className='flex items-center'
+                      title={
+                        <b>
+                          {t(item.action)}
+                          <span className='uppercase ml-2'>
+                            {networkConfig.token[item.asset as Assets]}
                           </span>
-                          <Tag
-                            color={item.accountType === 'substrate' ? '#5745de' : '#ec3783'}
-                            className='rounded-xl text-xs cursor-default'
-                          >
-                            {t(item.accountType)}
-                          </Tag>
-                        </span>
-                      </div>
-                    }
-                  />
-                  <div className='flex flex-col items-stretch justify-end'>
-                    <b className='uppercase'>
-                      {item.amount} {networkConfig.token[item.asset as Assets]}
-                    </b>
-                    <ViewBrowserIcon
+                        </b>
+                      }
+                      description={
+                        <div className='text-xs'>
+                          <p className='my-2'>
+                            {formatDistanceToNow(new Date(item.timestamp), { addSuffix: true })}
+                          </p>
+
+                          <span className='inline-flex items-center gap-2'>
+                            <span className='inline-flex items-center' style={{ width: 120 }}>
+                              <span className='mr-1'>
+                                {t(item.action === 'send' ? 'To' : 'From')}
+                              </span>
+                              <ShortAccount account={item.account} isCopyBtnDisplay={false} />
+                            </span>
+                            <Tag
+                              color={item.accountType === 'substrate' ? '#5745de' : '#ec3783'}
+                              className='rounded-xl text-xs cursor-default'
+                            >
+                              {t(item.accountType)}
+                            </Tag>
+                          </span>
+                        </div>
+                      }
+                    />
+                    <div className='flex flex-col items-stretch justify-end'>
+                      <b className='uppercase'>
+                        {item.amount} {networkConfig.token[item.asset as Assets]}
+                      </b>
+                      <ViewBrowserIcon
+                        onClick={() => {
+                          const url = `https://${network}.subscan.io/block/${item.id}?tab=event`;
+
+                          window.open(url, 'blank');
+                        }}
+                        className='text-xl text-right cursor-pointer'
+                      />
+                    </div>
+                  </List.Item>
+                ) : (
+                  <List.Item className='justify-center'>
+                    <Button
+                      size='small'
+                      type='link'
                       onClick={() => {
-                        const url = `https://${network}.subscan.io/block/${item.id}?tab=event`;
+                        const url = `https://${network}.subscan.io/account/${account}?tab=transfer`;
 
                         window.open(url, 'blank');
                       }}
-                      className='text-xl text-right cursor-pointer'
-                    />
-                  </div>
-                </List.Item>
-              )}
+                    >
+                      {t('View More')}
+                    </Button>
+                  </List.Item>
+                )
+              }
             />
           ) : (
             <div className='text-center opacity-60 my-8'>{t('Coming soon...')}</div>
