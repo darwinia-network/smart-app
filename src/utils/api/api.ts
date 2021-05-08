@@ -166,12 +166,21 @@ export async function depositKton(account: string, amount: BN): Promise<string> 
   const web3 = new Web3(window.ethereum || window.web3.currentProvider);
   // tslint:disable-next-line: no-any
   const precompileContract = new web3.eth.Contract(precompileABI as any, DVM_KTON_WITHDRAW_ADDRESS);
+  const data = web3.eth.abi.encodeParameters(
+    ['address', 'uint256'],
+    [TOKEN_ERC20_KTON, amount.toString()]
+  );
+  const gasEstimated = await web3.eth.estimateGas({
+    to: DVM_KTON_WITHDRAW_ADDRESS,
+    // tslint:disable-next-line: no-magic-numbers
+    data: '0x3225da29' + data.substr(2),
+  });
   let txHash;
 
   try {
     txHash = await precompileContract.methods
       .transfer_and_call(TOKEN_ERC20_KTON, amount)
-      .send({ from: account, gas: 550000 }); // TODO: estimate gas?
+      .send({ from: account, gas: gasEstimated });
   } catch (error) {
     console.warn(
       '%c [ error ]-182',

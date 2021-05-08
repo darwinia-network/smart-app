@@ -6,12 +6,12 @@
 
 - <del>icons</del>
 
-- antd 验证信息国际化配置
+- <del>antd 验证信息国际化配置</del>
 
 - <del>响应式</del>
 
 - 领取、转账时的提示信息优化
 
-- network 配置文件
+- <del>network 配置文件</del>
 
-- 下拉加载 history record
+- <del>下拉加载 history record</del> 拉取最后 10 条，底部加 subscan 链接
