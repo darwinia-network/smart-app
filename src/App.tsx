@@ -39,11 +39,14 @@ function App() {
   const links = useMemo<LinkItem[]>(
     () => [
       { name: 'DVM Guide', href: 'https://crab.network/docs/dvm-intro/' },
-      { name: 'Wallet', href: `https://apps.darwinia.network/#network=${network}` },
+      {
+        name: 'Wallet',
+        href: `https://apps.darwinia.network/?${encodeURIComponent(`rpc=${networkConfig.rpc}`)}`,
+      },
       { name: 'Wormhole', href: 'https://wormhole.darwinia.network' },
       { name: 'Explorer', href: `https://${network}.subscan.io` },
     ],
-    [network]
+    [network, networkConfig]
   );
 
   useEffect(() => {
