@@ -27,6 +27,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
         decimals: 18,
       },
       rpcUrls: [],
+      blockExplorerUrls: [''],
     },
   },
   pangolin: {
@@ -48,6 +49,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
         decimals: 18,
       },
       rpcUrls: ['https://pangolin-rpc.darwinia.network/'],
+      blockExplorerUrls: ['https://pangolin.subscan.io/'],
     },
   },
   crab: {
@@ -69,6 +71,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
         decimals: 18,
       },
       rpcUrls: ['https://crab-rpc.darwinia.network/'],
+      blockExplorerUrls: ['https://crab.subscan.io/'],
     },
   },
 };
