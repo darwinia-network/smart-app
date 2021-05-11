@@ -50,7 +50,8 @@ export function KtonDraw() {
         setBalance(count);
         setIsVisible(count.gt(new BN(0)));
       } catch (error) {
-        message.error(error.message);
+        setIsDisable(false);
+        console.warn(error.message);
       }
     })();
   }, [api, account, isSubstrate, network, setApi]);
