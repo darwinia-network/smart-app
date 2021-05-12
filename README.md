@@ -1,12 +1,12 @@
 # SMART APP
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## FUNCTION
-
 Transfer ring/kton between Darwinia Smart account and Darwinia account.
 
 ## USAGE
+
+See the usage docs [here](https://crab.network/docs/dvm-smart-app).
+
+## DEVELOPMENT
 
 Feel free to clone this repo to your local machine, under the folder, run `npm install` or `yarn install`(recommended) to install dependencies, now you can:
 
