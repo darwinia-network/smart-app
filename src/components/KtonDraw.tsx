@@ -1,5 +1,5 @@
 import { LoadingOutlined } from '@ant-design/icons';
-import { Alert, Button, message, notification } from 'antd';
+import { Alert, Button, notification } from 'antd';
 import ErrorBoundary from 'antd/lib/alert/ErrorBoundary';
 import BN from 'bn.js';
 import { useEffect, useState } from 'react';

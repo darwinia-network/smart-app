@@ -39,7 +39,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
     "@craco/craco": "^6.1.1",
-    "@darwinia/types": "1.1.0-alpha.6",
+    "@darwinia/types": "^1.1.0-alpha.15",
     "@fontsource/ibm-plex-sans": "^4.2.2",
     "@metamask/jazzicon": "^2.0.0",
     "@polkadot/api": "4.1.1",
