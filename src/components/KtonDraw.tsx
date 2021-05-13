@@ -99,7 +99,10 @@ export function KtonDraw() {
                 setIsDisable(true);
 
                 try {
-                  const txhash = await depositKton(account, balance);
+                  const txhash = await depositKton(account, balance, {
+                    erc20Address: networkConfig.erc20.kton,
+                    withdrawAddress: networkConfig.dvmWithdrawAddress.kton,
+                  });
 
                   setHash(txhash);
                   reloadAssets();

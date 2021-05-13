@@ -7,7 +7,7 @@ import Bignumber from 'bignumber.js';
 import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Web3 from 'web3';
-import { DVM_RING_WITHDRAW_ADDRESS, ETHER_PRECISION, PRECISION, TOKEN_ERC20_KTON } from '../config';
+import { ETHER_PRECISION, PRECISION } from '../config';
 import { validateMessages } from '../config/validate-msg';
 import { useAccount, useApi, useAssets } from '../hooks';
 import { Assets } from '../model';
@@ -203,7 +203,7 @@ export function TransferForm() {
         const txHash = await web3.eth
           .sendTransaction({
             from: account,
-            to: DVM_RING_WITHDRAW_ADDRESS,
+            to: networkConfig.dvmWithdrawAddress.ring,
             data: accountIdHex,
             value: Web3.utils.toWei(amount),
             gas: 55000,
@@ -218,7 +218,7 @@ export function TransferForm() {
       if (selectedAsset === 'kton') {
         const withdrawalAddress = convertToDvm(recipient);
         // tslint:disable-next-line: no-any
-        const ktonContract = new web3.eth.Contract(KtonABI as any, TOKEN_ERC20_KTON);
+        const ktonContract = new web3.eth.Contract(KtonABI as any, networkConfig.erc20.kton);
         const count = web3.utils.toWei(amount, 'ether');
 
         setIsConfirmVisible(false);

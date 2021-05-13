@@ -6,7 +6,7 @@ import { message } from 'antd';
 import BN from 'bn.js';
 import { TFunction } from 'i18next';
 import Web3 from 'web3';
-import { DVM_KTON_WITHDRAW_ADDRESS, NETWORK_CONFIG, TOKEN_ERC20_KTON } from '../../config';
+import { NETWORK_CONFIG } from '../../config';
 import { AccountType, IAccountMeta, NetworkType } from '../../model';
 import ktonABI from './abi/ktonABI.json';
 import precompileABI from './abi/precompileABI.json';
@@ -127,7 +127,7 @@ export function connectFactory(
   };
 }
 
-export async function getTokenBalanceEth(account = ''): Promise<TokenBalance> {
+export async function getTokenBalanceEth(ktonAddress: string, account = ''): Promise<TokenBalance> {
   const web3 = new Web3(window.ethereum);
   let ring = '0';
   let kton = '0';
@@ -144,7 +144,7 @@ export async function getTokenBalanceEth(account = ''): Promise<TokenBalance> {
 
   try {
     // tslint:disable-next-line: no-any
-    const ktonContract = new web3.eth.Contract(ktonABI as any, TOKEN_ERC20_KTON, { gas: 55000 });
+    const ktonContract = new web3.eth.Contract(ktonABI as any, ktonAddress, { gas: 55000 });
 
     kton = await ktonContract.methods.balanceOf(account).call();
   } catch (error) {
@@ -162,16 +162,20 @@ export async function getTokenBalanceEth(account = ''): Promise<TokenBalance> {
  * @param account - metamask current active account;
  * @returns transaction hash
  */
-export async function depositKton(account: string, amount: BN): Promise<string> {
+export async function depositKton(
+  account: string,
+  amount: BN,
+  { withdrawAddress, erc20Address }: { withdrawAddress: string; erc20Address: string }
+): Promise<string> {
   const web3 = new Web3(window.ethereum || window.web3.currentProvider);
   // tslint:disable-next-line: no-any
-  const precompileContract = new web3.eth.Contract(precompileABI as any, DVM_KTON_WITHDRAW_ADDRESS);
+  const precompileContract = new web3.eth.Contract(precompileABI as any, withdrawAddress);
   const data = web3.eth.abi.encodeParameters(
     ['address', 'uint256'],
-    [TOKEN_ERC20_KTON, amount.toString()]
+    [erc20Address, amount.toString()]
   );
   const gasEstimated = await web3.eth.estimateGas({
-    to: DVM_KTON_WITHDRAW_ADDRESS,
+    to: withdrawAddress,
     // tslint:disable-next-line: no-magic-numbers
     data: '0x3225da29' + data.substr(2),
   });
@@ -179,7 +183,7 @@ export async function depositKton(account: string, amount: BN): Promise<string> 
 
   try {
     txHash = await precompileContract.methods
-      .transfer_and_call(TOKEN_ERC20_KTON, amount)
+      .transfer_and_call(erc20Address, amount)
       .send({ from: account, gas: gasEstimated });
   } catch (error) {
     console.warn(

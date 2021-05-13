@@ -3,6 +3,8 @@ import { AddEthereumChainParameter } from './metamask';
 
 export type NetworkType = 'pangolin' | 'crab' | 'darwinia';
 
+export type Token = 'ring' | 'kton';
+
 // tslint:disable-next-line: no-magic-numbers
 export type SS58Prefix = 18 | 42;
 
@@ -12,17 +14,16 @@ interface Facade {
   logoWithText: string;
 }
 
-interface Token {
-  ring: string;
-  kton: string;
-}
+type TokenRecord = { [key in Token]: string };
 
 export interface NetConfig {
-  facade: Facade;
-  ss58Prefix: SS58Prefix;
-  token: Token;
-  rpc: string;
+  dvmWithdrawAddress: TokenRecord;
   ethereumChain: AddEthereumChainParameter;
+  facade: Facade;
+  rpc: string;
+  ss58Prefix: SS58Prefix;
+  token: TokenRecord;
+  erc20: TokenRecord;
 }
 
 export type NetworkConfig<T = NetConfig> = Config<NetworkType, T>;
