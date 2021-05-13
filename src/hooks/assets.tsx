@@ -19,7 +19,7 @@ export const AssetsContext = createContext<AssetsCtx>(null);
 
 export const AssetsProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const { account } = useAccount();
-  const { api, isSubstrate, isSmart, network } = useApi();
+  const { api, isSubstrate, isSmart, network, networkConfig } = useApi();
   const [assets, setAssets] = useState<{ ring: BN; kton: BN }>({ ring: null, kton: null });
   const reloadAssets = useCallback(
     // tslint:disable-next-line: cyclomatic-complexity
@@ -35,7 +35,7 @@ export const AssetsProvider = ({ children }: React.PropsWithChildren<{}>) => {
 
         // we have show notification in api provider.
         if (isConsistent) {
-          [ring, kton] = await getTokenBalanceEth(account);
+          [ring, kton] = await getTokenBalanceEth(networkConfig.erc20.kton, account);
         }
       }
 
@@ -44,7 +44,7 @@ export const AssetsProvider = ({ children }: React.PropsWithChildren<{}>) => {
         kton: web3.utils.toBN(kton),
       });
     },
-    [account, api, isSubstrate, isSmart, network]
+    [account, api, isSubstrate, isSmart, network, networkConfig]
   );
 
   useEffect(() => {

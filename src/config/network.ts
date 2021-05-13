@@ -8,16 +8,21 @@ export enum Network {
 
 export const NETWORK_CONFIG: NetworkConfig = {
   darwinia: {
+    // TODO
     facade: {
       logo: '/image/darwinia.svg',
       bgClsName: 'bg-darwinia',
       logoWithText: '/image/darwinia-logo.svg',
     },
     ss58Prefix: 18,
+    dvmWithdrawAddress: { ring: '', kton: '' },
     token: { ring: 'RING', kton: 'KTON' },
+    erc20: {
+      ring: '',
+      kton: '',
+    },
     rpc: 'wss://rpc.darwinia.network',
     ethereumChain: {
-      // TODO
       chainId: '',
       chainName: 'darwinia',
       iconUrls: [],
@@ -37,7 +42,15 @@ export const NETWORK_CONFIG: NetworkConfig = {
       logoWithText: '/image/pangolin-logo.svg',
     },
     ss58Prefix: 18,
+    dvmWithdrawAddress: {
+      ring: '0x0000000000000000000000000000000000000015',
+      kton: '0x0000000000000000000000000000000000000016',
+    },
     token: { ring: 'PRING', kton: 'PKTON' },
+    erc20: {
+      ring: '0xfe098c5eeDec594271618922B2F3364F0f8b1785',
+      kton: '0x0eb47c5347B255e469101b9D71288b34DD5e2B95',
+    },
     rpc: 'wss://pangolin-rpc.darwinia.network/',
     ethereumChain: {
       chainId: '0x2b',
@@ -59,7 +72,15 @@ export const NETWORK_CONFIG: NetworkConfig = {
       logoWithText: '/image/crab-logo.svg',
     },
     ss58Prefix: 42,
+    dvmWithdrawAddress: {
+      ring: '0x0000000000000000000000000000000000000015',
+      kton: '0x0000000000000000000000000000000000000016',
+    },
     token: { ring: 'CRING', kton: 'CKTON' },
+    erc20: {
+      ring: '0x588abe3F7EE935137102C5e2B8042788935f4CB0',
+      kton: '0xbfE9E136270cE46A2A6a8E8D54718BdAEBEbaA3D',
+    },
     rpc: 'wss://crab.darwinia.network',
     ethereumChain: {
       chainId: '0x2c',
