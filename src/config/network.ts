@@ -81,7 +81,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
       ring: '0x588abe3F7EE935137102C5e2B8042788935f4CB0',
       kton: '0xbfE9E136270cE46A2A6a8E8D54718BdAEBEbaA3D',
     },
-    rpc: 'wss://crab.darwinia.network',
+    rpc: 'wss://crab-rpc.darwinia.network',
     ethereumChain: {
       chainId: '0x2c',
       chainName: 'crab',
