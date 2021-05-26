@@ -32,6 +32,7 @@ module.exports = {
       }),
       borderRadius: {
         xl: '10px',
+        lg: '8px',
       },
     },
   },

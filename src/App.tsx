@@ -68,7 +68,7 @@ function App() {
             <img src={networkConfig.facade.logoWithText} alt='' />
           </Link>
 
-          <div className='flex justify-between items-center flex-1 md:px-8'>
+          <div className='flex flex-row-reverse sm:flex-row sm:justify-between items-center flex-1 md:px-8'>
             <Dropdown
               className='md:hidden mx-2'
               overlay={

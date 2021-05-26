@@ -65,6 +65,9 @@
   "crab": "Crab",
   "darwinia": "Darwinia",
   "pangolin": "Pangolin",
+  "Crab Mainnet": "Crab 主网",
+  "Darwinia Mainnet": "Darwinia 主网",
+  "Pangolin Testnet": "Pangolin 测试网",
   "smart": "智能",
   "substrate": "Substrate"
 }

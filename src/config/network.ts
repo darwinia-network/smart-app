@@ -14,6 +14,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
       bgClsName: 'bg-darwinia',
       logoWithText: '/image/darwinia-logo.svg',
     },
+    fullName: 'Darwinia Mainnet',
     ss58Prefix: 18,
     dvmWithdrawAddress: { ring: '', kton: '' },
     token: { ring: 'RING', kton: 'KTON' },
@@ -41,6 +42,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
       bgClsName: 'bg-pangolin',
       logoWithText: '/image/pangolin-logo.svg',
     },
+    fullName: 'Pangolin Testnet',
     ss58Prefix: 18,
     dvmWithdrawAddress: {
       ring: '0x0000000000000000000000000000000000000015',
@@ -71,6 +73,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
       bgClsName: 'bg-crab',
       logoWithText: '/image/crab-logo.svg',
     },
+    fullName: 'Crab Mainnet',
     ss58Prefix: 42,
     dvmWithdrawAddress: {
       ring: '0x0000000000000000000000000000000000000015',

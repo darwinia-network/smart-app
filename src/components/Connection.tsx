@@ -1,5 +1,6 @@
-import { Button, Dropdown, Menu, Tooltip } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { SwapOutlined } from '@ant-design/icons';
+import { Dropdown, Menu, Tooltip } from 'antd';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useApi, useAssets } from '../hooks';
 import { toOppositeAccountType, toUpperCaseFirst } from '../utils';
@@ -16,7 +17,7 @@ export function Connection() {
   const [isAccountSwitcherVisible, setIsAccountSwitcherVisible] = useState(false);
   const [isAccountDetailVisible, setIsAccountDetailVisible] = useState(false);
   const { account, setAccount } = useAccount();
-  const { accounts, setAccounts, accountType, isSubstrate } = useApi();
+  const { accounts, setAccounts, accountType, isSubstrate, networkConfig } = useApi();
   const { assets } = useAssets();
 
   // tslint:disable-next-line: cyclomatic-complexity
@@ -42,7 +43,7 @@ export function Connection() {
             >
               <ShortAccount
                 account={account}
-                className='self-stretch sm:px-4 bg-white sm:my-px sm:mx-px sm:rounded-xl'
+                className='self-stretch sm:px-1 bg-white sm:my-px sm:mx-px sm:rounded-xl'
               />
             </Account>
           )}
@@ -77,7 +78,10 @@ export function Connection() {
               </Menu>
             }
           >
-            <Button>{t('Switch Network')}</Button>
+            <SwapOutlined
+              className={`p-1 cursor-pointer rounded-full ${networkConfig.facade.bgClsName}`}
+              style={{ color: '#fff' }}
+            />
           </Dropdown>
         </section>
       ) : (
