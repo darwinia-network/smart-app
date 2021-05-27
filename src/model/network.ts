@@ -20,6 +20,7 @@ export interface NetConfig {
   dvmWithdrawAddress: TokenRecord;
   ethereumChain: AddEthereumChainParameter;
   facade: Facade;
+  fullName: string;
   rpc: string;
   ss58Prefix: SS58Prefix;
   token: TokenRecord;

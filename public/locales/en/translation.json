@@ -65,6 +65,9 @@
   "crab": "Crab",
   "darwinia": "Darwinia",
   "pangolin": "Pangolin",
+  "Crab Mainnet": "Crab Mainnet",
+  "Darwinia Mainnet": "Darwinia Mainnet",
+  "Pangolin Testnet": "Pangolin Testnet",
   "smart": "Smart",
   "substrate": "Substrate"
 }
