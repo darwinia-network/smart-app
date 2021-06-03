@@ -5,7 +5,7 @@ export type NetworkType = 'pangolin' | 'crab' | 'darwinia';
 
 export type Token = 'ring' | 'kton';
 
-// tslint:disable-next-line: no-magic-numbers
+// eslint-disable-next-line no-magic-numbers
 export type SS58Prefix = 18 | 42;
 
 interface Facade {

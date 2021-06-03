@@ -14,6 +14,7 @@ export interface HashShort {
   t?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type AdapterMap<T extends object, D extends object> = {
   [key in keyof T]?: keyof D;
 };

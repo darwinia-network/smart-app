@@ -101,7 +101,7 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
               'rounded-xl flex flex-col items-center justify-around pb-1 ' +
               networkConfig.facade.bgClsName
             }
-            // tslint:disable-next-line: no-magic-numbers
+            // eslint-disable-next-line no-magic-numbers
             style={{ width: isFrom ? 80 : '100%' }}
           >
             <img src={networkConfig.facade.logo} className='h-8 sm:h-12 md:16' alt='' />
@@ -117,7 +117,7 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
   );
 }
 
-// tslint:disable-next-line: no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ICON_CONFIG: NetworkConfig<{ icon: (...args: any[]) => JSX.Element }> = {
   crab: { icon: SwapCrabIcon },
   pangolin: { icon: SwapPangolinIcon },
@@ -138,7 +138,7 @@ export function TransferControl() {
         <div className='flex items-center justify-center self-stretch'>
           {React.createElement(ICON_CONFIG[network].icon, {
             onClick: () => {
-              if (!!account) {
+              if (account) {
                 setIsWalletSwitcherVisible(true);
               } else {
                 switchAccountType(toOppositeAccountType(accountType));

@@ -1,12 +1,12 @@
 import Bignumber from 'bignumber.js';
-// tslint:disable:no-magic-numbers
+/* eslint-disable no-magic-numbers */
 import BN from 'bn.js';
 import { isNull, isNumber, isString, isUndefined } from 'lodash';
 import Web3 from 'web3';
 import { PRECISION } from '../../config';
 import { AccountType } from '../../model';
 
-// tslint:disable-next-line: cyclomatic-complexity
+// eslint-disable-next-line complexity
 const toString = (value: string | BN | number): string => {
   if (BN.isBN(value)) {
     return value.toString();
@@ -18,6 +18,7 @@ const toString = (value: string | BN | number): string => {
     return '0';
   } else {
     throw new TypeError(
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `Can not convert the value ${value} to String type. Value type if ${typeof value}`
     );
   }
@@ -35,7 +36,7 @@ export function formatBalance(balance: string | BN | number, accountType: Accoun
   if (accountType === 'smart') {
     const num = new Bignumber(Web3.utils.fromWei(toString(balance)));
 
-    return parseFloat(num.eq(new Bignumber(0)) ? '0' : num.toFixed(4)) + '';
+    return String(parseFloat(num.eq(new Bignumber(0)) ? '0' : num.toFixed(4)));
   }
 
   return '';

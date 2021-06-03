@@ -41,7 +41,7 @@ const initialState: StoreState = {
   networkStatus: 'pending',
 };
 
-// tslint:disable-next-line: cyclomatic-complexity no-any
+// eslint-disable-next-line complexity, @typescript-eslint/no-explicit-any
 export function accountReducer(state: StoreState, action: Action<ActionType, any>): StoreState {
   switch (action.type) {
     case 'switchAccountType': {
@@ -87,7 +87,7 @@ type ActionHelper = <T = string>(type: ActionType) => (payload: T) => void;
 
 export const ApiContext = createContext<ApiCtx>(null);
 
-export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
+export const ApiProvider = ({ children }: React.PropsWithChildren<unknown>) => {
   const [state, dispatch] = useReducer(accountReducer, initialState);
   const createAction: ActionHelper = (type) => (payload) =>
     dispatch({ type, payload: payload as never });
@@ -168,7 +168,7 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<{}>) => {
    * connect to substrate or metamask when account type changed.
    */
   useEffect(() => {
-    // tslint:disable-next-line: cyclomatic-complexity
+    // eslint-disable-next-line complexity
     (async () => {
       setNetworkStatus('connecting');
       try {

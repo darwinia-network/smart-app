@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import jazzicon from '@metamask/jazzicon';
 import { CSSProperties, useEffect, useRef } from 'react';
@@ -9,7 +10,7 @@ interface JazzIconProps {
   style?: CSSProperties;
 }
 
-// tslint:disable-next-line: no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const cache: { [key: string]: any } = {};
 
 function generateIdenticonSvg(address: string, diameter: number) {
@@ -30,15 +31,20 @@ function generateNewIdenticon(address: string, diameter: number): HTMLDivElement
 }
 
 function jsNumberForAddress(address: string): number {
-  // tslint:disable-next-line: no-magic-numbers
+  // eslint-disable-next-line no-magic-numbers
   const addr = address.slice(2, 10);
   const seed = parseInt(addr, 16);
 
   return seed;
 }
 
-// tslint:disable-next-line: no-magic-numbers
-export function JazzIcon({ address, className = '', style = {}, diameter = 46 }: JazzIconProps) {
+export function JazzIcon({
+  address,
+  className = '',
+  style = {},
+  // eslint-disable-next-line no-magic-numbers
+  diameter = 46,
+}: JazzIconProps): JSX.Element {
   const container = useRef<HTMLDivElement>();
 
   useEffect(() => {

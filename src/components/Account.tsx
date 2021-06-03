@@ -9,8 +9,9 @@ export function Account({
   containerStyle,
   isLargeRounded = true,
   className = '',
-  textClassName = '',
-  onClick = () => {},
+  onClick = () => {
+    // do nothing
+  },
 }: React.PropsWithChildren<{
   isLargeRounded?: boolean;
   logoStyle?: CSSProperties;

@@ -17,12 +17,12 @@ interface AssetsCtx {
 
 export const AssetsContext = createContext<AssetsCtx>(null);
 
-export const AssetsProvider = ({ children }: React.PropsWithChildren<{}>) => {
+export const AssetsProvider = ({ children }: React.PropsWithChildren<unknown>) => {
   const { account } = useAccount();
   const { api, isSubstrate, isSmart, network, networkConfig } = useApi();
   const [assets, setAssets] = useState<{ ring: BN; kton: BN }>({ ring: null, kton: null });
   const reloadAssets = useCallback(
-    // tslint:disable-next-line: cyclomatic-complexity
+    // eslint-disable-next-line complexity
     async (chainId?: string) => {
       let [ring, kton] = ['0', '0'];
 
@@ -48,7 +48,9 @@ export const AssetsProvider = ({ children }: React.PropsWithChildren<{}>) => {
   );
 
   useEffect(() => {
-    reloadAssets().then(() => {});
+    reloadAssets().then(() => {
+      // do nothing;
+    });
 
     if (window.ethereum) {
       window.ethereum.on('chainChanged', reloadAssets);

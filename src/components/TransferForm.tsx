@@ -58,6 +58,7 @@ function IndicatorMessage({ msg, index }: { msg: string; index: string }) {
   );
 }
 
+// eslint-disable-next-line complexity
 export function TransferForm() {
   const [form] = useForm<TransferFormValues>();
   const { t, i18n } = useTranslation();
@@ -95,7 +96,7 @@ export function TransferForm() {
     }
   };
   const connect = connectFactory(setAccounts, t, setNetworkStatus);
-  // tslint:disable-next-line: no-magic-numbers
+  // eslint-disable-next-line no-magic-numbers
   const delayCloseIndicator = () => setTimeout(() => setIsIndictorVisible(false), DELAY_TIME);
   const handleSuccess = (index: string) => {
     setIndicator({
@@ -119,10 +120,10 @@ export function TransferForm() {
     setIndicator({ message: t('Waiting for sign'), type: 'info', status: 'pending' });
     setIsIndictorVisible(true);
 
-    // tslint:disable-next-line: no-shadowed-variable
+    // eslint-disable-next-line no-shadow, @typescript-eslint/no-shadow
     const { recipient, amount, assets } = form.getFieldsValue();
     const toAccount = dvmAddressToAccountId(equalToDvmAddress || recipient).toHuman();
-    // tslint:disable-next-line: no-magic-numbers
+    // eslint-disable-next-line no-magic-numbers
     const injector = await web3FromAddress(convertToSS58(account, 42));
     const count = toBn(amount);
 
@@ -136,7 +137,7 @@ export function TransferForm() {
 
       const unsubscribe = await extrinsic.signAndSend(
         account,
-        // tslint:disable-next-line: cyclomatic-complexity
+        // eslint-disable-next-line complexity
         async (result: SubmittableResult) => {
           if (!result || !result.status) {
             return;
@@ -217,7 +218,7 @@ export function TransferForm() {
 
       if (selectedAsset === 'kton') {
         const withdrawalAddress = convertToDvm(recipient);
-        // tslint:disable-next-line: no-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const ktonContract = new web3.eth.Contract(KtonABI as any, networkConfig.erc20.kton);
         const count = web3.utils.toWei(amount, 'ether');
 
@@ -315,7 +316,7 @@ export function TransferForm() {
           ]}
           extra={
             <p className='overflow-ellipsis overflow-hidden text-xs mt-1'>
-              {!!equalToDvmAddress
+              {equalToDvmAddress
                 ? t(
                     'The smart address you entered is in SS58 format, and its corresponding 0x format is {{equalToDvmAddress}} ',
                     { equalToDvmAddress }
@@ -351,7 +352,7 @@ export function TransferForm() {
             { required: true },
             { pattern: /^[\d,]+(.\d{1,3})?$/ },
             ({ getFieldValue }) => ({
-              // tslint:disable-next-line: cyclomatic-complexity
+              // eslint-disable-next-line complexity
               validator(_, value) {
                 const asset = getFieldValue('assets') as Assets;
                 const base = new Bignumber(
@@ -431,7 +432,9 @@ export function TransferForm() {
         isVisible={isAccountVisible}
         assets={assets}
         cancel={() => setIsAccountVisible(false)}
-        confirm={() => {}}
+        confirm={() => {
+          // do nothing
+        }}
       />
 
       <Alert

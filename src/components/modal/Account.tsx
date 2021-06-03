@@ -1,4 +1,4 @@
-// tslint:disable:no-magic-numbers
+/* eslint-disable no-magic-numbers */
 import { LoadingOutlined } from '@ant-design/icons';
 import BaseIdentityIcon from '@polkadot/react-identicon';
 import { Button, Card, Col, List, message, Modal, Row, Tabs, Tag } from 'antd';
@@ -84,7 +84,6 @@ enum TokenType {
 }
 
 function patchRecords(source: Transfer[], currentAccount: string): IRecord[] {
-  // tslint:disable-next-line: cyclomatic-complexity
   return (source || []).map((item) => {
     const { blockId, fromId, toId, amount, tokenId, timestamp } = item;
     const asset = TokenType[tokenId];
