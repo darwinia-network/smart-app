@@ -35,6 +35,9 @@ export const NETWORK_CONFIG: NetworkConfig = {
       rpcUrls: [],
       blockExplorerUrls: [''],
     },
+    api: {
+      subql: 'https://api.subquery.network/sq/darwinia-network/darwinia',
+    },
   },
   pangolin: {
     facade: {
@@ -66,6 +69,9 @@ export const NETWORK_CONFIG: NetworkConfig = {
       rpcUrls: ['https://pangolin-rpc.darwinia.network/'],
       blockExplorerUrls: ['https://pangolin.subscan.io/'],
     },
+    api: {
+      subql: 'http://t3.hkg.itering.com:3000',
+    },
   },
   crab: {
     facade: {
@@ -96,6 +102,9 @@ export const NETWORK_CONFIG: NetworkConfig = {
       },
       rpcUrls: ['https://crab-rpc.darwinia.network/'],
       blockExplorerUrls: ['https://crab.subscan.io/'],
+    },
+    api: {
+      subql: 'https://api.subquery.network/sq/wuminzhe/crab',
     },
   },
 };

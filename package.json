@@ -12,12 +12,6 @@
     "lint": "eslint ./src -c .eslintrc.js --fix",
     "format": "prettier ./src/**/*.tsx  --write"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged && npm run lint && npm run stylelint",

@@ -31,6 +31,7 @@
   "Input error Please input a smart address in 0x format or SS58 format": "Input error: Please input a smart address in 0x format or SS58 format",
   "Network mismatch, you can switch network manually in metamask or do it automatically by clicking the button below": "Network mismatch, you can switch network manually in metamask or do it automatically by clicking the button below",
   "Next": "Next",
+  "No Data": "No Data",
   "Payment address and destination address cannot be the same": "Payment address and destination address cannot be the same",
   "Pending": "Pending",
   "Please claim in smart address": "Please claim in smart address",

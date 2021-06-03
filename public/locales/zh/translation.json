@@ -31,6 +31,7 @@
   "Input error Please input a smart address in 0x format or SS58 format": "地址输入错误：请输入 0x 格式或 SS58 格式的智能地址",
   "Network mismatch, you can switch network manually in metamask or do it automatically by clicking the button below": "网络不匹配，你可以在 Metamask 中手动切换网络，或点击下方按钮自动完成切换",
   "Next": "下一步",
+  "No Data": "暂无数据",
   "Payment address and destination address cannot be the same": "收款地址和付款地址不能相同",
   "Pending": "等待确认",
   "Please claim in smart address": "需要在智能账户中领取",
