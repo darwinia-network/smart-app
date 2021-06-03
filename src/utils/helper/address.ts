@@ -11,16 +11,16 @@ export function dvmAddressToAccountId(address: string | null | undefined): Accou
     return registry.createType('AccountId', '');
   }
 
-  // tslint:disable-next-line: no-magic-numbers
+  // eslint-disable-next-line no-magic-numbers
   const data = new Uint8Array(32);
 
   data.set(stringToU8a('dvm:'));
-  // tslint:disable-next-line: no-magic-numbers
+  // eslint-disable-next-line no-magic-numbers
   data.set(hexToU8a(address), 11);
-  // tslint:disable-next-line: no-bitwise
+  // eslint-disable-next-line no-bitwise
   const checksum = data.reduce((pre: number, current: number): number => pre ^ current);
 
-  // tslint:disable-next-line: no-magic-numbers
+  // eslint-disable-next-line no-magic-numbers
   data.set(numberToU8a(checksum), 31);
   const accountId = registry.createType('AccountId', data);
 
@@ -67,6 +67,6 @@ export function convertToEth(address: string): string {
   const result = u8aToHex(decodeAddress(address)).slice(startAt);
   const PREFIX = '64766d3a00000000000000';
 
-  // tslint:disable-next-line: no-magic-numbers
+  // eslint-disable-next-line no-magic-numbers
   return result.startsWith(PREFIX) ? '0x' + result.slice(-42, -2) : null;
 }

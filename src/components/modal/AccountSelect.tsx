@@ -33,7 +33,7 @@ export function AccountSelectModal({ account, isVisible, confirm, cancel }: IMod
                 size='large'
                 onClick={() => {
                   const value = form.getFieldValue('account');
-                  if (!!value) {
+                  if (value) {
                     confirm(value);
                     cancel();
                   } else {

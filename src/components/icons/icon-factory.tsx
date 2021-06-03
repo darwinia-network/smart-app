@@ -7,6 +7,7 @@ import React from 'react';
 
 export const svgIconFactory = (
   Component: React.ComponentType<CustomIconComponentProps | React.SVGProps<SVGSVGElement>>
+  // eslint-disable-next-line react/display-name
 ) => (
   props: Pick<
     IconComponentProps,

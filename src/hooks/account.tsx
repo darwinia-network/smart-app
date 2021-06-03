@@ -10,7 +10,7 @@ interface AccountCtx {
 
 export const AccountContext = createContext<AccountCtx>(null);
 
-export const AccountProvider = ({ children }: React.PropsWithChildren<{}>) => {
+export const AccountProvider = ({ children }: React.PropsWithChildren<unknown>) => {
   const [account, setAccount] = useState<string>(null);
   const { networkConfig } = useApi();
 

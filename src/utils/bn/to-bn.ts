@@ -1,7 +1,7 @@
 import BN from 'bn.js';
 import { PRECISION } from '../../config';
 
-// tslint:disable-next-line: no-magic-numbers
+// eslint-disable-next-line no-magic-numbers
 const TEN = new BN(10);
 
 export function toBn(input: string): BN {
@@ -21,7 +21,7 @@ export function toBn(input: string): BN {
   let result: BN = null;
 
   if (isDecimalValue) {
-    // tslint:disable-next-line: no-magic-numbers
+    // eslint-disable-next-line no-magic-numbers
     if (siUnitPower - isDecimalValue[2].length < -basePower) {
       result = new BN(-1);
     }

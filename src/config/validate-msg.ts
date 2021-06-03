@@ -1,6 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 const typeTemplateEn = '${name} is not a valid ${type}';
 const typeTemplateZh = '${label}不是合法的 ${type}';
+/* eslint-disable */
 const en = {
   default: 'Validation error on field ${name}',
   required: '${name} is required',
@@ -96,6 +97,7 @@ const zh = {
     mismatch: '${label}格式不匹配',
   },
 };
+/* eslint-enable */
 
 export const validateMessages = {
   en,

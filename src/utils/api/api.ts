@@ -27,11 +27,11 @@ export async function connectNodeProvider(type: NetworkType = 'darwinia'): Promi
     provider,
     typesBundle: {
       spec: {
-        /* tslint:disable */
+        /* eslint-disable */
         Crab: typesBundleForPolkadot.spec.crab as any,
         Pangolin: typesBundleForPolkadot.spec.pangolin as any,
         Darwinia: typesBundleForPolkadot.spec.darwinia as any,
-        /* tslint:enable */
+        /* eslint-enable */
       },
     },
   });
@@ -55,7 +55,9 @@ export async function connectSubstrate(
     const api = await connectNodeProvider(network);
 
     return { accounts, extensions, api };
-  } catch (err) {}
+  } catch (err) {
+    // do nothing;
+  }
 }
 
 export function isMetamaskInstalled(): boolean {
@@ -65,14 +67,14 @@ export function isMetamaskInstalled(): boolean {
 export async function isNetworkConsistent(network: NetworkType, id?: string): Promise<boolean> {
   id = Web3.utils.isHex(id) ? parseInt(id, 16).toString() : id;
   // id 1: eth mainnet 3: ropsten 4: rinkeby 5: goerli 42: kovan  43: pangolin 44: crab
-  const actualId: string = !!id
+  const actualId: string = id
     ? await Promise.resolve(id)
     : await window.ethereum.request({ method: 'net_version' });
 
   return parseInt(NETWORK_CONFIG[network].ethereumChain.chainId, 16).toString() === actualId;
 }
 
-export async function connectEth(network: NetworkType): Promise<{ accounts: IAccountMeta[] }> {
+export async function connectEth(_: NetworkType): Promise<{ accounts: IAccountMeta[] }> {
   if (!isMetamaskInstalled) {
     return;
   }
@@ -93,10 +95,10 @@ export async function getTokenBalanceDarwinia(
   try {
     await api?.isReady;
     // type = 0 query ring balance.  type = 1 query kton balance.
-    /* tslint:disable */
+    /* eslint-disable */
     const ringUsableBalance = await (api?.rpc as any).balances.usableBalance(0, account);
     const ktonUsableBalance = await (api?.rpc as any).balances.usableBalance(1, account);
-    /* tslint:enable */
+    /* eslint-enable */
 
     return [ringUsableBalance.usableBalance.toString(), ktonUsableBalance.usableBalance.toString()];
   } catch (error) {
@@ -143,7 +145,7 @@ export async function getTokenBalanceEth(ktonAddress: string, account = ''): Pro
   }
 
   try {
-    // tslint:disable-next-line: no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const ktonContract = new web3.eth.Contract(ktonABI as any, ktonAddress, { gas: 55000 });
 
     kton = await ktonContract.methods.balanceOf(account).call();
@@ -168,7 +170,7 @@ export async function depositKton(
   { withdrawAddress, erc20Address }: { withdrawAddress: string; erc20Address: string }
 ): Promise<string> {
   const web3 = new Web3(window.ethereum || window.web3.currentProvider);
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const precompileContract = new web3.eth.Contract(precompileABI as any, withdrawAddress);
   const data = web3.eth.abi.encodeParameters(
     ['address', 'uint256'],
@@ -176,7 +178,7 @@ export async function depositKton(
   );
   const gasEstimated = await web3.eth.estimateGas({
     to: withdrawAddress,
-    // tslint:disable-next-line: no-magic-numbers
+    // eslint-disable-next-line no-magic-numbers
     data: '0x3225da29' + data.substr(2),
   });
   let txHash;

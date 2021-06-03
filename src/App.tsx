@@ -52,9 +52,11 @@ function App() {
   useEffect(() => {
     window.less
       .modifyVars(THEME_CONFIG[network])
-      .then(() => console.log('Theme changed success'))
-      // tslint:disable-next-line: no-any
-      .catch((error: any) => console.log(error));
+      .then(() => {
+        // do nothing;
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .catch((error: any) => console.warn(error));
   }, [network]);
 
   return (

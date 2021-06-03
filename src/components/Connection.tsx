@@ -20,7 +20,7 @@ export function Connection() {
   const { accounts, setAccounts, accountType, isSubstrate, networkConfig } = useApi();
   const { assets } = useAssets();
 
-  // tslint:disable-next-line: cyclomatic-complexity
+  // eslint-disable-next-line complexity
   useEffect(() => {
     if (isSubstrate && !!accounts && !account) {
       setIsAccountSwitcherVisible(true);

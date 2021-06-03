@@ -5,7 +5,6 @@ import { NETWORK_CONFIG } from '../../config';
 import { AccountType } from '../../model';
 import { canConvertToEth, convertToEth, convertToSS58, dvmAddressToAccountId } from './address';
 
-// tslint:disable-next-line: cyclomatic-complexity
 export const isValidAddress = (address: string, accountType: AccountType): boolean => {
   if (accountType === 'substrate') {
     const isDvm = Web3.utils.isAddress(address);
@@ -31,7 +30,7 @@ export const isSS58Address = (address: string) => {
   }
 };
 
-// tslint:disable-next-line: cyclomatic-complexity
+// eslint-disable-next-line complexity
 export const isSameAddress = (from: string, to: string): boolean => {
   if (from === to) {
     return true;
@@ -43,7 +42,9 @@ export const isSameAddress = (from: string, to: string): boolean => {
   if (Web3.utils.isAddress(from)) {
     try {
       toAddress = convertToEth(to);
-    } catch (err) {}
+    } catch (err) {
+      console.warn('%c [ err ]-47', 'font-size:13px; background:pink; color:#bf2c9f;', err.message);
+    }
   }
 
   if (isSS58Address(from)) {

@@ -1,4 +1,4 @@
-// tslint:disable:no-magic-numbers
+/* eslint-disable no-magic-numbers */
 export const PRECISION = 9;
 export const ETHER_PRECISION = 18;
 

@@ -40,7 +40,7 @@ export function KtonDraw() {
       }
 
       try {
-        // tslint:disable-next-line: no-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const ktonUsableBalance = await (apiPromise.rpc as any).balances.usableBalance(1, address);
         const usableBalance = ktonUsableBalance.usableBalance.toString();
         const count = Web3.utils.toBN(
