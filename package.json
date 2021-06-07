@@ -1,6 +1,6 @@
 {
   "name": "smart-app",
-  "version": "v1.0.0-alpha",
+  "version": "v1.0.1",
   "private": true,
   "scripts": {
     "start": "PORT=3009 craco start",
