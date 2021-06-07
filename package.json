@@ -1,6 +1,6 @@
 {
   "name": "smart-app",
-  "version": "v1.0.0-alpha",
+  "version": "v1.0.1",
   "private": true,
   "scripts": {
     "start": "PORT=3009 craco start",
@@ -10,7 +10,8 @@
     "stylelint": "stylelint \"src/**/*.scss\" --config stylelint.config.js",
     "i18next:scanner": "i18next-scanner --config i18next-scanner.config.js",
     "lint": "eslint ./src -c .eslintrc.js --fix",
-    "format": "prettier ./src/**/*.tsx  --write"
+    "format": "prettier ./src/**/*.tsx  --write",
+    "changelog": "conventional-changelog -p eslint -i CHANGELOG.md -s"
   },
   "husky": {
     "hooks": {
