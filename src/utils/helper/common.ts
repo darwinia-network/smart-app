@@ -29,3 +29,12 @@ export function clsName(common: string, ...classes: string[]): string {
 export function toUpperCaseFirst(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+/**
+ * @returns UTC time string
+ */
+export function asUTCString(timestamp: string): string {
+  const index = timestamp.includes('.') ? timestamp.lastIndexOf('.') : timestamp.length + 1;
+
+  return timestamp.substr(0, index) + '.000Z';
+}

@@ -16,6 +16,8 @@ interface Facade {
 
 type TokenRecord = { [key in Token]: string };
 
+type Api = { [key: string]: string };
+
 export interface NetConfig {
   dvmWithdrawAddress: TokenRecord;
   ethereumChain: AddEthereumChainParameter;
@@ -25,6 +27,7 @@ export interface NetConfig {
   ss58Prefix: SS58Prefix;
   token: TokenRecord;
   erc20: TokenRecord;
+  api: Api;
 }
 
 export type NetworkConfig<T = NetConfig> = Config<NetworkType, T>;

@@ -1,15 +1,16 @@
-/* eslint-disable no-magic-numbers */
 import { LoadingOutlined } from '@ant-design/icons';
 import BaseIdentityIcon from '@polkadot/react-identicon';
-import { Button, Card, Col, List, message, Modal, Row, Tabs, Tag } from 'antd';
+import { Button, Card, Col, Empty, List, message, Modal, Row, Tabs, Tag } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 import BN from 'bn.js';
 import { formatDistanceToNow } from 'date-fns';
-import { useQuery } from 'graphql-hooks';
+import { GraphQLClient, useQuery } from 'graphql-hooks';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useApi } from '../../hooks';
 import { Assets } from '../../model';
 import {
+  asUTCString,
   convertToSS58,
   copyTextToClipboard,
   dvmAddressToAccountId,
@@ -95,7 +96,7 @@ function patchRecords(source: Transfer[], currentAccount: string): IRecord[] {
       asset: asset || 'unknown',
       action: currentAccount === fromId ? 'send' : 'receive',
       amount: precisionBalance(amount),
-      timestamp,
+      timestamp: asUTCString(timestamp),
       accountType: isSS58 ? 'substrate' : 'smart',
       account: signerId,
     };
@@ -110,14 +111,24 @@ export function AccountModal({
   const { account, setAccount } = useAccount();
   const { setAccounts, accountType, network, isSubstrate, networkConfig } = useApi();
   const { t } = useTranslation();
-  const { loading, data } = useQuery<TransfersQueryRes>(TRANSFERS_QUERY, {
+  const { loading, data, refetch } = useQuery<TransfersQueryRes>(TRANSFERS_QUERY, {
     variables: {
       limit: 10,
-      // account: '2qeMxq616BhqvTW8a1bp2g7VKPAmpda1vXuAAz5TxV5ehivG', // test account in darwinia network
       account,
       offset: 0,
     },
+    client: new GraphQLClient({
+      url: networkConfig.api.subql,
+    }),
+    skipCache: true,
   });
+
+  useEffect(() => {
+    if (isVisible) {
+      refetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isVisible]);
 
   return (
     <Modal
@@ -321,7 +332,12 @@ export function AccountModal({
               }
             />
           ) : (
-            <div className='text-center opacity-60 my-8'>{t('Coming soon...')}</div>
+            <Empty
+              image='/image/empty.png'
+              imageStyle={{ height: 44 }}
+              description={t('No data')}
+              className='flex justify-center flex-col items-center opacity-60 my-8'
+            />
           )}
         </TabPane>
       </Tabs>
