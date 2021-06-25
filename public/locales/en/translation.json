@@ -70,5 +70,7 @@
   "Darwinia Mainnet": "Darwinia Mainnet",
   "Pangolin Testnet": "Pangolin Testnet",
   "smart": "Smart",
+  "Seems that estimate fee failed, do you want to set it manually and try it again?": "Seems that estimate fee failed, do you want to set it manually and try it again?",
+  "yes": "Yes",
   "substrate": "Substrate"
 }
