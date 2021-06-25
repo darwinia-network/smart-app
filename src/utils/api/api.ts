@@ -167,26 +167,34 @@ export async function getTokenBalanceEth(ktonAddress: string, account = ''): Pro
 export async function depositKton(
   account: string,
   amount: BN,
-  { withdrawAddress, erc20Address }: { withdrawAddress: string; erc20Address: string }
+  {
+    withdrawAddress,
+    erc20Address,
+    isManually = false,
+  }: { withdrawAddress: string; erc20Address: string; isManually: boolean }
 ): Promise<string> {
   const web3 = new Web3(window.ethereum || window.web3.currentProvider);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const precompileContract = new web3.eth.Contract(precompileABI as any, withdrawAddress);
-  const data = web3.eth.abi.encodeParameters(
-    ['address', 'uint256'],
-    [erc20Address, amount.toString()]
-  );
-  const gasEstimated = await web3.eth.estimateGas({
-    to: withdrawAddress,
-    // eslint-disable-next-line no-magic-numbers
-    data: '0x3225da29' + data.substr(2),
-  });
+  let params: Record<string, string | number> = { from: account };
+
+  if (!isManually) {
+    const data = web3.eth.abi.encodeParameters(
+      ['address', 'uint256'],
+      [erc20Address, amount.toString()]
+    );
+    const gasEstimated = await web3.eth.estimateGas({
+      to: withdrawAddress,
+      // eslint-disable-next-line no-magic-numbers
+      data: '0x3225da29' + data.substr(2),
+    });
+    params = { ...params, gas: gasEstimated };
+  }
+
   let txHash;
 
   try {
-    txHash = await precompileContract.methods
-      .transfer_and_call(erc20Address, amount)
-      .send({ from: account, gas: gasEstimated });
+    txHash = await precompileContract.methods.transfer_and_call(erc20Address, amount).send(params);
   } catch (error) {
     console.warn(
       '%c [ error ]-182',
