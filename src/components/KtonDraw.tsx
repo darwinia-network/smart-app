@@ -2,7 +2,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { Alert, Button, notification } from 'antd';
 import ErrorBoundary from 'antd/lib/alert/ErrorBoundary';
 import BN from 'bn.js';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Web3 from 'web3';
 import { useAccount, useApi, useAssets } from '../hooks';
@@ -10,6 +10,7 @@ import { connectSubstrate, depositKton, dvmAddressToAccountId } from '../utils';
 import { precisionBalance } from '../utils/format/formatBalance';
 import { ShortAccount } from './ShortAccount';
 
+// eslint-disable-next-line complexity
 export function KtonDraw() {
   const { api, isSubstrate, network, networkConfig, setApi } = useApi();
   const { account } = useAccount();
@@ -19,6 +20,49 @@ export function KtonDraw() {
   const [hash, setHash] = useState(null);
   const { t } = useTranslation();
   const [balance, setBalance] = useState<BN>(new BN(0));
+  const [isManualVisible, setIsManualVisible] = useState(false);
+  const claimKton = useCallback(
+    async (isManually = false) => {
+      setIsDisable(true);
+
+      try {
+        const txhash = await depositKton(account, balance, {
+          erc20Address: networkConfig.erc20.kton,
+          withdrawAddress: networkConfig.dvmWithdrawAddress.kton,
+          isManually,
+        });
+
+        setHash(txhash);
+        reloadAssets();
+      } catch (err) {
+        notification.error({
+          message: (
+            <div>
+              <ErrorBoundary>
+                <h3>{t('Claim Failed')}</h3>
+                {err?.receipt && (
+                  <p className='overflow-scroll' style={{ maxHeight: 200 }}>
+                    {JSON.stringify(err?.receipt)}
+                  </p>
+                )}
+              </ErrorBoundary>
+            </div>
+          ),
+        });
+        setIsManualVisible(true);
+      }
+
+      setIsDisable(false);
+    },
+    [
+      account,
+      balance,
+      networkConfig.dvmWithdrawAddress.kton,
+      networkConfig.erc20.kton,
+      reloadAssets,
+      t,
+    ]
+  );
 
   useEffect(() => {
     (async () => {
@@ -61,77 +105,61 @@ export function KtonDraw() {
       type='success'
       className='fixed top-20 right-8 border-solid border-green-400 border'
       message={
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center'>
-            {isDisable ? (
-              <LoadingOutlined className='text-lg mr-4 w-6' style={{ color: '#b7eb8f' }} spin />
-            ) : (
-              <img src='/image/kton.svg' className='mr-4 w-6' alt='' />
-            )}
-
-            <span>
-              {hash ? (
-                <ShortAccount account={hash} />
+        <div>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center'>
+              {isDisable ? (
+                <LoadingOutlined className='text-lg mr-4 w-6' style={{ color: '#b7eb8f' }} spin />
               ) : (
-                t('You have {{amount}} {{ktonName}} to claim', {
-                  amount: Web3.utils.fromWei(balance.toString(), 'ether'),
-                  ktonName: networkConfig.token.kton,
-                })
+                <img src='/image/kton.svg' className='mr-4 w-6' alt='' />
               )}
-            </span>
+
+              <span>
+                {hash ? (
+                  <ShortAccount account={hash} />
+                ) : (
+                  t('You have {{amount}} {{ktonName}} to claim', {
+                    amount: Web3.utils.fromWei(balance.toString(), 'ether'),
+                    ktonName: networkConfig.token.kton,
+                  })
+                )}
+              </span>
+            </div>
+
+            {hash ? (
+              <Button
+                onClick={() => {
+                  setIsVisible(false);
+                  setHash(null);
+                  setIsDisable(false);
+                }}
+                className='ml-8'
+                type='primary'
+              >
+                {t('Close')}
+              </Button>
+            ) : (
+              <Button
+                onClick={() => claimKton(false)}
+                disabled={isDisable}
+                type='primary'
+                className='ml-8'
+                style={{ backgroundColor: '#52C41A' }}
+              >
+                {t('Receive')}
+              </Button>
+            )}
           </div>
 
-          {hash ? (
-            <Button
-              onClick={() => {
-                setIsVisible(false);
-                setHash(null);
-                setIsDisable(false);
-              }}
-              className='ml-8'
-              type='primary'
-            >
-              {t('Close')}
-            </Button>
-          ) : (
-            <Button
-              onClick={async () => {
-                setIsDisable(true);
-
-                try {
-                  const txhash = await depositKton(account, balance, {
-                    erc20Address: networkConfig.erc20.kton,
-                    withdrawAddress: networkConfig.dvmWithdrawAddress.kton,
-                  });
-
-                  setHash(txhash);
-                  reloadAssets();
-                } catch (err) {
-                  notification.error({
-                    message: (
-                      <div>
-                        <ErrorBoundary>
-                          <h3>{t('Claim Failed')}</h3>
-                          {err?.receipt && (
-                            <p className='overflow-scroll' style={{ maxHeight: 200 }}>
-                              {JSON.stringify(err?.receipt)}
-                            </p>
-                          )}
-                        </ErrorBoundary>
-                      </div>
-                    ),
-                  });
-                }
-
-                setIsDisable(false);
-              }}
-              disabled={isDisable}
-              type='primary'
-              className='ml-8'
-              style={{ backgroundColor: '#52C41A' }}
-            >
-              {t('Receive')}
-            </Button>
+          {isManualVisible && (
+            <div>
+              {t(
+                'Seems that estimate fee failed, do you want to set it manually and try it again?'
+              )}
+              <Button type='link' onClick={() => claimKton(true)}>
+                {t('yes')}
+              </Button>
+            </div>
           )}
         </div>
       }

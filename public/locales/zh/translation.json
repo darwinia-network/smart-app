@@ -69,6 +69,8 @@
   "Crab Mainnet": "Crab 主网",
   "Darwinia Mainnet": "Darwinia 主网",
   "Pangolin Testnet": "Pangolin 测试网",
+  "Seems that estimate fee failed, do you want to set it manually and try it again?": "燃气预估好像失败了，是否需要手动设置燃气并发起重试？",
+  "yes": "是",
   "smart": "智能",
   "substrate": "Substrate"
 }
