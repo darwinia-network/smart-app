@@ -72,7 +72,7 @@ function App() {
 
           <div className='flex flex-row-reverse sm:flex-row sm:justify-between items-center flex-1 md:px-8'>
             <Dropdown
-              className='md:hidden mx-2'
+              className='lg:hidden mx-2'
               overlay={
                 <Menu>
                   {links.map((item, index) => (
@@ -84,7 +84,7 @@ function App() {
               <UnorderedListOutlined />
             </Dropdown>
 
-            <div className='flex-1 hidden md:block'>
+            <div className='flex-1 hidden lg:block'>
               {links.map((item, index) => (
                 <Button type='link' key={index}>
                   {linkItem(item)}
