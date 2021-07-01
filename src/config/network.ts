@@ -49,12 +49,12 @@ export const NETWORK_CONFIG: NetworkConfig = {
     ss58Prefix: 18,
     dvmWithdrawAddress: {
       ring: '0x0000000000000000000000000000000000000015',
-      kton: '0x0000000000000000000000000000000000000016',
+      kton: '0x0000000000000000000000000000000000000015',
     },
     token: { ring: 'PRING', kton: 'PKTON' },
     erc20: {
       ring: '0xfe098c5eeDec594271618922B2F3364F0f8b1785',
-      kton: '0x0eb47c5347B255e469101b9D71288b34DD5e2B95',
+      kton: '0xd5d56e30bfa49a606499c61fb67b1ef91ce6c6b8',
     },
     rpc: 'wss://pangolin-rpc.darwinia.network/',
     ethereumChain: {
