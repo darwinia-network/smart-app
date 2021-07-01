@@ -33,6 +33,7 @@ export function KtonDraw() {
         });
 
         setHash(txhash);
+        setIsManualVisible(false);
         reloadAssets();
       } catch (err) {
         notification.error({

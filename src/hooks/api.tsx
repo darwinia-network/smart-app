@@ -134,6 +134,8 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<unknown>) => {
   }, []);
   const connectToEth = useCallback(
     async (chainId?: string) => {
+      setNetworkStatus('connecting');
+
       const isMatch = await isNetworkConsistent(state.network, chainId);
 
       if (!isMatch) {
@@ -153,6 +155,33 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<unknown>) => {
     [state.network]
   );
 
+  const connectToSubstrate = useCallback(async () => {
+    setNetworkStatus('connecting');
+
+    const { accounts: newAccounts, api: newApi, extensions } = await connectSubstrate(
+      state.network
+    );
+
+    newApi.on('disconnected', () => setNetworkStatus('disconnected'));
+
+    setApi(newApi);
+    setNetworkStatus('success');
+
+    if (!extensions.length && !newAccounts.length) {
+      setAccounts(null);
+    } else {
+      const result =
+        state.network === 'crab'
+          ? newAccounts
+          : newAccounts.map(({ address, ...others }) => ({
+              ...others,
+              address: convertToSS58(address, NETWORK_CONFIG[state.network].ss58Prefix),
+            }));
+
+      setAccounts(result);
+    }
+  }, []);
+
   useEffect(() => {
     if (typeof window.ethereum === 'undefined') {
       notification.warn({
@@ -170,29 +199,9 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<unknown>) => {
   useEffect(() => {
     // eslint-disable-next-line complexity
     (async () => {
-      setNetworkStatus('connecting');
       try {
         if (state.accountType === 'substrate') {
-          const { accounts: newAccounts, api: newApi, extensions } = await connectSubstrate(
-            state.network
-          );
-
-          setApi(newApi);
-          setNetworkStatus('success');
-
-          if (!extensions.length && !newAccounts.length) {
-            setAccounts(null);
-          } else {
-            const result =
-              state.network === 'crab'
-                ? newAccounts
-                : newAccounts.map(({ address, ...others }) => ({
-                    ...others,
-                    address: convertToSS58(address, NETWORK_CONFIG[state.network].ss58Prefix),
-                  }));
-
-            setAccounts(result);
-          }
+          connectToSubstrate();
         }
 
         if (state.accountType === 'smart') {
@@ -232,6 +241,12 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<unknown>) => {
       patchUrl({ network: state.network });
     })();
   }, [state.network]);
+
+  useEffect(() => {
+    if (state.networkStatus === 'disconnected') {
+      connectToSubstrate();
+    }
+  }, [state.networkStatus]);
 
   return (
     <ApiContext.Provider

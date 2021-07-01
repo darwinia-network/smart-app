@@ -17,7 +17,7 @@ export interface Connection {
   networkStatus: ConnectStatus;
 }
 
-export type ConnectStatus = 'pending' | 'connecting' | 'success' | 'fail';
+export type ConnectStatus = 'pending' | 'connecting' | 'success' | 'fail' | 'disconnected';
 
 export type TokenBalance = [string, string];
 
@@ -161,10 +161,13 @@ export async function getTokenBalanceEth(ktonAddress: string, account = ''): Pro
 }
 
 /**
+ * !FIXME transfer_and_call error: `TxGasUti - Trying to call a function on a noo-contract address`,
+ * but actually the deposit action is success.
+ *
  * @param account - metamask current active account;
  * @returns transaction hash
  */
-export async function depositKton(
+export async function depositKtonByPrecompileContract(
   account: string,
   amount: BN,
   {
@@ -222,4 +225,45 @@ export async function addEthereumChain(network: NetworkType) {
   } catch (err) {
     console.warn('%c [ err ]-199', 'font-size:13px; background:pink; color:#bf2c9f;', err);
   }
+}
+
+/**
+ * @param account receive account - metamask current active account;
+ * @param amount receive amount
+ * @returns transaction hash
+ */
+export async function depositKton(
+  account: string,
+  amount: BN,
+  {
+    withdrawAddress,
+    erc20Address,
+    isManually = false,
+  }: { withdrawAddress: string; erc20Address: string; isManually: boolean }
+): Promise<string> {
+  const web3 = new Web3(window.ethereum || window.web3.currentProvider);
+  const result = web3.eth.abi.encodeParameters(
+    ['address', 'uint256'],
+    [erc20Address, amount.toString()]
+  );
+  // eslint-disable-next-line no-magic-numbers
+  const data = '0x3225da29' + result.substr(2);
+  let gas = 30000000;
+
+  if (!isManually) {
+    gas = await web3.eth.estimateGas({
+      to: withdrawAddress,
+      data,
+    });
+  }
+
+  const txHash = await web3.eth.sendTransaction({
+    from: account,
+    to: withdrawAddress,
+    data,
+    value: '0x00',
+    gas,
+  });
+
+  return txHash.transactionHash;
 }
