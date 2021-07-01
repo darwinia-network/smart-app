@@ -20,7 +20,6 @@ export function KtonDraw() {
   const [hash, setHash] = useState(null);
   const { t } = useTranslation();
   const [balance, setBalance] = useState<BN>(new BN(0));
-  const [isManualVisible, setIsManualVisible] = useState(false);
   const claimKton = useCallback(
     async (isManually = false) => {
       setIsDisable(true);
@@ -33,7 +32,6 @@ export function KtonDraw() {
         });
 
         setHash(txhash);
-        setIsManualVisible(false);
         reloadAssets();
       } catch (err) {
         notification.error({
@@ -50,7 +48,6 @@ export function KtonDraw() {
             </div>
           ),
         });
-        setIsManualVisible(true);
       }
 
       setIsDisable(false);
@@ -151,17 +148,6 @@ export function KtonDraw() {
               </Button>
             )}
           </div>
-
-          {isManualVisible && (
-            <div>
-              {t(
-                'Seems that estimate fee failed, do you want to set it manually and try it again?'
-              )}
-              <Button type='link' onClick={() => claimKton(true)}>
-                {t('yes')}
-              </Button>
-            </div>
-          )}
         </div>
       }
     />

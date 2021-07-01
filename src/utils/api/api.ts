@@ -21,6 +21,12 @@ export type ConnectStatus = 'pending' | 'connecting' | 'success' | 'fail' | 'dis
 
 export type TokenBalance = [string, string];
 
+interface DepositKtonOptions {
+  withdrawAddress: string;
+  erc20Address: string;
+  isManually?: boolean;
+}
+
 export async function connectNodeProvider(type: NetworkType = 'darwinia'): Promise<ApiPromise> {
   const provider = new WsProvider(NETWORK_CONFIG[type].rpc);
   const darwiniaApi = await ApiPromise.create({
@@ -170,11 +176,7 @@ export async function getTokenBalanceEth(ktonAddress: string, account = ''): Pro
 export async function depositKtonByPrecompileContract(
   account: string,
   amount: BN,
-  {
-    withdrawAddress,
-    erc20Address,
-    isManually = false,
-  }: { withdrawAddress: string; erc20Address: string; isManually: boolean }
+  { withdrawAddress, erc20Address, isManually = false }: DepositKtonOptions
 ): Promise<string> {
   const web3 = new Web3(window.ethereum || window.web3.currentProvider);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -235,11 +237,7 @@ export async function addEthereumChain(network: NetworkType) {
 export async function depositKton(
   account: string,
   amount: BN,
-  {
-    withdrawAddress,
-    erc20Address,
-    isManually = false,
-  }: { withdrawAddress: string; erc20Address: string; isManually: boolean }
+  { withdrawAddress, erc20Address }: DepositKtonOptions
 ): Promise<string> {
   const web3 = new Web3(window.ethereum || window.web3.currentProvider);
   const result = web3.eth.abi.encodeParameters(
@@ -248,14 +246,7 @@ export async function depositKton(
   );
   // eslint-disable-next-line no-magic-numbers
   const data = '0x3225da29' + result.substr(2);
-  let gas = 30000000;
-
-  if (!isManually) {
-    gas = await web3.eth.estimateGas({
-      to: withdrawAddress,
-      data,
-    });
-  }
+  const gas = 100000;
 
   const txHash = await web3.eth.sendTransaction({
     from: account,
