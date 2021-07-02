@@ -4,10 +4,10 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
 import './config/i18n';
-import { AccountProvider, ApiProvider, AssetsProvider } from './hooks';
 import './index.less';
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
+import { AccountProvider, ApiProvider, AssetsProvider, GqlProvider } from './service';
 
 const client = new GraphQLClient({
   url: 'http://localhost:3000/',
@@ -20,7 +20,9 @@ ReactDOM.render(
         <ApiProvider>
           <AccountProvider>
             <AssetsProvider>
-              <App />
+              <GqlProvider>
+                <App />
+              </GqlProvider>
             </AssetsProvider>
           </AccountProvider>
         </ApiProvider>

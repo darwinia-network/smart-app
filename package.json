@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "PORT=3009 craco start",
+    "start:dev": "PORT=3008 REACT_APP_HOST_TYPE=dev craco start",
     "build": "CI=false craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
@@ -34,7 +35,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
     "@craco/craco": "^6.1.1",
-    "@darwinia/types": "^1.1.0-alpha.18",
+    "@darwinia/types": "^1.1.0-alpha.23",
     "@fontsource/ibm-plex-sans": "^4.2.2",
     "@metamask/jazzicon": "^2.0.0",
     "@polkadot/api": "4.1.1",

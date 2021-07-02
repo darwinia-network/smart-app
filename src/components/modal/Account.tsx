@@ -4,7 +4,7 @@ import { Button, Card, Col, Empty, List, message, Modal, Row, Tabs, Tag } from '
 import Avatar from 'antd/lib/avatar/avatar';
 import BN from 'bn.js';
 import { formatDistanceToNow } from 'date-fns';
-import { GraphQLClient, useQuery } from 'graphql-hooks';
+import { useQuery } from 'graphql-hooks';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useApi } from '../../hooks';
@@ -117,9 +117,6 @@ export function AccountModal({
       account,
       offset: 0,
     },
-    client: new GraphQLClient({
-      url: networkConfig.api.subql,
-    }),
     skipCache: true,
   });
 
