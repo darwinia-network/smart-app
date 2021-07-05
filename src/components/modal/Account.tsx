@@ -4,7 +4,7 @@ import { Button, Card, Col, Empty, List, message, Modal, Row, Tabs, Tag } from '
 import Avatar from 'antd/lib/avatar/avatar';
 import BN from 'bn.js';
 import { formatDistanceToNow } from 'date-fns';
-import { useQuery } from 'graphql-hooks';
+import { useManualQuery } from 'graphql-hooks';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useApi } from '../../hooks';
@@ -111,7 +111,7 @@ export function AccountModal({
   const { account, setAccount } = useAccount();
   const { setAccounts, accountType, network, isSubstrate, networkConfig } = useApi();
   const { t } = useTranslation();
-  const { loading, data, refetch } = useQuery<TransfersQueryRes>(TRANSFERS_QUERY, {
+  const [fetchTransfers, { loading, data }] = useManualQuery<TransfersQueryRes>(TRANSFERS_QUERY, {
     variables: {
       limit: 10,
       account,
@@ -122,7 +122,7 @@ export function AccountModal({
 
   useEffect(() => {
     if (isVisible) {
-      refetch();
+      fetchTransfers();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible]);
