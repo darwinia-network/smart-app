@@ -7,7 +7,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useManualQuery } from 'graphql-hooks';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAccount, useApi } from '../../hooks';
+import { useAccount, useApi, useCancelablePromise } from '../../hooks';
 import { Assets } from '../../model';
 import {
   asUTCString,
@@ -111,6 +111,7 @@ export function AccountModal({
   const { account, setAccount } = useAccount();
   const { setAccounts, accountType, network, isSubstrate, networkConfig } = useApi();
   const { t } = useTranslation();
+  const makeCancelable = useCancelablePromise();
   const [fetchTransfers, { loading, data }] = useManualQuery<TransfersQueryRes>(TRANSFERS_QUERY, {
     variables: {
       limit: 10,
@@ -122,10 +123,9 @@ export function AccountModal({
 
   useEffect(() => {
     if (isVisible) {
-      fetchTransfers();
+      makeCancelable(fetchTransfers());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVisible]);
+  }, [fetchTransfers, isVisible, makeCancelable]);
 
   return (
     <Modal

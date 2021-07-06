@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { ApiPromise } from '@polkadot/api';
 import { Button, notification } from 'antd';
 import React, {
@@ -16,7 +15,6 @@ import { convertToSS58, getInfoFromHash, patchUrl } from '../utils';
 import {
   addEthereumChain,
   connectEth,
-  connectNodeProvider,
   ConnectStatus,
   connectSubstrate,
   isNetworkConsistent,
@@ -70,7 +68,6 @@ export type ApiCtx = {
   isSmart: boolean;
   accounts: IAccountMeta[];
   api: ApiPromise;
-  createAction: ActionHelper;
   dispatch: Dispatch<Action<ActionType>>;
   network: NetworkType;
   networkStatus: ConnectStatus;
@@ -82,18 +79,26 @@ export type ApiCtx = {
   networkConfig: NetConfig;
 };
 
-type ActionHelper = <T = string>(type: ActionType) => (payload: T) => void;
-
 export const ApiContext = createContext<ApiCtx>(null);
 
 export const ApiProvider = ({ children }: React.PropsWithChildren<unknown>) => {
   const [state, dispatch] = useReducer(accountReducer, initialState);
-  const createAction: ActionHelper = (type) => (payload) =>
-    dispatch({ type, payload: payload as never });
-  const switchAccountType = useCallback(createAction<AccountType>('switchAccountType'), []);
-  const switchNetwork = useCallback(createAction<NetworkType>('switchNetwork'), []);
-  const setAccounts = useCallback(createAction<IAccountMeta[]>('setAccounts'), []);
-  const setNetworkStatus = useCallback(createAction<ConnectStatus>('updateNetworkStatus'), []);
+  const switchAccountType = useCallback(
+    (payload: AccountType) => dispatch({ type: 'switchAccountType', payload }),
+    []
+  );
+  const switchNetwork = useCallback(
+    (payload: NetworkType) => dispatch({ type: 'switchNetwork', payload }),
+    []
+  );
+  const setAccounts = useCallback(
+    (payload: IAccountMeta[]) => dispatch({ type: 'setAccounts', payload }),
+    []
+  );
+  const setNetworkStatus = useCallback(
+    (payload: ConnectStatus) => dispatch({ type: 'updateNetworkStatus', payload }),
+    []
+  );
   const [api, setApi] = useState<ApiPromise>(null);
   const { t } = useTranslation();
   const notify = useCallback(() => {
@@ -127,10 +132,13 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<unknown>) => {
     });
 
     setNetworkStatus('fail');
-  }, [state.network]);
-  const metamaskAccountChanged = useCallback((accounts: string[]) => {
-    setAccounts(accounts.map((address) => ({ address })));
-  }, []);
+  }, [setNetworkStatus, state.network, t]);
+  const metamaskAccountChanged = useCallback(
+    (accounts: string[]) => {
+      setAccounts(accounts.map((address) => ({ address })));
+    },
+    [setAccounts]
+  );
   const connectToEth = useCallback(
     async (chainId?: string) => {
       setNetworkStatus('connecting');
@@ -151,10 +159,18 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<unknown>) => {
       window.ethereum.removeListener('accountsChanged', metamaskAccountChanged);
       window.ethereum.on('accountsChanged', metamaskAccountChanged);
     },
-    [state.network]
+    [metamaskAccountChanged, notify, setAccounts, setNetworkStatus, state.network]
   );
 
+  // eslint-disable-next-line complexity
   const connectToSubstrate = useCallback(async () => {
+    const chain = await api?.rpc.system.chain();
+    const chainNetwork = chain?.toHuman().toLowerCase() ?? '';
+
+    if (chainNetwork === state.network || chainNetwork.includes(state.network)) {
+      return;
+    }
+
     setNetworkStatus('connecting');
 
     const { accounts: newAccounts, api: newApi, extensions } = await connectSubstrate(
@@ -179,7 +195,7 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<unknown>) => {
 
       setAccounts(result);
     }
-  }, []);
+  }, [api, setAccounts, setNetworkStatus, state.network]);
 
   useEffect(() => {
     if (typeof window.ethereum === 'undefined') {
@@ -218,41 +234,25 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<unknown>) => {
     return () => {
       window.ethereum.removeListener('chainChanged', connectToEth);
     };
-  }, [state.accountType, state.network]);
-
-  /**
-   * 1. disconnect api connections;
-   * 2. reset node provider on mainnet as soon as network changed.
-   */
-  useEffect(() => {
-    (async () => {
-      if (api) {
-        await api.disconnect();
-      }
-
-      setNetworkStatus('connecting');
-
-      const newApi = await connectNodeProvider(state.network);
-
-      setApi(newApi);
-
-      setNetworkStatus('success');
-      patchUrl({ network: state.network });
-    })();
-  }, [state.network]);
+  }, [connectToEth, connectToSubstrate, setNetworkStatus, state.accountType]);
 
   useEffect(() => {
     if (state.networkStatus === 'disconnected') {
-      connectToSubstrate();
+      if (state.accountType === 'smart') {
+        connectToEth();
+      }
+
+      if (state.accountType === 'substrate') {
+        connectToSubstrate();
+      }
     }
-  }, [state.networkStatus]);
+  }, [connectToEth, connectToSubstrate, state.accountType, state.networkStatus]);
 
   return (
     <ApiContext.Provider
       value={{
         ...state,
         dispatch,
-        createAction,
         switchAccountType,
         switchNetwork,
         setNetworkStatus,
