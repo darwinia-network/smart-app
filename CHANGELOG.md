@@ -1,4 +1,10 @@
-## [1.0.1](https://github.com/darwinia-network/dvm/compare/v1.0.0...v1.0.1) (2021-06-07)
+## [1.0.3](https://github.com/darwinia-network/dvm/compare/v1.0.2...v1.0.3) (2021-07-07)
+
+### fix
+
+- token amount maybe incorrectly during switch network (#41) ([4a1f4b5](https://github.com/darwinia-network/dvm/commit/4a1f4b55bd4beed8a183d00692ee2573e5df1c0a)), closes [#41](https://github.com/darwinia-network/dvm/issues/41)
+
+## [1.0.2](https://github.com/darwinia-network/dvm/compare/v1.0.0...v1.0.2) (2021-07-05)
 
 ### chore
 
@@ -13,9 +19,13 @@
 
 - replace tslint with eslint (#33) ([3abbcef](https://github.com/darwinia-network/dvm/commit/3abbcef4af03cb5f9f997af00511540b9702e70a)), closes [#33](https://github.com/darwinia-network/dvm/issues/33)
 
+### feat
+
+- allow user set gas manually whe claim failed (#37) ([171e617](https://github.com/darwinia-network/dvm/commit/171e6170341cfb1d1b665a7cc4b056fdb24dbafd)), closes [#37](https://github.com/darwinia-network/dvm/issues/37)
+
 ### release
 
-- bump version to 1.0.1 ([5e7109b](https://github.com/darwinia-network/dvm/commit/5e7109b63d815d0592b84fcb5cd4ced3e815b25c))
+- bump version to 1.0.1 (#35) ([e69bcd4](https://github.com/darwinia-network/dvm/commit/e69bcd4b5f20d643fd98569033279c0454c77eed)), closes [#35](https://github.com/darwinia-network/dvm/issues/35)
 
 # [1.0.0](https://github.com/darwinia-network/dvm/compare/v1.0.0-alpha...v1.0.0) (2021-05-12)
 
