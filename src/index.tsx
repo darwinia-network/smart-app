@@ -4,10 +4,10 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
 import './config/i18n';
-import './index.less';
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
 import { AccountProvider, ApiProvider, AssetsProvider, GqlProvider } from './service';
+import './theme/antd/index.less';
 
 const client = new GraphQLClient({
   url: 'http://localhost:3000/',

@@ -1,4 +1,4 @@
-import { Dropdown, Menu, Tag } from 'antd';
+import { Dropdown, Menu } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Network } from '../config';
@@ -105,9 +105,12 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
             style={{ width: isFrom ? 80 : '100%' }}
           >
             <img src={networkConfig.facade.logo} className='h-8 sm:h-12 md:16' alt='' />
-            <Tag className='capitalize mr-0 text-xs' style={{ borderRadius: 9999 }}>
+            <span
+              className='capitalize mr-0 text-xs bg-white text-gray-700 px-2 py-0.5'
+              style={{ borderRadius: 9999 }}
+            >
               {account}
-            </Tag>
+            </span>
           </div>
 
           {isFrom && <DownIcon className='mr-2' />}

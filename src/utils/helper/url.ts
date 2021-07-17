@@ -1,18 +1,23 @@
 /* eslint-disable no-restricted-globals */
 import { mapKeys } from 'lodash';
-import { AccountType, NetworkType } from './../../model';
+import { AccountType, NetworkType, StorageInfo, ValueOf } from './../../model';
+import { readStorage } from './storage';
 
-export interface HashInfo {
+interface HashInfo {
   accountType?: AccountType;
   network?: NetworkType;
   toAccount?: string;
 }
 
-export interface HashShort {
+interface HashShort {
   f?: AccountType;
   n?: NetworkType;
   t?: string;
 }
+
+type SettingKey = keyof StorageInfo | keyof HashInfo;
+
+type SettingValue = ValueOf<HashInfo> & ValueOf<StorageInfo>;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type AdapterMap<T extends object, D extends object> = {
@@ -68,4 +73,13 @@ export function getInfoFromHash(): HashInfo {
   const info = hashToObj();
 
   return mapKeys(info, (_, key) => toLong[key as keyof HashShort]);
+}
+
+export function getInitialSetting<T = SettingValue | string>(key: SettingKey, defaultValue: T): T {
+  const fromHash = getInfoFromHash();
+  const fromStorage = readStorage();
+
+  return ((fromHash[key as keyof HashInfo] ??
+    fromStorage[key as keyof StorageInfo] ??
+    defaultValue) as unknown) as T;
 }

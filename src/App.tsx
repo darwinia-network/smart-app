@@ -1,17 +1,14 @@
 import { UnorderedListOutlined } from '@ant-design/icons';
-import { Affix, Button, Dropdown, Layout, Menu, Spin } from 'antd';
-import { useEffect, useMemo } from 'react';
+import { Affix, Dropdown, Layout, Menu, Spin, Typography } from 'antd';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Route, Switch } from 'react-router-dom';
 import { Connection } from './components/Connection';
 import { KtonDraw } from './components/KtonDraw';
 import { Language } from './components/Language';
+import { ThemeSwitch } from './components/ThemeSwitch';
 import { Path, routes } from './config/routes';
 import { useApi } from './hooks';
-import { NetworkConfig } from './model';
-import crabThemeJson from './theme/crab.json';
-import darwiniaThemeJson from './theme/darwinia.json';
-import pangolinThemeJson from './theme/pangolin.json';
 
 const { Header, Content } = Layout;
 
@@ -21,21 +18,9 @@ interface LinkItem {
   path?: string;
 }
 
-const THEME_CONFIG: NetworkConfig<{ [key in keyof typeof darwiniaThemeJson]: string }> = {
-  darwinia: darwiniaThemeJson,
-  crab: crabThemeJson,
-  pangolin: pangolinThemeJson,
-};
-
 function App() {
   const { t } = useTranslation();
   const { networkStatus, network, networkConfig } = useApi();
-  const linkItem = (item: LinkItem) =>
-    item.path ? (
-      <Link to={item.path}>{t(item.name)}</Link>
-    ) : (
-      <span onClick={() => window.open(item.href)}>{t(item.name)}</span>
-    );
   const links = useMemo<LinkItem[]>(
     () => [
       { name: 'DVM Guide', href: 'https://crab.network/docs/dvm-intro/' },
@@ -48,16 +33,6 @@ function App() {
     ],
     [network, networkConfig]
   );
-
-  useEffect(() => {
-    window.less
-      .modifyVars(THEME_CONFIG[network])
-      .then(() => {
-        // do nothing;
-      })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .catch((error: any) => console.warn(error));
-  }, [network]);
 
   return (
     <Layout style={{ height: '100vh' }} className='overflow-scroll'>
@@ -76,7 +51,9 @@ function App() {
               overlay={
                 <Menu>
                   {links.map((item, index) => (
-                    <Menu.Item key={index}>{linkItem(item)}</Menu.Item>
+                    <Menu.Item onClick={() => window.open(item.href, '_blank')} key={index}>
+                      {item.name}
+                    </Menu.Item>
                   ))}
                 </Menu>
               }
@@ -86,13 +63,20 @@ function App() {
 
             <div className='flex-1 hidden lg:block'>
               {links.map((item, index) => (
-                <Button type='link' key={index}>
-                  {linkItem(item)}
-                </Button>
+                <Typography.Link
+                  onClick={() => window.open(item.href, '_blank')}
+                  key={index}
+                  className='mx-8 opacity-80 hover:opacity-100 transition-colors duration-500'
+                  style={{ color: networkConfig.facade.color.main }}
+                >
+                  {t(item.name)}
+                </Typography.Link>
               ))}
             </div>
 
             <Connection />
+
+            <ThemeSwitch />
           </div>
         </Header>
       </Affix>

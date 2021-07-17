@@ -20,7 +20,7 @@ export function ShortAccount({
   const { t } = useTranslation();
   const endPosition = 6;
   const shortAccount = (
-    <span className='cursor-default'>
+    <span className='cursor-default text-gray-800'>
       {`${account.slice(0, endPosition)}...${account.slice(-endPosition)}`}
     </span>
   );

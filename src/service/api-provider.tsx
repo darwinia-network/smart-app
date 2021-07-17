@@ -11,7 +11,7 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import { LONG_DURATION, NETWORK_CONFIG } from '../config';
 import { AccountType, Action, IAccountMeta, NetConfig, NetworkType } from '../model';
-import { convertToSS58, getInfoFromHash, patchUrl } from '../utils';
+import { convertToSS58, getInitialSetting, patchUrl } from '../utils';
 import {
   addEthereumChain,
   connectEth,
@@ -29,11 +29,9 @@ interface StoreState {
 
 type ActionType = 'switchAccountType' | 'switchNetwork' | 'updateNetworkStatus' | 'setAccounts';
 
-const info = getInfoFromHash();
-
 const initialState: StoreState = {
-  accountType: info.accountType || 'smart',
-  network: info.network || 'pangolin',
+  accountType: getInitialSetting<AccountType>('accountType', 'smart'),
+  network: getInitialSetting<NetworkType>('network', 'pangolin'),
   accounts: null,
   networkStatus: 'pending',
 };

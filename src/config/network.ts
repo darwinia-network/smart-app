@@ -10,6 +10,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
   darwinia: {
     // TODO
     facade: {
+      color: { main: 'linear-gradient(-45deg, #fe3876 0%, #7c30dd 71%, #3a30dd 100%)' },
       logo: '/image/darwinia.svg',
       bgClsName: 'bg-darwinia',
       logoWithText: '/image/darwinia-logo.svg',
@@ -41,6 +42,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
   },
   pangolin: {
     facade: {
+      color: { main: '#5745de' },
       logo: '/image/pangolin.svg',
       bgClsName: 'bg-pangolin',
       logoWithText: '/image/pangolin-logo.svg',
@@ -75,6 +77,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
   },
   crab: {
     facade: {
+      color: { main: '#ec3783' },
       logo: '/image/crab.svg',
       bgClsName: 'bg-crab',
       logoWithText: '/image/crab-logo.svg',
