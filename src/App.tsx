@@ -66,8 +66,7 @@ function App() {
                 <Typography.Link
                   onClick={() => window.open(item.href, '_blank')}
                   key={index}
-                  className='mx-8 opacity-80 hover:opacity-100 transition-colors duration-500'
-                  style={{ color: networkConfig.facade.color.main }}
+                  className={`mx-8 opacity-80 hover:opacity-100 transition-colors duration-500 text-${network}.main`}
                 >
                   {t(item.name)}
                 </Typography.Link>
@@ -87,7 +86,7 @@ function App() {
               <Route key={index} {...item}></Route>
             ))}
           </Switch>
-          <Language className='text-2xl cursor-pointer ml-16 fixed bottom-8 right-8 text-purple-700' />
+          <Language className='fixed bottom-8 right-8' network={network} />
           <KtonDraw />
         </Spin>
       </Content>

@@ -24,13 +24,13 @@ const networks: NetworkType[] = [Network.darwinia, Network.crab, Network.pangoli
 export function AccountGrid({ accountType, title, isFrom = false }: AccountProps) {
   const [account, setAccount] = useState('');
   const panelRef = useRef<HTMLDivElement>(null);
-  const { switchNetwork, networkConfig } = useApi();
+  const { switchNetwork, networkConfig, network } = useApi();
   const { t } = useTranslation();
   const whirl = 'animate-whirl';
   const whirlReverse = 'animate-whirl-reverse';
 
   useEffect(() => {
-    const textRef = panelRef.current?.querySelector(`.${networkConfig.facade.bgClsName}`);
+    const textRef = panelRef.current?.querySelector(`.bg-${network}`);
 
     panelRef.current?.classList.remove(whirl);
     textRef?.classList.remove(whirlReverse);
@@ -73,10 +73,7 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
                   <span className='capitalize mr-2'>{t(item)}</span>
                   {accountType === 'smart' && (
                     <span
-                      className={
-                        'opacity-60 rounded-full text-xs text-white px-2 inline-flex items-center ' +
-                        networkConfig.facade.bgClsName
-                      }
+                      className={`opacity-60 rounded-full text-xs text-white px-2 inline-flex items-center bg-${network}`}
                     >
                       {t('smart')}
                     </span>
@@ -97,10 +94,7 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
           style={{ width: 140, maxWidth: '100%' }}
         >
           <div
-            className={
-              'rounded-xl flex flex-col items-center justify-around pb-1 ' +
-              networkConfig.facade.bgClsName
-            }
+            className={`rounded-xl flex flex-col items-center justify-around pb-1 bg-${network}`}
             // eslint-disable-next-line no-magic-numbers
             style={{ width: isFrom ? 80 : '100%' }}
           >

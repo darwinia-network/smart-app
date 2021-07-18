@@ -17,7 +17,7 @@ export function Connection() {
   const [isAccountSwitcherVisible, setIsAccountSwitcherVisible] = useState(false);
   const [isAccountDetailVisible, setIsAccountDetailVisible] = useState(false);
   const { account, setAccount } = useAccount();
-  const { accounts, setAccounts, accountType, isSubstrate, networkConfig } = useApi();
+  const { accounts, setAccounts, accountType, isSubstrate, network } = useApi();
   const { assets } = useAssets();
 
   // eslint-disable-next-line complexity
@@ -79,7 +79,7 @@ export function Connection() {
             }
           >
             <SwapOutlined
-              className={`p-1 cursor-pointer rounded-full ${networkConfig.facade.bgClsName}`}
+              className={`p-1 cursor-pointer rounded-full bg-${network}`}
               style={{ color: '#fff' }}
             />
           </Dropdown>

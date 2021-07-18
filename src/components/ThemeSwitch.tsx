@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { NETWORK_DARK_THEME, NETWORK_LIGHT_THEME, SKIN_THEME, THEME } from '../config';
 import { useApi } from '../hooks';
 import { NetworkType } from '../model';
-import { updateStorage } from '../utils/helper/storage';
+import { readStorage, updateStorage } from '../utils/helper/storage';
 
 export const toggleTheme = async (theme: THEME, network: NetworkType) => {
   const networkTheme = theme === THEME.DARK ? NETWORK_DARK_THEME : NETWORK_LIGHT_THEME;
@@ -22,9 +22,7 @@ export const toggleTheme = async (theme: THEME, network: NetworkType) => {
 };
 
 export function ThemeSwitch() {
-  const [theme, setTheme] = useState<THEME>(
-    (localStorage.getItem('theme') as THEME) || THEME.LIGHT
-  );
+  const [theme, setTheme] = useState<THEME>(readStorage().theme || THEME.LIGHT);
   const { network } = useApi();
 
   useEffect(() => {
