@@ -1,6 +1,6 @@
 {
   "name": "smart-app",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "start": "PORT=3009 craco start",
@@ -12,7 +12,7 @@
     "i18next:scanner": "i18next-scanner --config i18next-scanner.config.js",
     "lint": "eslint ./src -c .eslintrc.js --fix",
     "format": "prettier ./src/**/*.tsx  --write",
-    "changelog": "conventional-changelog -p eslint -i CHANGELOG.md -s"
+    "changelog": "conventional-changelog -p eslint -i CHANGELOG.md -s -r 0"
   },
   "husky": {
     "hooks": {

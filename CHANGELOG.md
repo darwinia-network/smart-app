@@ -1,8 +1,22 @@
+# [1.1.0](https://github.com/darwinia-network/dvm/compare/v1.0.3...v1.1.0) (2021-07-19)
+
+### chore
+
+- language switch adpate dark mode ([8565dee](https://github.com/darwinia-network/dvm/commit/8565deed77931288bcd695bd4cb4a34495220a8f))
+
+### style
+
+- add dark model ([d2a52a9](https://github.com/darwinia-network/dvm/commit/d2a52a92ee3629d2580f7b63f9ef71de751a5702))
+
 ## [1.0.3](https://github.com/darwinia-network/dvm/compare/v1.0.2...v1.0.3) (2021-07-07)
 
 ### fix
 
 - token amount maybe incorrectly during switch network (#41) ([4a1f4b5](https://github.com/darwinia-network/dvm/commit/4a1f4b55bd4beed8a183d00692ee2573e5df1c0a)), closes [#41](https://github.com/darwinia-network/dvm/issues/41)
+
+### release
+
+- 1.0.3 (#43) ([810b6a3](https://github.com/darwinia-network/dvm/commit/810b6a3932cd23789e29f552d322715ec5e8733b)), closes [#43](https://github.com/darwinia-network/dvm/issues/43)
 
 ## [1.0.2](https://github.com/darwinia-network/dvm/compare/v1.0.0...v1.0.2) (2021-07-05)
 
