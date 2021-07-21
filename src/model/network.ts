@@ -10,7 +10,6 @@ export type SS58Prefix = 18 | 42;
 
 interface Facade {
   logo: string;
-  bgClsName: string;
   logoWithText: string;
 }
 

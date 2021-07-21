@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../hooks';
 import { copyTextToClipboard } from '../utils';
-import { clsName } from '../utils';
 import { CopyIcon } from './icons';
 
 export interface ShortAccountProps {
@@ -20,7 +19,7 @@ export function ShortAccount({
   const { t } = useTranslation();
   const endPosition = 6;
   const shortAccount = (
-    <span className='cursor-default'>
+    <span className='cursor-default text-gray-800'>
       {`${account.slice(0, endPosition)}...${account.slice(-endPosition)}`}
     </span>
   );
@@ -54,16 +53,13 @@ interface AccountTypeProps {
 }
 
 function AccountType({ className = '', isLargeRounded = false }: AccountTypeProps) {
-  const { accountType, networkConfig } = useApi();
+  const { accountType, network } = useApi();
   const accountCls = useMemo(
     () =>
-      clsName(
-        'text-white px-2 py-0.5 mr-1 hidden md:inline capitalize',
-        isLargeRounded ? 'rounded-xl ' : 'rounded-lg ',
-        className,
-        networkConfig.facade.bgClsName
-      ),
-    [isLargeRounded, className, networkConfig.facade.bgClsName]
+      `text-white px-2 py-0.5 mr-1 hidden md:inline capitalize bg-${network} 
+        ${isLargeRounded ? 'rounded-xl ' : 'rounded-lg '} 
+        ${className}`,
+    [network, isLargeRounded, className]
   );
 
   return <span className={accountCls}>{accountType}</span>;

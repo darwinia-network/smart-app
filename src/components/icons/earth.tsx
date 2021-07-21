@@ -13,7 +13,7 @@ function Earth() {
         <g
           id='主页'
           transform='translate(-1365.000000, -854.000000)'
-          fill='#5745DE'
+          fill='currentColor'
           fillRule='nonzero'
         >
           <g id='编组' transform='translate(1355.000000, 850.000000)'>

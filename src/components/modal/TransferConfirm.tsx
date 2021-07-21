@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../hooks';
 import { TransferFormValues } from '../../model/transfer';
-import { clsName, toOppositeAccountType } from '../../utils';
+import { toOppositeAccountType } from '../../utils';
 import { CloseIcon, RightCircleIcon } from '../icons';
 import { IModalProps } from './interface';
 
@@ -16,10 +16,7 @@ export function TransferConfirmModal({
 }: IModalProps & { value: TransferFormValues }) {
   const { t } = useTranslation();
   const { accountType, network, networkConfig, isSubstrate } = useApi();
-  const cls = useMemo(
-    () => clsName('rounded-xl flex flex-col items-center', networkConfig.facade.bgClsName),
-    [networkConfig]
-  );
+  const cls = useMemo(() => `rounded-xl flex flex-col items-center bg-${network}`, [network]);
   const icon = useMemo(() => {
     if (network === 'darwinia') {
       return <RightCircleIcon className='text-2xl' />;

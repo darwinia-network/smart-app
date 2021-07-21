@@ -1,7 +1,6 @@
 import React, { CSSProperties, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../hooks';
-import { clsName } from '../utils';
 
 export function Account({
   children,
@@ -20,16 +19,13 @@ export function Account({
   textClassName?: string;
   onClick?: () => void;
 }>) {
-  const { networkConfig } = useApi();
+  const { networkConfig, network } = useApi();
   const containerCls = useMemo(
     () =>
-      clsName(
-        'flex items-center justify-between leading-normal whitespace-nowrap',
-        isLargeRounded ? 'rounded-xl ' : 'rounded-lg ',
-        className,
-        networkConfig.facade.bgClsName
-      ),
-    [isLargeRounded, className, networkConfig]
+      `flex items-center justify-between leading-normal whitespace-nowrap bg-${network} 
+        ${isLargeRounded ? 'rounded-xl ' : 'rounded-lg '}
+        ${className}`,
+    [isLargeRounded, className, network]
   );
   const { t } = useTranslation();
 

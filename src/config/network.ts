@@ -11,7 +11,6 @@ export const NETWORK_CONFIG: NetworkConfig = {
     // TODO
     facade: {
       logo: '/image/darwinia.svg',
-      bgClsName: 'bg-darwinia',
       logoWithText: '/image/darwinia-logo.svg',
     },
     fullName: 'Darwinia Mainnet',
@@ -42,7 +41,6 @@ export const NETWORK_CONFIG: NetworkConfig = {
   pangolin: {
     facade: {
       logo: '/image/pangolin.svg',
-      bgClsName: 'bg-pangolin',
       logoWithText: '/image/pangolin-logo.svg',
     },
     fullName: 'Pangolin Testnet',
@@ -76,7 +74,6 @@ export const NETWORK_CONFIG: NetworkConfig = {
   crab: {
     facade: {
       logo: '/image/crab.svg',
-      bgClsName: 'bg-crab',
       logoWithText: '/image/crab-logo.svg',
     },
     fullName: 'Crab Mainnet',
