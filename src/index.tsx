@@ -6,7 +6,7 @@ import App from './App';
 import './config/i18n';
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
-import { AccountProvider, ApiProvider, AssetsProvider, GqlProvider } from './service';
+import { AccountProvider, ApiProvider, AssetsProvider, GqlProvider } from './providers';
 import './theme/antd/index.less';
 
 const client = new GraphQLClient({
