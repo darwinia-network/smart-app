@@ -51,8 +51,8 @@ export const NETWORK_CONFIG: NetworkConfig = {
     },
     token: { ring: 'PRING', kton: 'PKTON' },
     erc20: {
-      ring: '0xfe098c5eeDec594271618922B2F3364F0f8b1785',
-      kton: '0xd5d56e30bfa49a606499c61fb67b1ef91ce6c6b8',
+      ring: '0x8809f9b3ACEF1dA309f49b5Ab97A4C0faA64E6Ae',
+      kton: '0xbBD91aD844557ADCbb97296216b3B3c977FCC4F2',
     },
     rpc: 'wss://pangolin-rpc.darwinia.network/',
     ethereumChain: {
