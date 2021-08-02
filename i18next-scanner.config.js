@@ -15,10 +15,10 @@ module.exports = {
     browserLanguageDetection: true,
     func: {
       list: ['i18next.t', 'i18n.t', 't'],
-      extensions: ['.ts', '.tsx'],
+      extensions: ['.js', '.jsx'],
     },
     trans: {
-      extensions: ['.ts', '.tsx'],
+      extensions: ['.js', '.jsx'],
       fallbackKey: function (ns, value) {
         return value;
       },
