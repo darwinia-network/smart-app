@@ -49,14 +49,16 @@ export function TransferConfirmModal({
       <div className='flex justify-between items-center mb-4 px-8'>
         <div className={cls} style={{ width: 120, height: 100 }}>
           <img src={networkConfig.facade.logo} style={{ height: 60 }} alt='' />
-          <Button className='capitalize cursor-default'>{accountType}</Button>
+          <Button className='capitalize cursor-default dark:bg-white dark:text-gray-800'>
+            {accountType}
+          </Button>
         </div>
 
         {icon}
 
         <div className={cls} style={{ width: 120, height: 100 }}>
           <img src={networkConfig.facade.logo} style={{ height: 60 }} alt='' />
-          <Button className='capitalize cursor-default'>
+          <Button className='capitalize cursor-default dark:bg-white dark:text-gray-800'>
             {toOppositeAccountType(accountType)}
           </Button>
         </div>

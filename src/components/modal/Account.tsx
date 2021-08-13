@@ -115,7 +115,7 @@ export function AccountModal({
   const [fetchTransfers, { loading, data }] = useManualQuery<TransfersQueryRes>(TRANSFERS_QUERY, {
     variables: {
       limit: 10,
-      account,
+      account: convertToSS58(account, networkConfig.ss58Prefix),
       offset: 0,
     },
     skipCache: true,
