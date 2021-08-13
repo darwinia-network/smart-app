@@ -19,13 +19,13 @@ export function ShortAccount({
   const { t } = useTranslation();
   const endPosition = 6;
   const shortAccount = (
-    <span className='cursor-default text-gray-800'>
+    <span className='cursor-default'>
       {`${account.slice(0, endPosition)}...${account.slice(-endPosition)}`}
     </span>
   );
 
   return (
-    <div className={`${className} flex items-center justify-between`}>
+    <div className={`${className} flex items-center justify-between text-gray-800`}>
       {isCopyBtnDisplay ? (
         <>
           <AccountType className='sm:inline hidden' />

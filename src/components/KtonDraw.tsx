@@ -114,7 +114,7 @@ export function KtonDraw() {
 
               <span>
                 {hash ? (
-                  <ShortAccount account={hash} />
+                  <ShortAccount account={hash} className='dark:text-white' />
                 ) : (
                   t('You have {{amount}} {{ktonName}} to claim', {
                     amount: Web3.utils.fromWei(balance.toString(), 'ether'),

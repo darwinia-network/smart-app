@@ -53,7 +53,7 @@ function IndicatorMessage({ msg, index }: { msg: string; index: string }) {
   return (
     <div className='flex justify-between'>
       <span className='mr-4'>{msg}</span>
-      <ShortAccount account={index} />
+      <ShortAccount account={index} className='dark:text-white' />
     </div>
   );
 }
