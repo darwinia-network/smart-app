@@ -71,7 +71,7 @@ export function isMetamaskInstalled(): boolean {
 }
 
 export async function isNetworkConsistent(network: NetworkType, id?: string): Promise<boolean> {
-  id = Web3.utils.isHex(id) ? parseInt(id, 16).toString() : id;
+  id = id && Web3.utils.isHex(id) ? parseInt(id, 16).toString() : id;
   // id 1: eth mainnet 3: ropsten 4: rinkeby 5: goerli 42: kovan  43: pangolin 44: crab
   const actualId: string = id
     ? await Promise.resolve(id)
@@ -81,7 +81,7 @@ export async function isNetworkConsistent(network: NetworkType, id?: string): Pr
 }
 
 export async function connectEth(_: NetworkType): Promise<{ accounts: IAccountMeta[] }> {
-  if (!isMetamaskInstalled) {
+  if (!isMetamaskInstalled()) {
     return;
   }
 
