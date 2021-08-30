@@ -68,7 +68,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
       blockExplorerUrls: ['https://pangolin.subscan.io/'],
     },
     api: {
-      subql: 'http://t3.hkg.itering.com:3000',
+      subql: 'https://api.subquery.network/sq/darwinia-network/pangolin',
     },
   },
   crab: {
@@ -101,7 +101,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
       blockExplorerUrls: ['https://crab.subscan.io/'],
     },
     api: {
-      subql: 'https://api.subquery.network/sq/wuminzhe/crab',
+      subql: 'https://api.subquery.network/sq/darwinia-network/crab',
     },
   },
 };
