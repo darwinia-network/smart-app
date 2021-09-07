@@ -5,7 +5,7 @@ import { TransferForm } from '../components/TransferForm';
 export function Transfer() {
   return (
     <Card
-      title={<Trans>DVM smart contract</Trans>}
+      title={<Trans>Darwinia Smart Module</Trans>}
       className='xl:w-1/3 lg:1/2 md:w-2/3 w-full mx-auto'
       style={{ maxWidth: 420 }}
     >
