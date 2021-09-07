@@ -43,7 +43,7 @@ export function Connection() {
             >
               <ShortAccount
                 account={account}
-                className='self-stretch sm:px-1 bg-white sm:my-px sm:mx-px sm:rounded-xl'
+                className='self-stretch sm:px-1 bg-white sm:my-px sm:mx-px sm:rounded-xl text-gray-800'
               />
             </Account>
           )}

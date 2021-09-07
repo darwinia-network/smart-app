@@ -32,6 +32,10 @@
 }
 
 /* checkbox */
+.ant-checkbox-inner {
+  border-radius: 0;
+}
+
 .ant-checkbox-checked .ant-checkbox-inner {
   background-color: transparent;
   background: @project-main-bg;
@@ -60,10 +64,8 @@
 }
 
 /* card */
-.ant-card-bordered {
-  border-color: #eaeaea;
-  border-radius: @shadow-2;
-  box-shadow: 0 0 24px 0 rgba(191, 194, 234, 0.41);
+.ant-card {
+  box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.41);
 }
 
 /* dropdown menu */
@@ -79,4 +81,18 @@
 .ant-message .anticon {
   top: 0;
   vertical-align: 0;
+}
+
+/* typography */
+.ant-typography {
+  .anticon {
+    vertical-align: 0;
+  }
+}
+
+/* input search */
+.ant-input-search-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

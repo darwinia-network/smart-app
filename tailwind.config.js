@@ -35,6 +35,9 @@ module.exports = {
         xl: '10px',
         lg: '8px',
       },
+      borderColor: {
+        dark: '#303030',
+      },
       colors: (_) => ({
         pangolin: {
           main: '#5745DE',

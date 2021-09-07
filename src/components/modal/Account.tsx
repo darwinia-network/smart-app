@@ -115,7 +115,9 @@ export function AccountModal({
   const [fetchTransfers, { loading, data }] = useManualQuery<TransfersQueryRes>(TRANSFERS_QUERY, {
     variables: {
       limit: 10,
-      account: convertToSS58(account, networkConfig.ss58Prefix),
+      account: isSubstrate
+        ? convertToSS58(account, networkConfig.ss58Prefix)
+        : convertToSS58(dvmAddressToAccountId(account).toHuman(), networkConfig.ss58Prefix),
       offset: 0,
     },
     skipCache: true,
@@ -212,7 +214,11 @@ export function AccountModal({
       </Card>
 
       <Tabs type='card' className='account-tab'>
-        <TabPane tab={t('Assets')} key='assets'>
+        <TabPane
+          tab={t('Assets')}
+          key='assets'
+          className='p-4 border border-t-0 rounded-b-xl dark:border-dark'
+        >
           <List
             itemLayout='horizontal'
             dataSource={[
@@ -243,6 +249,7 @@ export function AccountModal({
           tab={t('Transfer History')}
           key='history'
           style={{ overflow: 'scroll', maxHeight: '35vh' }}
+          className='scroll-bar-hidden p-4 border border-t-0 rounded-b-xl dark:border-dark'
         >
           {loading ? (
             <LoadingOutlined spin className='mx-auto my-8 block' />

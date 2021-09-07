@@ -42,6 +42,12 @@ export function convertToSS58(text: string, prefix: SS58Prefix, isShort = false)
 
     return address;
   } catch (error) {
+    console.warn(
+      '%c convert address error',
+      'font-size:13px; background:pink; color:#bf2c9f;',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (error as any).message
+    );
     return '';
   }
 }
