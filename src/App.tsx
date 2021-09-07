@@ -23,7 +23,7 @@ function App() {
   const { networkStatus, network, networkConfig } = useApi();
   const links = useMemo<LinkItem[]>(
     () => [
-      { name: 'DVM Guide', href: 'https://docs.crab.network/dvm-intro' },
+      { name: 'User Guide', href: 'https://docs.crab.network/dvm-intro' },
       {
         name: 'Wallet',
         href: `https://apps.darwinia.network/?${encodeURIComponent(`rpc=${networkConfig.rpc}`)}`,
