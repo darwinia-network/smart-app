@@ -51,7 +51,11 @@ function App() {
               overlay={
                 <Menu>
                   {links.map((item, index) => (
-                    <Menu.Item onClick={() => window.open(item.href, '_blank')} key={index}>
+                    <Menu.Item
+                      onClick={() => window.open(item.href, '_blank')}
+                      key={index}
+                      className='dark:text-white'
+                    >
                       {item.name}
                     </Menu.Item>
                   ))}
@@ -66,7 +70,7 @@ function App() {
                 <Typography.Link
                   onClick={() => window.open(item.href, '_blank')}
                   key={index}
-                  className={`mx-8 opacity-80 hover:opacity-100 transition-colors duration-500 text-${network}.main`}
+                  className={`mx-8 opacity-80 hover:opacity-100 transition-colors duration-500 text-${network}.main dark:text-white`}
                 >
                   {t(item.name)}
                 </Typography.Link>

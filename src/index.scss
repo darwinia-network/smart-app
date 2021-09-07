@@ -93,13 +93,6 @@ body {
       }
     }
   }
-
-  .ant-tabs-content-holder {
-    border: 1px solid #e5e7eb;
-    border-top: none;
-    padding: 1em;
-    border-radius: 0 0 $radius-base $radius-base;
-  }
 }
 
 .enlarge-hot-area {
@@ -121,4 +114,12 @@ body {
 
 .ant-modal-close {
   top: -5px;
+}
+
+.scroll-bar-hidden {
+  &::-webkit-scrollbar {
+    width: 0 !important;
+  }
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
 }

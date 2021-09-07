@@ -25,7 +25,7 @@ export function ShortAccount({
   );
 
   return (
-    <div className={`${className} flex items-center justify-between text-gray-800`}>
+    <div className={`${className} flex items-center justify-between`}>
       {isCopyBtnDisplay ? (
         <>
           <AccountType className='sm:inline hidden' />
