@@ -1,12 +1,24 @@
-# [1.1.0](https://github.com/darwinia-network/dvm/compare/v1.0.3...v1.1.0) (2021-07-19)
+## [1.1.4](https://github.com/darwinia-network/dvm/compare/v1.1.31...v1.1.4) (2021-09-07)
 
 ### chore
 
-- language switch adpate dark mode ([8565dee](https://github.com/darwinia-network/dvm/commit/8565deed77931288bcd695bd4cb4a34495220a8f))
+- issue tpl (#52) ([27ea1da](https://github.com/darwinia-network/dvm/commit/27ea1da0e16dc0d1c203f507d5c6bdf874a7d4fe)), closes [#52](https://github.com/darwinia-network/dvm/issues/52)
 
-### style
+## [1.1.31](https://github.com/darwinia-network/dvm/compare/v1.1.3...v1.1.31) (2021-08-30)
 
-- add dark model ([d2a52a9](https://github.com/darwinia-network/dvm/commit/d2a52a92ee3629d2580f7b63f9ef71de751a5702))
+### chore
+
+- update gql provider (#49) ([5a67ae1](https://github.com/darwinia-network/dvm/commit/5a67ae165e08c27596996b5ac4db882c12330640)), closes [#49](https://github.com/darwinia-network/dvm/issues/49)
+
+## [1.1.3](https://github.com/darwinia-network/dvm/compare/v1.1.1...v1.1.3) (2021-08-13)
+
+## [1.1.1](https://github.com/darwinia-network/dvm/compare/v1.1.0...v1.1.1) (2021-07-22)
+
+### ci
+
+- remove purge css config (#46) ([ee0bcb0](https://github.com/darwinia-network/dvm/commit/ee0bcb0e39cd74cd2f9b3f19124e532cc21d893c)), closes [#46](https://github.com/darwinia-network/dvm/issues/46)
+
+# [1.1.0](https://github.com/darwinia-network/dvm/compare/v1.0.3...v1.1.0) (2021-07-21)
 
 ## [1.0.3](https://github.com/darwinia-network/dvm/compare/v1.0.2...v1.0.3) (2021-07-07)
 

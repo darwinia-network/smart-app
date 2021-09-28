@@ -4,7 +4,6 @@
   "@btn-default-border": "2px solid transparent",
   "@btn-primary-bg": "@project-main-bg",
   "@card-radius": "@border-radius-base * 2",
-  "@card-shadow": "0 0 24px 0 rgba(191, 194, 234, 0.41)",
   "@modal-footer-padding-horizontal": "24px",
   "@modal-footer-padding-vertical": "24px",
   "@primary-color": "@project-primary",
@@ -15,6 +14,5 @@
   "@secondary-color": "@primary-color",
   "@select-item-selected-bg": "@background-color-base",
   "@select-item-selected-option-color": "@primary-color",
-  "@shadow-2": "0 0 24px 0 rgba(191, 194, 234, 0.41)",
   "@skeleton-color": "@primary-color"
 }

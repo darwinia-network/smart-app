@@ -146,7 +146,7 @@ export async function getTokenBalanceEth(ktonAddress: string, account = ''): Pro
     console.error(
       '%c [ get ring balance in ethereum error ]',
       'font-size:13px; background:pink; color:#bf2c9f;',
-      error.message
+      (error as Record<string, string>).message
     );
   }
 
@@ -159,7 +159,7 @@ export async function getTokenBalanceEth(ktonAddress: string, account = ''): Pro
     console.error(
       '%c [ get kton balance in ethereum error ]',
       'font-size:13px; background:pink; color:#bf2c9f;',
-      error.message
+      (error as Record<string, string>).message
     );
   }
 
@@ -204,7 +204,7 @@ export async function depositKtonByPrecompileContract(
     console.warn(
       '%c [ error ]-182',
       'font-size:13px; background:pink; color:#bf2c9f;',
-      error.message
+      (error as Record<string, string>).message
     );
   }
 
