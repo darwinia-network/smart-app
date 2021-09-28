@@ -89,7 +89,7 @@ export function AccountGrid({ accountType, title, isFrom = false }: AccountProps
         <div
           ref={panelRef}
           className={
-            'border border-gray-200 border-solid flex items-center justify-between text-lg p-1 rounded-xl bg-gray-100'
+            'border border-gray-200 dark:border-gray-700 border-solid flex items-center justify-between text-lg p-1 rounded-xl'
           }
           style={{ width: 140, maxWidth: '100%' }}
         >

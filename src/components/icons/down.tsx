@@ -10,7 +10,7 @@ function Down() {
       xmlns='http://www.w3.org/2000/svg'
     >
       <g id='DVM' stroke='none' strokeWidth='1' fill='none' fillRule='evenodd'>
-        <g id='其他网络' transform='translate(-528.000000, -195.000000)' fill='#000000'>
+        <g id='其他网络' transform='translate(-528.000000, -195.000000)' fill='currentColor'>
           <g id='通用/Icon图标/Line/Down' transform='translate(528.000000, 195.000000)'>
             <g id='up' fillRule='nonzero' opacity='0'>
               <rect id='矩形' x='0' y='0' width='14' height='14'></rect>
