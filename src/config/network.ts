@@ -82,7 +82,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
       ring: '0x0000000000000000000000000000000000000015',
       kton: '0x0000000000000000000000000000000000000016',
     },
-    token: { ring: 'CRING', kton: 'CKTON' },
+    token: { ring: 'CRAB', kton: 'CKTON' },
     erc20: {
       ring: '0x588abe3F7EE935137102C5e2B8042788935f4CB0',
       kton: '0xbfE9E136270cE46A2A6a8E8D54718BdAEBEbaA3D',
@@ -94,7 +94,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
       iconUrls: [],
       nativeCurrency: {
         name: 'Crab Network Native Token',
-        symbol: 'CRING',
+        symbol: 'CRAB',
         decimals: 18,
       },
       rpcUrls: ['https://crab-rpc.darwinia.network/'],
