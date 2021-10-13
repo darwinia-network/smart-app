@@ -37,7 +37,7 @@ export function Account({
         className='hidden sm:inline-block'
         alt=''
       />
-      <span className='text-white mr-2 ml-1 hidden sm:inline'>{t(networkConfig.fullName)}</span>
+      <span className='text-white mr-2 hidden sm:inline'>{t(networkConfig.fullName)}</span>
       {children}
     </div>
   );
