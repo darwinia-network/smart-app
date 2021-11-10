@@ -12,11 +12,11 @@ export const NETWORK_CONFIG: NetworkConfig = {
       subql: 'https://api.subquery.network/sq/darwinia-network/crab',
     },
     dvmWithdrawAddress: {
-      kton: '0x0000000000000000000000000000000000000016',
+      kton: '0x0000000000000000000000000000000000000015',
       ring: '0x0000000000000000000000000000000000000015',
     },
     erc20: {
-      kton: '0xbfE9E136270cE46A2A6a8E8D54718BdAEBEbaA3D',
+      kton: '0x159933C635570D5042723359fbD1619dFe83D3f3',
       ring: '0x588abe3F7EE935137102C5e2B8042788935f4CB0',
     },
     ethereumChain: {
