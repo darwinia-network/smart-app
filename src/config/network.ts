@@ -89,8 +89,8 @@ export const NETWORK_CONFIG: NetworkConfig = {
       ring: '0x0000000000000000000000000000000000000015',
     },
     erc20: {
-      kton: '0xc8C1680B18D432732D07c044669915726fAF67D0',
-      ring: '0xbBD91aD844557ADCbb97296216b3B3c977FCC4F2',
+      kton: '0xDCd3bC4138afE6F324eaA12C356A20cD576edF08',
+      ring: '0xcfDEb76be514c8B8DC8B509E63f95E34ebafD81e',
     },
     ethereumChain: {
       blockExplorerUrls: ['https://pangolin.subscan.io/'],
