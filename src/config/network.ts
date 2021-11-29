@@ -110,7 +110,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
     },
     fullName: 'Pangolin',
     rpc: 'wss://pangolin-rpc.darwinia.network/',
-    ss58Prefix: 18,
+    ss58Prefix: 42,
     token: {
       kton: 'PKTON',
       ring: 'PRING',
