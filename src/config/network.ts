@@ -89,8 +89,8 @@ export const NETWORK_CONFIG: NetworkConfig = {
       ring: '0x0000000000000000000000000000000000000015',
     },
     erc20: {
-      kton: '0xc8C1680B18D432732D07c044669915726fAF67D0',
-      ring: '0xbBD91aD844557ADCbb97296216b3B3c977FCC4F2',
+      kton: '0x8809f9b3ACEF1dA309f49b5Ab97A4C0faA64E6Ae',
+      ring: '0xc52287b259b2431ba0f61BC7EBD0eD793B0b7044',
     },
     ethereumChain: {
       blockExplorerUrls: ['https://pangolin.subscan.io/'],
@@ -110,7 +110,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
     },
     fullName: 'Pangolin',
     rpc: 'wss://pangolin-rpc.darwinia.network/',
-    ss58Prefix: 18,
+    ss58Prefix: 42,
     token: {
       kton: 'PKTON',
       ring: 'PRING',

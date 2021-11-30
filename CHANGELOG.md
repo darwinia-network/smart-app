@@ -1,3 +1,9 @@
+## [1.1.5](https://github.com/darwinia-network/dvm/compare/v1.1.4...v1.1.5) (2021-11-10)
+
+### chore
+
+- update chain name (#61) ([804cc32](https://github.com/darwinia-network/dvm/commit/804cc32faecd869c545fd98c137a8c2b5a95b493)), closes [#61](https://github.com/darwinia-network/dvm/issues/61)
+
 ## [1.1.4](https://github.com/darwinia-network/dvm/compare/v1.1.31...v1.1.4) (2021-09-07)
 
 ### chore

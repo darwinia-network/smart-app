@@ -39,9 +39,9 @@ export function KtonDraw() {
             <div>
               <ErrorBoundary>
                 <h3>{t('Claim Failed')}</h3>
-                {err?.receipt && (
+                {(err as Record<string, string>).receipt && (
                   <p className='overflow-scroll' style={{ maxHeight: 200 }}>
-                    {JSON.stringify(err?.receipt)}
+                    {JSON.stringify((err as Record<string, string>).receipt)}
                   </p>
                 )}
               </ErrorBoundary>
@@ -93,7 +93,7 @@ export function KtonDraw() {
         setIsVisible(count.gt(new BN(0)));
       } catch (error) {
         setIsDisable(false);
-        console.warn(error.message);
+        console.warn((error as Record<string, string>).message);
       }
     })();
   }, [api, account, isSubstrate, network, setApi]);
