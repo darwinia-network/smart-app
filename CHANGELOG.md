@@ -1,3 +1,10 @@
+## [1.1.6](https://github.com/darwinia-network/dvm/compare/v1.1.5...v1.1.6) (2021-11-30)
+
+### chore
+
+- crab kton address (#63) ([04caeb7](https://github.com/darwinia-network/dvm/commit/04caeb73790ea6d0587871bb8c04e1e3861750d7)), closes [#63](https://github.com/darwinia-network/dvm/issues/63)
+- pangolin dvm contracts reset (#65) ([4d887f7](https://github.com/darwinia-network/dvm/commit/4d887f7b2b79ed6a9ba8f36b8299ff564026b207)), closes [#65](https://github.com/darwinia-network/dvm/issues/65)
+
 ## [1.1.5](https://github.com/darwinia-network/dvm/compare/v1.1.4...v1.1.5) (2021-11-10)
 
 ### chore
