@@ -9,7 +9,7 @@ export enum Network {
 export const NETWORK_CONFIG: NetworkConfig = {
   crab: {
     api: {
-      subql: 'https://api.subquery.network/sq/darwinia-network/crab',
+      subql: 'https://api.subquery.network/sq/darwinia-network/smart-app-crab',
     },
     dvmWithdrawAddress: {
       kton: '0x0000000000000000000000000000000000000015',
@@ -45,7 +45,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
   },
   darwinia: {
     api: {
-      subql: 'https://api.subquery.network/sq/darwinia-network/darwinia',
+      subql: 'https://undepolyment',
     },
     dvmWithdrawAddress: {
       kton: '',
@@ -82,7 +82,7 @@ export const NETWORK_CONFIG: NetworkConfig = {
   },
   pangolin: {
     api: {
-      subql: 'https://api.subquery.network/sq/darwinia-network/pangolin',
+      subql: 'https://api.subquery.network/sq/darwinia-network/smart-app-pangolin',
     },
     dvmWithdrawAddress: {
       kton: '0x0000000000000000000000000000000000000015',
