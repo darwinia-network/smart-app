@@ -43,8 +43,7 @@ const TRANSFERS_QUERY = `
         timestamp
         tokenId
         fee
-        blockNumber
-        blockId
+        block
       }
     }
   }
@@ -70,13 +69,13 @@ interface TransfersQueryRes {
 
 interface Transfer {
   amount: string;
-  blockId: string;
-  blockNumber: string;
   fee: string;
   fromId: string;
   timestamp: string;
   toId: string;
   tokenId: 'balances' | 'kton';
+  // eslint-disable-next-line id-denylist
+  block: { hash: string; number: number; specVersion: number };
 }
 
 enum TokenType {
@@ -86,13 +85,20 @@ enum TokenType {
 
 function patchRecords(source: Transfer[], currentAccount: string): IRecord[] {
   return (source || []).map((item) => {
-    const { blockId, fromId, toId, amount, tokenId, timestamp } = item;
+    const {
+      block: { hash },
+      fromId,
+      toId,
+      amount,
+      tokenId,
+      timestamp,
+    } = item;
     const asset = TokenType[tokenId];
     const signerId = currentAccount === fromId ? fromId : toId;
     const isSS58 = isSS58Address(signerId);
 
     return {
-      id: blockId,
+      id: hash,
       asset: asset || 'unknown',
       action: currentAccount === fromId ? 'send' : 'receive',
       amount: precisionBalance(amount),
