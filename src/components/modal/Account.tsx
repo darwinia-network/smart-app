@@ -18,6 +18,7 @@ import {
 } from '../../utils';
 import { formatBalance, precisionBalance } from '../../utils/format/formatBalance';
 import { Account } from '../Account';
+import { EllipsisMiddle } from '../EllipsisMiddle';
 import { CloseIcon, CopyIcon, JazzIcon, ViewBrowserIcon } from '../icons';
 import { ShortAccount } from '../ShortAccount';
 import { IModalProps } from './interface';
@@ -224,12 +225,12 @@ export function AccountModal({
             dataSource={[
               {
                 image: '/image/ring.svg',
-                asset: networkConfig.token.ring,
+                asset: { name: networkConfig.token.ring, contract: networkConfig.erc20.ring },
                 amount: formatBalance(assets.ring, accountType),
               },
               {
                 image: '/image/kton.svg',
-                asset: networkConfig.token.kton,
+                asset: { name: networkConfig.token.kton, contract: networkConfig.erc20.kton },
                 amount: formatBalance(assets.kton, accountType),
               },
             ]}
@@ -238,7 +239,8 @@ export function AccountModal({
                 <List.Item.Meta
                   className='flex items-center'
                   avatar={<Avatar src={item.image} size={30} className='inline-block' />}
-                  title={<b className='uppercase'>{item.asset}</b>}
+                  title={<b className='uppercase'>{item.asset.name}</b>}
+                  description={<EllipsisMiddle>{item.asset.contract}</EllipsisMiddle>}
                 />
                 <div>{item.amount}</div>
               </List.Item>
