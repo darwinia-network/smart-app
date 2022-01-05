@@ -2,13 +2,14 @@ import { UnorderedListOutlined } from '@ant-design/icons';
 import { Affix, Dropdown, Layout, Menu, Spin, Typography } from 'antd';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, Route, Switch } from 'react-router-dom';
+import { Link, Route, Routes } from 'react-router-dom';
 import { Connection } from './components/Connection';
 import { KtonDraw } from './components/KtonDraw';
 import { Language } from './components/Language';
 import { ThemeSwitch } from './components/ThemeSwitch';
-import { Path, routes } from './config/routes';
+import { Path } from './config/routes';
 import { useApi } from './hooks';
+import { Transfer } from './pages/Transfer';
 
 const { Header, Content } = Layout;
 
@@ -85,11 +86,9 @@ function App() {
       </Affix>
       <Content className='sm:px-16 sm:py-8 px-2 py-1'>
         <Spin spinning={networkStatus === 'connecting'}>
-          <Switch>
-            {routes.map((item, index) => (
-              <Route key={index} {...item}></Route>
-            ))}
-          </Switch>
+          <Routes>
+            <Route path={Path.root} element={<Transfer />} />
+          </Routes>
           <Language className='fixed bottom-8 right-8' network={network} />
           <KtonDraw />
         </Spin>
