@@ -79,7 +79,7 @@ export function getInitialSetting<T = SettingValue | string>(key: SettingKey, de
   const fromHash = getInfoFromHash();
   const fromStorage = readStorage();
 
-  return ((fromHash[key as keyof HashInfo] ??
+  return (fromHash[key as keyof HashInfo] ??
     fromStorage[key as keyof StorageInfo] ??
-    defaultValue) as unknown) as T;
+    (defaultValue as unknown)) as T;
 }
