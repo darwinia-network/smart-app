@@ -171,9 +171,11 @@ export const ApiProvider = ({ children }: React.PropsWithChildren<unknown>) => {
 
     setNetworkStatus('connecting');
 
-    const { accounts: newAccounts, api: newApi, extensions } = await connectSubstrate(
-      state.network
-    );
+    const {
+      accounts: newAccounts,
+      api: newApi,
+      extensions,
+    } = await connectSubstrate(state.network);
 
     newApi.on('disconnected', () => setNetworkStatus('disconnected'));
 
