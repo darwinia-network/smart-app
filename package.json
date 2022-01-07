@@ -89,7 +89,7 @@
     "husky": "^4.2.3",
     "i18next-scanner": "^3.1.0",
     "i18next-scanner-typescript": "^1.0.6",
-    "postcss": "^7.0.36",
+    "postcss": "^8.2.13",
     "prettier": "^2.5.1",
     "prettier-quick": "0.0.5",
     "pretty-quick": "^3.1.0",
