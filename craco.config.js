@@ -53,5 +53,14 @@ module.exports = {
     plugins: {
       add: [themePlugin],
     },
+    configure: (config) => {
+      config.module.rules.push({
+        test: /\.js$/,
+        include: /node_modules/,
+        loader: require.resolve('@open-wc/webpack-import-meta-loader'),
+      });
+
+      return config;
+    },
   },
 };

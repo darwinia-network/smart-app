@@ -24,7 +24,7 @@ export function dvmAddressToAccountId(address: string | null | undefined): Accou
   data.set(numberToU8a(checksum), 31);
   const accountId = registry.createType('AccountId', data);
 
-  return accountId;
+  return accountId as AccountId;
 }
 
 export function convertToSS58(text: string, prefix: SS58Prefix, isShort = false): string {
