@@ -72,7 +72,7 @@
     "@commitlint/config-angular": "^12.0.1",
     "@commitlint/config-conventional": "^16.0.0",
     "@open-wc/webpack-import-meta-loader": "^0.4.7",
-    "@tailwindcss/postcss7-compat": "^2.0.4",
+    "@tailwindcss/postcss7-compat": "^2.2.17",
     "@types/lodash": "^4.14.168",
     "@types/react": "^17.0.3",
     "@types/react-router-dom": "^5.1.7",
