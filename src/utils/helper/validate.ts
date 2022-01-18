@@ -43,7 +43,11 @@ export const isSameAddress = (from: string, to: string): boolean => {
     try {
       toAddress = convertToEth(to);
     } catch (err) {
-      console.warn('%c [ err ]-47', 'font-size:13px; background:pink; color:#bf2c9f;', err.message);
+      console.warn(
+        '%c [ err ]-47',
+        'font-size:13px; background:pink; color:#bf2c9f;',
+        (err as Record<string, string>).message
+      );
     }
   }
 
