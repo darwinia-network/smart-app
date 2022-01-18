@@ -1,3 +1,22 @@
+# [1.2.0](https://github.com/darwinia-network/dvm/compare/v1.1.6...v1.2.0) (2022-01-18)
+
+### feat
+
+support polkadot metaV14
+
+### chore
+
+- bump darwinia api (#103) ([0dc2411](https://github.com/darwinia-network/dvm/commit/0dc2411b96ff698517e353a991fa2bb6cfa54f51)), closes [#103](https://github.com/darwinia-network/dvm/issues/103)
+- dependabot scan interval ([30d668a](https://github.com/darwinia-network/dvm/commit/30d668a008c82568131dbb4309528383db43d366))
+
+### fix
+
+- bigint error (#108) ([4df558e](https://github.com/darwinia-network/dvm/commit/4df558e0aceb9bda2e189e178068254436faa9f1)), closes [#108](https://github.com/darwinia-network/dvm/issues/108)
+
+### refactor
+
+- migrate subql endpoint (#68) ([8959129](https://github.com/darwinia-network/dvm/commit/895912967bedfca5ba028796dcb1abc00ede31cf)), closes [#68](https://github.com/darwinia-network/dvm/issues/68)
+
 ## [1.1.6](https://github.com/darwinia-network/dvm/compare/v1.1.5...v1.1.6) (2021-11-30)
 
 ### chore
