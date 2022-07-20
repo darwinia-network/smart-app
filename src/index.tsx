@@ -1,33 +1,84 @@
-import { ClientContext, GraphQLClient } from 'graphql-hooks';
-import { Suspense } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
-import App from './App';
-import './config/i18n';
-import './index.scss';
+import { Suspense } from 'react';
+import { Button } from 'antd';
 import reportWebVitals from './reportWebVitals';
-import { AccountProvider, ApiProvider, AssetsProvider, GqlProvider } from './providers';
-import './theme/antd/index.less';
+import './index.css';
 
-const client = new GraphQLClient({
-  url: 'http://localhost:3000/',
-});
+interface Props {
+  token: 'crab' | 'ckton';
+  helix?: boolean;
+  apps?: boolean;
+}
+
+const AnnouncementCard = ({ token, helix, apps }: Props) => {
+  return (
+    <div className='shadow-lg w-96 rounded-xl pb-9 flex-1'>
+      <div
+        className='flex items-center py-6 pl-10 rounded-xl mb-11'
+        style={{ backgroundColor: '#5745DE' }}
+      >
+        <img alt='...' height={84} width={84} src={`/image/announcement/${token}.svg`} />
+        <span className='ml-5 font-medium text-4xl text-white uppercase'>{token}</span>
+      </div>
+
+      <div className='flex flex-col items-center px-12'>
+        <div className='flex justify-center items-center space-x-2 mb-8 py-7 border border-gray-300 w-full rounded-xl'>
+          <div
+            className='flex justify-center items-center py-3 px-5 rounded'
+            style={{ background: 'rgba(191, 194, 234, 0.413501)' }}
+          >
+            <span className='text-sm font-medium' style={{ color: '#5745DE' }}>
+              Substrate
+            </span>
+          </div>
+          <img alt='...' height={24} width={24} src='/image/announcement/swap.svg' />
+          <div
+            className='flex justify-center items-center py-3 px-5 rounded'
+            style={{ background: 'rgba(191, 194, 234, 0.413501)' }}
+          >
+            <span className='text-sm font-medium' style={{ color: '#5745DE' }}>
+              Smart
+            </span>
+          </div>
+        </div>
+        {helix && (
+          <Button
+            className='flex justify-center items-center py-3 px-5 w-full text-white'
+            size='large'
+            type='primary'
+            style={{ background: '#5745DE' }}
+          >
+            {'Go to Helix Bridge >'}
+          </Button>
+        )}
+        {helix && apps ? (
+          <span className='font-medium text-base my-2' style={{ color: '#979797' }}>
+            or
+          </span>
+        ) : null}
+        {apps && (
+          <Button
+            className='flex justify-center items-center py-3 px-5 w-full text-white'
+            size='large'
+            type='primary'
+            style={{ background: '#5745DE' }}
+          >
+            {'Go to Darwinia Apps >'}
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+};
 
 ReactDOM.render(
   <Suspense fallback='loading'>
-    <Router>
-      <ClientContext.Provider value={client}>
-        <ApiProvider>
-          <AccountProvider>
-            <AssetsProvider>
-              <GqlProvider>
-                <App />
-              </GqlProvider>
-            </AssetsProvider>
-          </AccountProvider>
-        </ApiProvider>
-      </ClientContext.Provider>
-    </Router>
+    <div className='w-screen h-screen flex justify-center items-center'>
+      <div className='flex space-x-14'>
+        <AnnouncementCard token='crab' helix apps />
+        <AnnouncementCard token='ckton' apps />
+      </div>
+    </div>
   </Suspense>,
   document.getElementById('root')
 );
