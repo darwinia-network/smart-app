@@ -1,6 +1,19 @@
 import { PropsWithChildren } from 'react';
 import { Button, Typography, Tooltip } from 'antd';
 
+const ButtonLink = ({ href, children }: PropsWithChildren<{ href: string }>) => (
+  <Button
+    className='flex justify-center items-center py-3 px-5 w-full'
+    size='large'
+    type='link'
+    style={{ background: '#5745DE' }}
+    href={href}
+    target='_blank'
+  >
+    <span className='text-white'>{children}</span>
+  </Button>
+);
+
 const Title = ({ children }: PropsWithChildren<unknown>) => (
   <Typography.Title level={2} style={{ marginBottom: '0.3rem' }}>
     {children}
@@ -84,17 +97,7 @@ const AnnouncementCard = ({ token, helix, apps }: Props) => {
           </div>
         </div>
         {helix && (
-          <Button
-            className='flex justify-center items-center py-3 px-5 w-full text-white'
-            size='large'
-            type='primary'
-            style={{ background: '#5745DE' }}
-            onClick={() => {
-              window.open('https://apps.helixbridge.app/', '_blank');
-            }}
-          >
-            {'Go to Helix Bridge >'}
-          </Button>
+          <ButtonLink href='https://apps.helixbridge.app/'>{'Go to Helix Bridge >'}</ButtonLink>
         )}
         {helix && apps ? (
           <span className='font-medium text-base my-2' style={{ color: '#979797' }}>
@@ -102,17 +105,9 @@ const AnnouncementCard = ({ token, helix, apps }: Props) => {
           </span>
         ) : null}
         {apps && (
-          <Button
-            className='flex justify-center items-center py-3 px-5 w-full text-white'
-            size='large'
-            type='primary'
-            style={{ background: '#5745DE' }}
-            onClick={() => {
-              window.open('https://apps.darwinia.network/toolbox?network=crab', '_blank');
-            }}
-          >
+          <ButtonLink href='https://apps.darwinia.network/toolbox?network=crab'>
             {'Go to Darwinia Apps >'}
-          </Button>
+          </ButtonLink>
         )}
       </div>
     </div>
