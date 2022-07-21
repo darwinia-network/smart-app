@@ -116,8 +116,8 @@ const AnnouncementCard = ({ token, helix, apps }: Props) => {
 
 const Announcement = () => {
   return (
-    <div className='h-screen w-screen flex justify-center items-center'>
-      <div className='flex flex-col'>
+    <div className='flex justify-center items-center' style={{ minHeight: '100vh' }}>
+      <div className='flex flex-col pt-12 pb-36'>
         <Title>Annnouncement</Title>
         <Text>
           To be more user-friendly, we’ve integrated{' '}
@@ -137,7 +137,7 @@ const Announcement = () => {
           {'Tutorial >'}
         </Link>
 
-        <div className='flex space-x-14 pb-36'>
+        <div className='flex space-x-14'>
           <AnnouncementCard token='crab' helix apps />
           <AnnouncementCard token='ckton' apps />
         </div>
