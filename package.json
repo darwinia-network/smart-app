@@ -11,7 +11,7 @@
     "stylelint": "stylelint \"src/**/*.scss\" --config stylelint.config.js",
     "i18next:scanner": "i18next-scanner --config i18next-scanner.config.js",
     "lint": "eslint ./src -c .eslintrc.js --fix",
-    "format": "prettier ./src/**/*.tsx  --write",
+    "format": "prettier './src/**/*.tsx'  --write",
     "changelog": "conventional-changelog -p eslint -i CHANGELOG.md -s"
   },
   "husky": {

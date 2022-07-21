@@ -1,33 +1,20 @@
-import { ClientContext, GraphQLClient } from 'graphql-hooks';
-import { Suspense } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
-import App from './App';
-import './config/i18n';
-import './index.scss';
+import { Spin } from 'antd';
+import React, { Suspense } from 'react';
 import reportWebVitals from './reportWebVitals';
-import { AccountProvider, ApiProvider, AssetsProvider, GqlProvider } from './providers';
-import './theme/antd/index.less';
+import './index.css';
 
-const client = new GraphQLClient({
-  url: 'http://localhost:3000/',
-});
+const Announcement = React.lazy(() => import('./pages/Announcement'));
 
 ReactDOM.render(
-  <Suspense fallback='loading'>
-    <Router>
-      <ClientContext.Provider value={client}>
-        <ApiProvider>
-          <AccountProvider>
-            <AssetsProvider>
-              <GqlProvider>
-                <App />
-              </GqlProvider>
-            </AssetsProvider>
-          </AccountProvider>
-        </ApiProvider>
-      </ClientContext.Provider>
-    </Router>
+  <Suspense
+    fallback={
+      <div className='w-screen h-screen flex justify-center items-center'>
+        <Spin size='large' />
+      </div>
+    }
+  >
+    <Announcement />
   </Suspense>,
   document.getElementById('root')
 );
