@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { Button, Typography } from 'antd';
+import { Button, Typography, Tooltip } from 'antd';
 
 const Title = ({ children }: PropsWithChildren<unknown>) => (
   <Typography.Title level={2} style={{ marginBottom: '0.3rem' }}>
@@ -21,18 +21,30 @@ const Link = ({
   children,
   href,
   className,
-}: PropsWithChildren<{ href: string; className?: string }>) => (
-  <Typography.Link
-    target='_blank'
-    rel='noopener noreferrer'
-    underline
-    className={`text-sm font-medium ${className}`}
-    style={{ color: '#1890FF', width: 'fit-content' }}
-    href={href}
-  >
-    {children}
-  </Typography.Link>
-);
+  isComingSoon,
+}: PropsWithChildren<{ href: string; className?: string; isComingSoon?: boolean }>) =>
+  isComingSoon ? (
+    <Tooltip title='Coming soon'>
+      <Typography.Text
+        underline
+        className={`text-sm font-medium cursor-not-allowed ${className}`}
+        style={{ color: '#1890FF', width: 'fit-content' }}
+      >
+        {children}
+      </Typography.Text>
+    </Tooltip>
+  ) : (
+    <Typography.Link
+      target='_blank'
+      rel='noopener noreferrer'
+      underline
+      className={`text-sm font-medium ${className}`}
+      style={{ color: '#1890FF', width: 'fit-content' }}
+      href={href}
+    >
+      {children}
+    </Typography.Link>
+  );
 
 interface Props {
   token: 'crab' | 'ckton';
@@ -126,7 +138,7 @@ const Announcement = () => {
           operating.
         </Text>
 
-        <Link className='my-3' href='#'>
+        <Link className='my-3' href='#' isComingSoon>
           {'Tutorial >'}
         </Link>
 
