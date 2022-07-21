@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
-    "@craco/craco": "^6.1.1",
+    "@craco/craco": "^6.4.5",
     "@darwinia/types": "2.7.2",
     "@fontsource/ibm-plex-sans": "^4.5.1",
     "@metamask/jazzicon": "^2.0.0",
