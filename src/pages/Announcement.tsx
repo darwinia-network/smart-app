@@ -133,7 +133,10 @@ const Announcement = () => {
           operating.
         </Text>
 
-        <Link className='my-3' href='#' isComingSoon>
+        <Link
+          className='my-3'
+          href='https://medium.com/darwinianetwork/darwinia-apps-guide-part-v-crab-ckton-transfer-between-crab-chain-and-crab-smart-chain-146831bf6540'
+        >
           {'Tutorial >'}
         </Link>
 
